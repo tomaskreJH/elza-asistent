@@ -21,13 +21,14 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 10px
 </style>
 <aside></aside><main id=main></main>
 <script src="https://alcdn.msauth.net/browser/2.38.2/js/msal-browser.min.js"></script>
+<script src="moduly.js?v=1"></script>
 <script>
 const CID="7822640e-2537-46eb-8db1-830d38fff665",TEN="35c5f53c-ce94-445a-b877-54965e3be6d3",HOME="https://tomaskrejh.github.io/elza-asistent/",SP="https://elzycz.sharepoint.com",SITE="/sites/ELZA-asistent",SC=[SP+"/AllSites.Read"];
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const POP=window.opener&&/[#?&](code|error|state)=/.test(location.hash+location.search);
 let m,acc=null,tok=null,cur="prehled";const cache={};
-const MENU=[["Sledování",[["prehled","Přehled"]]],["Obsah",[["pravo","Právo a normy"],["skilly","Skilly"],["agenti","Elzáčci"],["mapa","Mapa vazeb"],["postupy","Postupy",0],["prompty","Prompty",0],["foto","Foto příkazy",0],["brand","Brand",0]]],["Moje",[["posta","Pošta",0],["kalendar","Kalendář",0]]]];
+const MENU=[["Sledování",[["prehled","Přehled"]]],["Obsah",[["pravo","Právo a normy"],["skilly","Skilly"],["agenti","Elzáčci"],["mapa","Mapa vazeb"],["postupy","Postupy"],["prompty","Prompty"],["foto","Foto příkazy"],["brand","Brand"],["pravidla","Pravidla AI"]]],["Moje",[["posta","Pošta",0],["kalendar","Kalendář",0]]]];
 const LBL={};MENU.forEach(g=>g[1].forEach(i=>LBL[i[0]]=i[1]));
 async function token(popup){try{tok=(await m.acquireTokenSilent({scopes:SC,account:acc})).accessToken}catch(e){if(!popup)throw e;tok=(await m.acquireTokenPopup({scopes:SC,account:acc})).accessToken}}
 async function login(){const mn=$("#main");try{const r=await m.loginPopup({scopes:["User.Read"],extraScopesToConsent:SC});acc=r.account;m.setActiveAccount(acc);await token(true);nav();go(cur)}catch(e){mn.innerHTML='<h1>Přihlášení se nepodařilo</h1><p class=r>'+esc(e.message)+'</p>'}}
@@ -45,7 +46,7 @@ function skillyM(){$("#q").oninput=e=>{Q=e.target.value;skillyT()};skillyT()}
 async function agenti(){AD=await list("Agenti","Title,AgentType,Role,Status,AutonomyLevel,Skills");return '<h1>Elzáčci</h1><div class=grid>'+AD.map(x=>'<div class=card><h3>'+esc(x.Title)+'</h3>'+tags([x.AgentType,x.Status,x.AutonomyLevel])+'<p>'+esc(x.Role)+'</p><p>'+esc(x.Skills)+'</p></div>').join("")+'</div>'}
 async function mapa(){MD=await list("Workflow a vazby","FromId,ToId,RelationType,Condition");return '<h1>Mapa vazeb</h1><div class=bar id=mn></div><div id=tb></div>'}
 function mapaT(){const ids=[...new Set(MD.flatMap(x=>[x.FromId,x.ToId]).filter(Boolean))].sort();$("#mn").innerHTML=ids.map(i=>'<button class="nav'+(i==MS?" on":"")+'" style="width:auto" data-i="'+esc(i)+'">'+esc(i)+'</button>').join("");$("#mn").onclick=e=>{const i=e.target.dataset&&e.target.dataset.i;if(i){MS=i==MS?"":i;mapaT()}};const r=MS?MD.filter(x=>x.FromId==MS||x.ToId==MS):MD;$("#tb").innerHTML='<p class=note>'+r.length+' vazeb'+(MS?" pro "+esc(MS):"")+'</p><table><tr><th>Od<th>Vztah<th>Do<th>Podmínka</tr>'+r.map(x=>'<tr><td>'+esc(x.FromId)+'<td>'+esc(x.RelationType)+' →<td>'+esc(x.ToId)+'<td>'+esc(x.Condition)+'</tr>').join("")+'</table>'}
-const VIEWS={prehled:[prehled],pravo:[pravo,pravoM],skilly:[skilly,skillyM],agenti:[agenti],mapa:[mapa,mapaT]};
+const VIEWS={prehled:[prehled],pravo:[pravo,pravoM],skilly:[skilly,skillyM],agenti:[agenti],mapa:[mapa,mapaT]};Object.assign(VIEWS,window.MODS||{});
 function nav(){$("aside").innerHTML='<div class=brand>ELZA Asistent</div>'+MENU.map(g=>'<h6>'+g[0]+'</h6>'+g[1].map(i=>'<button class="nav'+(i[0]==cur?" on":"")+(i[2]===0?" off":"")+'" data-v="'+i[0]+'">'+i[1]+'</button>').join("")).join("")+'<div class=me>'+(acc?esc(acc.name||acc.username)+'<br><button class=nav data-v=_out>Odhlásit</button>':'<button class=b data-v=_in>Přihlásit firemním účtem</button>')+'</div>'}
 async function go(id){cur=id;Q="";nav();const v=VIEWS[id],mn=$("#main");if(!v){mn.innerHTML='<h1>'+esc(LBL[id]||id)+'</h1><p class=note>Tento modul se právě připravuje. Plán přenosu z konzole AI_TOM je v dokumentu KONZOLE-PRENOS.md na SharePointu.</p>';return}if(!tok){mn.innerHTML='<h1>ELZA Asistent</h1><p class=note>Přihlaste se firemním účtem. Data se čtou ze SharePointu podle vašich práv, v aplikaci se nic neukládá.</p>';return}mn.innerHTML='<p class=note>Načítám…</p>';try{mn.innerHTML=await v[0]();if(v[1])v[1]()}catch(e){mn.innerHTML='<p class=r>Chyba: '+esc(e.message)+'</p>'}}
 document.addEventListener("click",e=>{const v=e.target.dataset&&e.target.dataset.v;if(!v)return;if(v=="_in")login();else if(v=="_out"){m.logoutPopup({account:acc}).then(()=>{acc=null;tok=null;go("prehled")})}else go(v)});
