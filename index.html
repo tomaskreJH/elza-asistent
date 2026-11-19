@@ -25,13 +25,14 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 10px
 <script src="moduly.js?v=1"></script>
 <script src="osobni.js?v=1"></script>
 <script src="mapa.js?v=1"></script>
+<script src="hledat.js?v=1"></script>
 <script>
 const CID="7822640e-2537-46eb-8db1-830d38fff665",TEN="35c5f53c-ce94-445a-b877-54965e3be6d3",HOME="https://tomaskrejh.github.io/elza-asistent/",SP="https://elzycz.sharepoint.com",SITE="/sites/ELZA-asistent",SC=[SP+"/AllSites.Read"];
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const POP=window.opener&&/[#?&](code|error|state)=/.test(location.hash+location.search);
 let m,acc=null,tok=null,cur="prehled";const cache={};
-const MENU=[["Sledování",[["prehled","Přehled"]]],["Obsah",[["pravo","Právo a normy"],["skilly","Skilly"],["agenti","Elzáčci"],["mapa","Mapa vazeb"],["postupy","Postupy"],["prompty","Prompty"],["foto","Foto příkazy"],["brand","Brand"],["pravidla","Pravidla AI"]]],["Moje",[["dnes","Můj den"],["posta","Pošta"],["kalendar","Kalendář"]]]];
+const MENU=[["Sledování",[["prehled","Přehled"],["hledat","Hledat vše"]]],["Obsah",[["pravo","Právo a normy"],["skilly","Skilly"],["agenti","Elzáčci"],["mapa","Mapa vazeb"],["postupy","Postupy"],["prompty","Prompty"],["foto","Foto příkazy"],["brand","Brand"],["pravidla","Pravidla AI"]]],["Moje",[["dnes","Můj den"],["posta","Pošta"],["kalendar","Kalendář"]]]];
 const LBL={};MENU.forEach(g=>g[1].forEach(i=>LBL[i[0]]=i[1]));
 async function token(popup){try{tok=(await m.acquireTokenSilent({scopes:SC,account:acc})).accessToken}catch(e){if(!popup)throw e;tok=(await m.acquireTokenPopup({scopes:SC,account:acc})).accessToken}}
 async function login(){const mn=$("#main");try{const r=await m.loginPopup({scopes:["User.Read"],extraScopesToConsent:SC});acc=r.account;m.setActiveAccount(acc);await token(true);nav();go(cur)}catch(e){mn.innerHTML='<h1>Přihlášení se nepodařilo</h1><p class=r>'+esc(e.message)+'</p>'}}
