@@ -1,22 +1,23 @@
 <!doctype html><html lang=cs><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>ELZA Asistent</title>
 <style>
-:root{--bg:#0b1726;--p:#183050;--l:rgba(246,244,239,.12);--f:#f6f4ef;--m:#9aa6b4;--a:#f2b705;--r:#ff7b6b}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--f);font:14px/1.5 system-ui,"Segoe UI",sans-serif;display:flex;min-height:100vh}
-aside{width:230px;flex:none;padding:16px 10px;border-right:1px solid var(--l);position:sticky;top:0;height:100vh;overflow:auto;display:flex;flex-direction:column;gap:4px}
-aside h6{margin:12px 10px 4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6b7785}
-.brand{padding:0 10px 8px;font-weight:700;letter-spacing:.06em;font-size:17px}
-.nav{display:block;width:100%;text-align:left;background:none;border:0;color:var(--m);padding:7px 10px;border-radius:9px;font:inherit;cursor:pointer}
-.nav:hover,.nav.on{background:var(--p);color:var(--f)}.nav.off{opacity:.5}
+:root{--bg:#fff;--p:#f3f4f5;--l:rgba(41,49,51,.16);--f:#293133;--m:#5f6b6e;--a:#d9261c;--r:#b00020;--b:#102c54;--w:#b35c00}
+body.dark{--bg:#0b1726;--p:#183050;--l:rgba(246,244,239,.12);--f:#f6f4ef;--m:#9aa6b4;--a:#ff5a4d;--r:#ff7b6b;--w:#f2b705}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--f);font:14px/1.5 Montserrat,"Segoe UI",system-ui,sans-serif;display:flex;min-height:100vh}
+aside{background:var(--b);width:230px;flex:none;padding:16px 10px;border-right:1px solid var(--l);position:sticky;top:0;height:100vh;overflow:auto;display:flex;flex-direction:column;gap:4px}
+aside h6{margin:12px 10px 4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8fa3bf}
+.brand{padding:0 10px 10px;color:#fff;display:flex;flex-direction:column;gap:2px}.wm{font-weight:700;letter-spacing:.16em;font-size:24px}.wm i{display:inline-block;width:.55em;height:.11em;background:#ff2a17;margin-left:.12em}.brand small{font-size:12px;color:#c9d6e8;letter-spacing:.04em}
+.nav{display:block;width:100%;text-align:left;background:none;border:0;color:#c9d6e8;padding:7px 10px;border-radius:9px;font:inherit;cursor:pointer}
+.nav:hover,.nav.on{background:rgba(255,255,255,.14);color:#fff}.nav.off{opacity:.5}
 main{flex:1;padding:24px 28px;min-width:0}h1{margin:0 0 16px;font-size:22px}
 .bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
 input,select{background:var(--p);color:var(--f);border:1px solid var(--l);border-radius:9px;padding:8px 10px;font:inherit}input{min-width:280px}
-button.b{cursor:pointer;background:var(--a);color:#0b1726;border:0;font-weight:600;border-radius:9px;padding:8px 12px;font:inherit;font-weight:600}
+button.b{cursor:pointer;background:var(--a);color:#fff;border:0;font-weight:600;border-radius:9px;padding:8px 12px;font:inherit;font-weight:600}
 table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--l);vertical-align:top}th{color:var(--m);font-size:12px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
 .card{background:var(--p);border:1px solid var(--l);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px}.card h3{margin:0;font-size:15px}.card b{font-size:26px}.card span,.card p{color:var(--m);margin:0}
 .tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:99px;border:1px solid var(--l);color:var(--m);margin:0 4px 4px 0}
-.note{color:var(--m)}.r{color:var(--r)}.a{color:var(--a)}a{color:var(--a)}
-.me{margin-top:auto;font-size:12px;color:var(--m);padding:10px}
+.note{color:var(--m)}.r{color:var(--r)}.a{color:var(--w)}a{color:var(--a)}
+.me{margin-top:auto;font-size:12px;color:#c9d6e8;padding:10px}
 @media(max-width:800px){body{flex-direction:column}aside{width:auto;height:auto;position:static;flex-direction:row;flex-wrap:wrap}}
 </style>
 <aside></aside><main id=main></main>
@@ -47,9 +48,11 @@ async function agenti(){AD=await list("Agenti","Title,AgentType,Role,Status,Auto
 async function mapa(){MD=await list("Workflow a vazby","FromId,ToId,RelationType,Condition");return '<h1>Mapa vazeb</h1><div class=bar id=mn></div><div id=tb></div>'}
 function mapaT(){const ids=[...new Set(MD.flatMap(x=>[x.FromId,x.ToId]).filter(Boolean))].sort();$("#mn").innerHTML=ids.map(i=>'<button class="nav'+(i==MS?" on":"")+'" style="width:auto" data-i="'+esc(i)+'">'+esc(i)+'</button>').join("");$("#mn").onclick=e=>{const i=e.target.dataset&&e.target.dataset.i;if(i){MS=i==MS?"":i;mapaT()}};const r=MS?MD.filter(x=>x.FromId==MS||x.ToId==MS):MD;$("#tb").innerHTML='<p class=note>'+r.length+' vazeb'+(MS?" pro "+esc(MS):"")+'</p><table><tr><th>Od<th>Vztah<th>Do<th>Podmínka</tr>'+r.map(x=>'<tr><td>'+esc(x.FromId)+'<td>'+esc(x.RelationType)+' →<td>'+esc(x.ToId)+'<td>'+esc(x.Condition)+'</tr>').join("")+'</table>'}
 const VIEWS={prehled:[prehled],pravo:[pravo,pravoM],skilly:[skilly,skillyM],agenti:[agenti],mapa:[mapa,mapaT]};Object.assign(VIEWS,window.MODS||{});
-function nav(){$("aside").innerHTML='<div class=brand>ELZA Asistent</div>'+MENU.map(g=>'<h6>'+g[0]+'</h6>'+g[1].map(i=>'<button class="nav'+(i[0]==cur?" on":"")+(i[2]===0?" off":"")+'" data-v="'+i[0]+'">'+i[1]+'</button>').join("")).join("")+'<div class=me>'+(acc?esc(acc.name||acc.username)+'<br><button class=nav data-v=_out>Odhlásit</button>':'<button class=b data-v=_in>Přihlásit firemním účtem</button>')+'</div>'}
+function tema(){document.body.classList.toggle("dark");try{localStorage.setItem("elzaTema",document.body.classList.contains("dark")?"d":"l")}catch(e){}}
+try{if(localStorage.getItem("elzaTema")=="d")document.body.classList.add("dark")}catch(e){}
+function nav(){$("aside").innerHTML='<div class=brand><span class=wm>ELZY<i></i></span><small>Elza, váš asistent</small></div>'+MENU.map(g=>'<h6>'+g[0]+'</h6>'+g[1].map(i=>'<button class="nav'+(i[0]==cur?" on":"")+(i[2]===0?" off":"")+'" data-v="'+i[0]+'">'+i[1]+'</button>').join("")).join("")+'<div class=me>'+(acc?esc(acc.name||acc.username)+'<br><button class=nav data-v=_out>Odhlásit</button>':'<button class=b data-v=_in>Přihlásit firemním účtem</button>')+'<br><button class=nav data-v=_theme>Tmavý / světlý režim</button></div>'}
 async function go(id){cur=id;Q="";nav();const v=VIEWS[id],mn=$("#main");if(!v){mn.innerHTML='<h1>'+esc(LBL[id]||id)+'</h1><p class=note>Tento modul se právě připravuje. Plán přenosu z konzole AI_TOM je v dokumentu KONZOLE-PRENOS.md na SharePointu.</p>';return}if(!tok){mn.innerHTML='<h1>ELZA Asistent</h1><p class=note>Přihlaste se firemním účtem. Data se čtou ze SharePointu podle vašich práv, v aplikaci se nic neukládá.</p>';return}mn.innerHTML='<p class=note>Načítám…</p>';try{mn.innerHTML=await v[0]();if(v[1])v[1]()}catch(e){mn.innerHTML='<p class=r>Chyba: '+esc(e.message)+'</p>'}}
-document.addEventListener("click",e=>{const v=e.target.dataset&&e.target.dataset.v;if(!v)return;if(v=="_in")login();else if(v=="_out"){m.logoutPopup({account:acc}).then(()=>{acc=null;tok=null;go("prehled")})}else go(v)});
+document.addEventListener("click",e=>{const v=e.target.dataset&&e.target.dataset.v;if(!v)return;if(v=="_theme")tema();else if(v=="_in")login();else if(v=="_out"){m.logoutPopup({account:acc}).then(()=>{acc=null;tok=null;go("prehled")})}else go(v)});
 async function main(){m=new msal.PublicClientApplication({auth:{clientId:CID,authority:"https://login.microsoftonline.com/"+TEN,redirectUri:HOME},cache:{cacheLocation:"sessionStorage"}});try{if(m.initialize)await m.initialize()}catch(e){}acc=m.getAllAccounts()[0]||null;if(acc){try{await token(false)}catch(e){}}go(cur)}
 if(POP)document.body.textContent="Dokončuji přihlášení…";else main();
 </script>
