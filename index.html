@@ -4,7 +4,7 @@
 body.dark{--bg:#0b1726;--p:#183050;--l:rgba(246,244,239,.12);--f:#f6f4ef;--m:#9aa6b4;--a:#ff5a4d;--r:#ff7b6b;--w:#f2b705}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--f);font:14px/1.5 Montserrat,"Segoe UI",system-ui,sans-serif;display:flex;min-height:100vh}
 aside{background:var(--b);width:230px;flex:none;padding:16px 10px;border-right:1px solid var(--l);position:sticky;top:0;height:100vh;overflow:auto;display:flex;flex-direction:column;gap:4px}
-aside h6{margin:12px 10px 4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8fa3bf}
+aside h6{margin:12px 10px 4px;font-size:11px;letter-spacing:.08em;text-transformh:uppercase;color:#8fa3bf}
 .brand{padding:0 10px 10px;color:#fff;display:flex;flex-direction:column;gap:2px}.wm{font-weight:700;letter-spacing:.16em;font-size:24px}.wm i{display:inline-block;width:.55em;height:.11em;background:#ff2a17;margin-left:.12em}.brand small{font-size:12px;color:#c9d6e8;letter-spacing:.04em}
 .nav{display:block;width:100%;text-align:left;background:none;border:0;color:#c9d6e8;padding:7px 10px;border-radius:9px;font:inherit;cursor:pointer}
 .nav:hover,.nav.on{background:rgba(255,255,255,.14);color:#fff}.nav.off{opacity:.5}
@@ -35,6 +35,7 @@ const LBL={};MENU.forEach(g=>g[1].forEach(i=>LBL[i[0]]=i[1]));
 async function token(popup){try{tok=(await m.acquireTokenSilent({scopes:SC,account:acc})).accessToken}catch(e){if(!popup)throw e;tok=(await m.acquireTokenPopup({scopes:SC,account:acc})).accessToken}}
 async function login(){const mn=$("#main");try{const r=await m.loginPopup({scopes:["User.Read"],extraScopesToConsent:SC});acc=r.account;m.setActiveAccount(acc);await token(true);nav();go(cur)}catch(e){mn.innerHTML='<h1>Přihlášení se nepodařilo</h1><p class=r>'+esc(e.message)+'</p>'}}
 async function list(t,sel){const k=t+sel;if(cache[k])return cache[k];await token(false);const u=SP+SITE+"/_api/web/lists/getbytitle('"+encodeURIComponent(t)+"')/items?$top=500&$select="+sel;const r=await fetch(u,{headers:{Authorization:"Bearer "+tok,Accept:"application/json;odata=nometadata"}});if(!r.ok)throw new Error(t+": HTTP "+r.status);return cache[k]=(await r.json()).value}
+async function list(t,sel){const k=t+sel;if(cache[k])return cache[k];await token(false);const b=SP+SITE+"/_api/web/"+(t=="Foto příkazy"?"GetList('"+SITE+"/Lists/FotoPrikazy')":"lists/getbytitle('"+encodeURIComponent(t)+"')");const r=await fetch(b+"/items?$top=500&$select="+sel,{headers:{Authorization:"Bearer "+tok,Accept:"application/json;odata=nometadata"}});if(!r.ok)throw new Error(t+": HTTP "+r.status);return cache[k]=(await r.json()).value}
 const dt=(d,w)=>{if(!d)return"";const n=Math.round((new Date(d)-Date.now())/864e5);const c=n<0?"r":(w&&n<w)?"a":"";return '<span class="'+c+'">'+new Date(d).toLocaleDateString("cs-CZ")+(c=="r"?" (po termínu)":c=="a"?" (brzy)":"")+'</span>'};
 const tags=a=>a.filter(Boolean).map(x=>'<span class=tag>'+esc(x)+'</span>').join("");
 let Q="",PO="",PD=[],SD=[],AD=[],MD=[],MS="";
