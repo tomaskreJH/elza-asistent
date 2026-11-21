@@ -23,15 +23,15 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 10px
 </style>
 <aside></aside><main id=main></main>
 <script src="https://alcdn.msauth.net/browser/2.38.2/js/msal-browser.min.js"></script>
-<script>(function(){var k="stable";try{var q=/[?&]kanal=(beta|stable)/.exec(location.search);k=q?q[1]:(localStorage.getItem("elzaKanal")||"stable");if(q)localStorage.setItem("elzaKanal",k)}catch(e){}window.KANAL=k;var d=k=="beta"?"":"stable/";var L=["moduly","osobni","mapa","hledat","trh","ucet"];if(k=="beta"||/[?&]demo=1/.test(location.search)){if(/[?&]demo=1/.test(location.search))L.push("demo");L.push("graf","posta","kalendar","pripady")}L.forEach(function(n){var dd=(n=="demo"||n=="graf"||n=="posta"||n=="kalendar"||n=="pripady")?"":d;document.write('<script src="'+dd+n+'.js?v=10"><\/script>')})})()</script>
+<script>(function(){var k="stable";try{var q=/[?&]kanal=(beta|stable)/.exec(location.search);k=q?q[1]:(localStorage.getItem("elzaKanal")||"stable");if(q)localStorage.setItem("elzaKanal",k)}catch(e){}window.KANAL=k;var d=k=="beta"?"":"stable/";var L=["moduly","osobni","mapa","hledat","trh","ucet"];{if(/[?&]demo=1/.test(location.search))L.push("demo");L.push("graf","posta","kalendar","pripady")}L.forEach(function(n){var dd=n=="demo"?"":d;document.write('<script src="'+dd+n+'.js?v=11"><\/script>')})})()</script>
 <script>
 const CID="7822640e-2537-46eb-8db1-830d38fff665",TEN="35c5f53c-ce94-445a-b877-54965e3be6d3",HOME="https://tomaskrejh.github.io/elza-asistent/",SP="https://elzycz.sharepoint.com",SITE="/sites/ELZA-asistent",SC=[SP+"/AllSites.Read"];
-const VER="0.9.0";const $=s=>document.querySelector(s);
+const VER="0.9.1";const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const POP=window.opener&&/[#?&](code|error|state)=/.test(location.hash+location.search);
-let m,acc=null,tok=null,cur="prehled";const cache={};
+let m,acc=null,tok=null,cur="dnes";const cache={};
 const MENU=[["Sledování",[["prehled","Přehled"],["hledat","Hledat vše"]]],["Obsah",[["pravo","Právo a normy"],["trh","Trh a konkurence"],["aismer","AI směrování"],["skilly","Skilly"],["agenti","Elzáčci"],["mapa","Mapa vazeb"],["postupy","Postupy"],["prompty","Prompty"],["foto","Foto příkazy"],["brand","Brand"],["pravidla","Pravidla AI"]]],["Moje",[["dnes","Můj den"],["posta","Pošta"],["kalendar","Kalendář"],["pruvodce","Průvodce a nastavení"]]]];
-const LBL={};MENU.forEach(g=>g[1].forEach(i=>LBL[i[0]]=i[1]));
+MENU.unshift(MENU.pop());const LBL={};MENU.forEach(g=>g[1].forEach(i=>LBL[i[0]]=i[1]));
 async function token(popup){try{tok=(await m.acquireTokenSilent({scopes:SC,account:acc})).accessToken}catch(e){if(!popup)throw e;tok=(await m.acquireTokenPopup({scopes:SC,account:acc})).accessToken}}
 async function login(){const mn=$("#main");try{const r=await m.loginPopup({scopes:["User.Read"],extraScopesToConsent:SC});acc=r.account;m.setActiveAccount(acc);await token(true);nav();go(cur)}catch(e){mn.innerHTML='<h1>Přihlášení se nepodařilo</h1><p class=r>'+esc(e.message)+'</p>'}}
 async function list(t,sel){const k=t+sel;if(cache[k])return cache[k];await token(false);const u=SP+SITE+"/_api/web/lists/getbytitle('"+encodeURIComponent(t)+"')/items?$top=500&$select="+sel;const r=await fetch(u,{headers:{Authorization:"Bearer "+tok,Accept:"application/json;odata=nometadata"}});if(!r.ok)throw new Error(t+": HTTP "+r.status);return cache[k]=(await r.json()).value}
