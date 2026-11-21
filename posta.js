@@ -3,7 +3,7 @@
 var R=["Mail.Read"],W=["Mail.ReadWrite"],SN=["Mail.Send"];
 var SEL="id,subject,from,toRecipients,receivedDateTime,sentDateTime,isRead,hasAttachments,bodyPreview,conversationId,flag,categories,webLink,isDraft";
 var WK=[["inbox","Doručená pošta"],["drafts","Koncepty"],["sentitems","Odeslaná pošta"],["archive","Archiv"],["junkemail","Nevyžádaná pošta"],["deleteditems","Odstraněná pošta"]];
-var S={fo:null,kids:{},open:{},cur:"inbox",alias:"inbox",name:"Doručená pošta",view:"vlakna",f:"vse",od:"",q:"",pole:"",dod:"",ddo:"",kat:"",all:false,items:[],next:null,sel:null,thr:[],w:null,wd:1,err:"",c:null,busy:false};
+var S={fo:null,kids:{},open:{},cur:"inbox",alias:"inbox",name:"Doručená pošta",view:"vlakna",f:"vse",od:"",q:"",pole:"",dod:"",ddo:"",kat:"",pc:"",all:false,items:[],next:null,sel:null,thr:[],w:null,wd:1,err:"",c:null,busy:false};
 var enc=encodeURIComponent;
 function clean(t){return String(t||"").replace(/["\\]/g," ").trim()}
 function dshort(d){if(!d)return "";var x=new Date(d),n=new Date();return x.toDateString()==n.toDateString()?GR.hm(x):x.toLocaleDateString("cs-CZ",x.getFullYear()==n.getFullYear()?{day:"numeric",month:"numeric"}:{day:"numeric",month:"numeric",year:"2-digit"})}
@@ -88,9 +88,11 @@ async function loadWait(){
   inb.forEach(function(x){var k=x.conversationId;if(seen[k])return;seen[k]=1;var t=+new Date(x.receivedDateTime);if((last[k]||0)<t&&Date.now()-t>=S.wd*864e5){x.wait=Math.floor((Date.now()-t)/864e5);w.push(x)}});
   S.items=w;S.next=null;
 }
+function pcs(){var P=window.PCASE||{},a={};Object.keys(P).forEach(function(k){a[P[k]]=1});return Object.keys(a).sort()}
+function pcOk(x){if(!S.pc)return true;var w=window.PCASE&&window.PCASE[x.conversationId];return S.pc=="_bez"?!w:S.pc=="_s"?!!w:w==S.pc}
 function groups(){
   var g={},o=[];
-  S.items.filter(post).forEach(function(x){
+  S.items.filter(post).filter(pcOk).forEach(function(x){
     var k=S.view=="vlakna"&&x.conversationId?x.conversationId:x.id;
     if(!g[k]){g[k]={k:k,m:[x]};o.push(g[k])}else g[k].m.push(x);
   });
@@ -114,7 +116,7 @@ function cats(){var a=[];S.items.forEach(function(x){(x.categories||[]).forEach(
 function tb(){
   var po=[["","Všude"],["from","Od"],["to","Komu"],["subject","Předmět"],["body","Text zprávy"],["attachment","Příloha"]];
   return '<div class=mp-tb><div class=row><input id=mq placeholder="Hledat (Enter)" value="'+esc(S.q)+'"><select id=mpo>'+po.map(function(p){return '<option value="'+p[0]+'"'+(S.pole==p[0]?" selected":"")+'>'+p[1]+'</option>'}).join("")+'</select><button class=g data-a=go>Hledat</button></div>'+
-  '<div class=row><select id=mf>'+[["vse","Všechny"],["nepr","Nepřečtené"],["priloha","S přílohou"],["oznac","Označené"]].map(function(p){return '<option value='+p[0]+(S.f==p[0]?" selected":"")+'>'+p[1]+'</option>'}).join("")+'</select><input id=mod placeholder="Odesílatel" value="'+esc(S.od)+'"><select id=mk><option value="">Štítek</option>'+cats().map(function(c){return '<option'+(S.kat==c?" selected":"")+'>'+esc(c)+'</option>'}).join("")+'</select></div>'+
+  '<div class=row><select id=mf>'+[["vse","Všechny"],["nepr","Nepřečtené"],["priloha","S přílohou"],["oznac","Označené"]].map(function(p){return '<option value='+p[0]+(S.f==p[0]?" selected":"")+'>'+p[1]+'</option>'}).join("")+'</select><input id=mod placeholder="Odesílatel" value="'+esc(S.od)+'"><select id=mpc><option value="">Všechny případy</option><option value="_bez"'+(S.pc=="_bez"?" selected":"")+'>Bez případu</option><option value="_s"'+(S.pc=="_s"?" selected":"")+'>Jen přiřazená</option>'+pcs().map(function(c){return '<option'+(S.pc==c?" selected":"")+'>'+esc(c)+'</option>'}).join("")+'</select><select id=mk><option value="">Štítek</option>'+cats().map(function(c){return '<option'+(S.kat==c?" selected":"")+'>'+esc(c)+'</option>'}).join("")+'</select></div>'+
   '<div class=row><input type=date id=md1 value="'+esc(S.dod)+'" title="Od data" ><input type=date id=md2 value="'+esc(S.ddo)+'" title="Do data" ><button class="g'+(S.view=="vlakna"?" on":"")+'" data-a=vw data-w=vlakna>Vlákna</button><button class="g'+(S.view=="zpravy"?" on":"")+'" data-a=vw data-w=zpravy>Zprávy</button><label style="font-size:12px"><input type=checkbox id=mall'+(S.all?" checked":"")+' style="min-width:0"> všechny složky</label></div>'+
   '<div class=row><button class=b data-a=new>Nová zpráva</button><button class=g data-a=refresh>Obnovit</button><button class=g data-a=sig>Podpis</button></div></div>';
 }
@@ -302,7 +304,7 @@ async function reloadList(more){
   rl();
 }
 function readTb(){
-  S.q=$("#mq").value;S.pole=$("#mpo").value;S.f=$("#mf").value;S.od=$("#mod").value;S.kat=$("#mk").value;S.dod=$("#md1").value;S.ddo=$("#md2").value;S.all=$("#mall").checked;
+  S.q=$("#mq").value;S.pole=$("#mpo").value;S.f=$("#mf").value;S.od=$("#mod").value;S.kat=$("#mk").value;S.pc=$("#mpc")?$("#mpc").value:"";S.dod=$("#md1").value;S.ddo=$("#md2").value;S.all=$("#mall").checked;
 }
 async function toggleFolder(id){
   S.open[id]=!S.open[id];
@@ -337,7 +339,7 @@ async function onClick(e){
 function onChange(e){
   var el=e.target;
   if(el.dataset&&el.dataset.a=="wd"){S.wd=+el.value;return reloadList()}
-  if(el.id=="mf"||el.id=="mk"||el.id=="mall"||el.id=="md1"||el.id=="md2"||el.id=="mpo"){readTb();if(el.id=="mf"||el.id=="mk")return rl();return reloadList()}
+  if(el.id=="mf"||el.id=="mk"||el.id=="mpc"||el.id=="mall"||el.id=="md1"||el.id=="md2"||el.id=="mpo"){readTb();if(el.id=="mf"||el.id=="mk"||el.id=="mpc")return rl();return reloadList()}
 }
 function onKey(e){if(e.key=="Enter"&&(e.target.id=="mq"||e.target.id=="mod")){readTb();reloadList()}}
 
