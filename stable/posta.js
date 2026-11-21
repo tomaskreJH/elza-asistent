@@ -103,7 +103,7 @@ function rl(){
   h+=o.map(function(g){
     var x=g.m[0],un=g.m.some(function(y){return !y.isRead}),att=g.m.some(function(y){return y.hasAttachments});
     var nm=isOut()?"Komu: "+((x.toRecipients||[]).map(who).join(", ")):who(x.from);
-    var cats=[].concat.apply([],g.m.map(function(y){return y.categories||[]}));
+    var cats=[].concat.apply([],g.m.map(function(y){return y.categories||[]}));var pc=window.PCASE&&window.PCASE[x.conversationId];if(pc)cats=["Případ "+pc].concat(cats);
     var fl=g.m.some(function(y){return y.flag&&y.flag.flagStatus=="flagged"});
     return '<div class="mp-it'+(un?" un":"")+(S.sel==g.k?" on":"")+'" data-a=sel data-k="'+esc(g.k)+'"><div class=t1><span class=f>'+esc(nm)+(g.m.length>1?' <span class=note>('+g.m.length+')</span>':'')+'</span><span class=d>'+(att?"📎 ":"")+(fl?"⚑ ":"")+esc(dshort(dt(x)))+'</span></div><div class=s>'+esc(x.subject||"(bez předmětu)")+(x.wait?' <span class=r>· čeká '+x.wait+' d</span>':'')+'</div><div class=p>'+esc(x.bodyPreview||"")+'</div>'+(cats.length?'<div>'+[...new Set(cats)].map(function(c){return '<span class=mp-cat>'+esc(c)+'</span>'}).join("")+'</div>':'')+'</div>';
   }).join("");
@@ -137,7 +137,7 @@ async function openThread(k){
 function renderRead(){
   var r=$("#mpr");if(!r)return;
   if(!S.thr.length){r.innerHTML='<p class=note>Vyberte zprávu.</p>';return}
-  r.innerHTML='<h2 style="margin:0 0 10px">'+esc(S.thr[0].m.subject||"(bez předmětu)")+'</h2>'+S.thr.map(function(t,i){return '<div class=mp-m id=mm'+i+'>'+blk(t,i)+'</div>'}).join("");
+  r.innerHTML='<h2 style="margin:0 0 10px">'+esc(S.thr[0].m.subject||"(bez předmětu)")+'</h2>'+(window.PCASE&&window.PCASE[S.thr[0].m.conversationId]?'<p><span class=mp-cat>Případ '+esc(window.PCASE[S.thr[0].m.conversationId])+'</span> <span class=note>pošta probíhala nad tímto případem</span></p>':'')+S.thr.map(function(t,i){return '<div class=mp-m id=mm'+i+'>'+blk(t,i)+'</div>'}).join("");
   S.thr.forEach(function(t,i){frame(i)});
 }
 function blk(t,i){
