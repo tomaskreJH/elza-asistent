@@ -154,7 +154,7 @@ function blk(t,i){
     if((x.categories||[]).length)h+='<div>'+x.categories.map(function(c){return '<span class=mp-cat>'+esc(c)+'</span>'}).join("")+'</div>';
     if(t.hasImg&&!t.img)h+='<div class=gbanner>Vzdálené obrázky jsou z bezpečnostních důvodů blokované. <button class=g data-a=img data-i='+i+'>Načíst obrázky</button></div>';
     h+='<iframe id=fr'+i+' sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox" title="Text zprávy"></iframe>';
-    if(t.att&&t.att.length){h+='<div class=mp-a>'+t.att.filter(function(a){return !a.isInline||!t.cidDone[a.id]}).map(function(a){return '<button class=g data-a=at data-i='+i+' data-id="'+esc(a.id)+'">📎 '+esc(a.name)+' ('+Math.max(1,Math.round((a.size||0)/1024))+' kB)</button>'}).join("")+'</div>'}
+    if(t.attErr)h+='<p class=note>Přílohy se nepodařilo načíst: '+esc(t.attErr)+'</p>';if(t.att&&t.att.length){h+='<div class=mp-a>'+t.att.filter(function(a){return !a.isInline||!t.cidDone[a.id]}).map(function(a){return '<button class=g data-a=at data-i='+i+' data-id="'+esc(a.id)+'">📎 '+esc(a.name)+' ('+Math.max(1,Math.round((a.size||0)/1024))+' kB)</button>'}).join("")+'</div>'}
   }else h+='<p class=note>Načítám…</p>';
   return h+'</div>';
 }
@@ -174,7 +174,7 @@ async function loadBody(i){
     var html=b.body&&b.body.content||"";
     if(b.body&&b.body.contentType=="text")html="<pre>"+esc(html)+"</pre>";
     t.b=b;t.att=[];t.cidDone={};
-    if(t.m.hasAttachments){try{t.att=(await GR.req("GET","/me/messages/"+enc(t.m.id)+"/attachments?$select=id,name,contentType,size,isInline,contentId",{sc:sc()})).value||[]}catch(e){}}
+    if(t.m.hasAttachments){try{t.att=(await GR.req("GET","/me/messages/"+enc(t.m.id)+"/attachments?$select=id,name,contentType,size,isInline,contentId",{sc:sc()})).value||[]}catch(e){try{t.att=(await GR.req("GET","/me/messages/"+enc(t.m.id)+"/attachments?$select=id,name,contentType,size,isInline",{sc:sc()})).value||[]}catch(e2){t.attErr=e2.message}}}
     var inl=t.att.filter(function(a){return a.isInline&&a.contentId&&(a.size||0)<1500000});
     for(var n=0;n<inl.length;n++){
       var a=inl[n];
