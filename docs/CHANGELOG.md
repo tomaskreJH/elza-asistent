@@ -1,3 +1,6 @@
+## 0.38.0 (2026-11-22)
+- Nový modul Správa → Synchronizace firem (firma.js): porovná zdroj ciselnik_firma (jen čtení, plní ho SQL) se seznamem Firma na ZakazkyELZA podle klíče Title (GUID), přidá nové, aktualizuje změněné, zmizelé jen označí Firma_Deleted. Ochrana: nespustí se, když má zdroj méně než 50 % záznamů cíle (probíhá nahrávání ze SQL). Hlídání stability zdroje (otisk ID/Title v prohlížeči). Volitelná denní automatika, když je aplikace otevřená. Zápis je kódem omezen na web ZakazkyELZA.
+
 ## 0.37.0 (2026-11-22)
 - Nový portál zákazníka (portal.html, portal.js): čte jen zveřejněná data z webu PortalELZA2 podle práv přihlášeného zákazníka, nic nezapisuje. Moduly Přehled, Zakázky (osa milníků), Čekání, Termíny, Váš kontakt. Personalizace z volitelného seznamu ProfilZakaznika (barva, logo, uvítání, moduly, kontakt). Ukázkový režim portal.html?demo=1. Přihlášení vlastním redirectem přes stejnou registraci aplikace.
 
