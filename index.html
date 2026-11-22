@@ -42,7 +42,7 @@ main table{display:block;overflow-x:auto;max-width:100%}main img,main video{max-
  #tabs button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;color:var(--m);font:inherit;font-size:11px;padding:6px 2px;min-height:52px;border-radius:12px;cursor:pointer}
  #tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
  #tabs button.on{color:var(--a);font-weight:600}#tabs button.on svg{stroke-width:2.2}
- input,select,textarea{font-size:16px;min-height:44px}input{min-width:0;width:100%}.bar{flex-direction:column;align-items:stretch}.bar>*{width:100%}
+ input,select,textarea{font-size:16px;min-height:44px}input:not([type=checkbox]):not([type=radio]){min-width:0;width:100%}input[type=checkbox],input[type=radio]{width:22px;height:22px;min-height:0}.cx-q{bottom:calc(76px + env(safe-area-inset-bottom))!important;right:12px!important}.bar{flex-direction:column;align-items:stretch}.bar>*{width:100%}
  button.b,button.g{min-height:44px}.grid{grid-template-columns:1fr}.card{padding:14px 16px}
  th,td{padding:10px 8px}
 }
@@ -51,7 +51,7 @@ main table{display:block;overflow-x:auto;max-width:100%}main img,main video{max-
 </style>
 <header id=top><button data-v=_drawer aria-label="Menu">&#9776;</button><span class=wm>ELZY<i></i></span><b id=ttl></b><button data-v=_theme aria-label="Světlý nebo tmavý režim">&#9680;</button></header><div id=scrim data-v=_scrim></div><aside></aside><main id=main></main><nav id=tabs></nav>
 <script src="https://alcdn.msauth.net/browser/2.38.2/js/msal-browser.min.js"></script>
-<script>(function(){var k="stable";try{var q=/[?&]kanal=(beta|stable)/.exec(location.search);k=q?q[1]:(localStorage.getItem("elzaKanal")||"stable");if(q)localStorage.setItem("elzaKanal",k)}catch(e){}window.KANAL=k;var d=k=="beta"?"":"stable/";var L=["nastaveni","moduly","osobni","mapa","hledat","trh","ucet","sprava","zakazky","centrum"];{if(/[?&]demo=1/.test(location.search))L.push("demo");L.push("ai","ulohy","chat","graf","posta","kalendar","pripady","roadmapa")}L.forEach(function(n){var dd=n=="demo"?"":d;document.write('<script src="'+dd+n+'.js?v=33"><\/script>')})})()</script>
+<script>(function(){var k="stable";try{var q=/[?&]kanal=(beta|stable)/.exec(location.search);k=q?q[1]:(localStorage.getItem("elzaKanal")||"stable");if(q)localStorage.setItem("elzaKanal",k)}catch(e){}window.KANAL=k;var d=k=="beta"?"":"stable/";var L=["nastaveni","moduly","osobni","mapa","hledat","trh","ucet","sprava","zakazky","centrum"];{if(/[?&]demo=1/.test(location.search))L.push("demo");L.push("ai","ulohy","chat","graf","posta","kalendar","pripady","roadmapa")}L.forEach(function(n){var dd=n=="demo"?"":d;document.write('<script src="'+dd+n+'.js?v=34"><\/script>')})})()</script>
 <script>
 const CID="7822640e-2537-46eb-8db1-830d38fff665",TEN="35c5f53c-ce94-445a-b877-54965e3be6d3",HOME="https://tomaskrejh.github.io/elza-asistent/",SP="https://elzycz.sharepoint.com",SITE="/sites/ELZA-asistent",SC=[SP+"/AllSites.Read"];
 const VER="0.26.0";const $=s=>document.querySelector(s);
