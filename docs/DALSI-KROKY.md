@@ -1,6 +1,6 @@
-# Další kroky (po 0.27.0)
-1. Ostrý test: změna tématu a ověření založení seznamu NastaveniAplikace, stejné nastavení na druhém zařízení (telefon).
-2. Mobil: ověřit Poštu a Kalendář na ostrých datech, doladit drobné přetékání v Úlohách pro agenty.
+# Další kroky (po 0.28.0)
+1. Založit seznam NastaveniAplikace (sloupec Hodnota, víceřádkový text) správcem webu; pak ověřit synchronizaci na telefonu.
+2. Mobil: ověřit Poštu a Kalendář na skutečném telefonu (v prohlížeči PC nejde zúžit okno).
 3. Uložit sdílené menu poprvé (Moje menu, Uložit pro všechny).
 4. Ověřit Zeptat se AI v Návodu, AI shrnutí v Automatice, zápis NAVOD.md do SharePointu.
 5. Automatika při zavřené aplikaci (plánovaná relace Claude nad frontou Ulohy, po schválení).

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.28.0 (2026-11-22)
+- Mobil: textová pole a výběry v Úlohách pro agenty a dalších modulech se na úzké šířce přizpůsobí šířce displeje; lišty tlačítek se zalamují.
+- Synchronizace nastavení: při chybě 403 (aplikace nesmí zakládat seznamy) se zobrazí srozumitelné vysvětlení, nastavení zůstane v zařízení.
+- Ostrý test (přihlášení tkrejci@elzy.cz): všech 29 modulů načteno bez chyby, zápis NAVOD.md do SharePointu ověřen.
+
 ## 0.27.0 (2026-11-22)
 - Mobil: široké tabulky (Případy, Zakázky, Správa, Roadmapa a další) se na šířce do 800 px automaticky zobrazí jako karty s popisky sloupců; na počítači beze změny.
 

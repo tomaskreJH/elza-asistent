@@ -27,7 +27,7 @@ function apply(d){var v=d.v||{},t=d.t||{},lt=ts(),ch=[];N._ap=true;try{KEYS.forE
 async function ensure(){if(LISTOK)return;var t=await wtok(),h={Authorization:'Bearer '+t,Accept:'application/json;odata=nometadata','Content-Type':'application/json;odata=nometadata'};
  var r=await fetch(url("lists/getbytitle('NastaveniAplikace')?$select=Id"),{headers:h});if(r.ok){LISTOK=true;return}
  if(!(window.PRO&&window.PRO.role=='vlastnik'))throw new Error('seznam založí vlastník');
- var a=await fetch(url('lists'),{method:'POST',headers:h,body:JSON.stringify({Title:'NastaveniAplikace',BaseTemplate:100,Description:'Sdílená nastavení aplikace ELZA asistent (menu, osobní nastavení uživatelů).'})});if(!a.ok)throw new Error('HTTP '+a.status);
+ var a=await fetch(url('lists'),{method:'POST',headers:h,body:JSON.stringify({Title:'NastaveniAplikace',BaseTemplate:100,Description:'Sdílená nastavení aplikace ELZA asistent (menu, osobní nastavení uživatelů).'})});if(!a.ok)throw new Error(a.status==403?'seznam NastaveniAplikace musí jednou založit správce webu (aplikace ho zakládat nesmí); do té doby se nastavení drží jen v tomto zařízení':'HTTP '+a.status);
  var f=await fetch(url("lists/getbytitle('NastaveniAplikace')/fields"),{method:'POST',headers:h,body:JSON.stringify({Title:'Hodnota',FieldTypeKind:3})});if(!f.ok&&f.status!=409)throw new Error('HTTP '+f.status);LISTOK=true}
 async function save(){var u=who();if(!u)return;try{await ensure();var t=await wtok(),lt=ts(),v={},tt={};KEYS.forEach(function(k){if(k in lt){v[k]=gi.call(localStorage,k);tt[k]=lt[k]}});
   var h={Authorization:'Bearer '+t,Accept:'application/json;odata=nometadata','Content-Type':'application/json;odata=nometadata'};
