@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.29.0 (2026-11-22)
+- **Bezpečnostní revize**: opravena díra v AI shrnutí vlákna pošty (HTML e-mailu se vkládalo do stránky aplikace, škodlivý e-mail mohl spustit kód; nyní DOMParser bez spuštění). Názvy skupin a položek menu ze SharePointu se escapují. Kód zakázky v OData filtru se ošetřuje. Odkazy ze SharePointu a kalendáře propustí jen https, mailto a tel (`surl`). Data pro AI nemohou předčasně ukončit blok `<data>`.
+- **Bezpečnostní politika stránky (CSP)**: aplikace smí komunikovat jen s login.microsoftonline.com, graph.microsoft.com, elzycz.sharepoint.com a zvolenými AI službami; `referrer` se neodesílá. Knihovna přihlášení MSAL 2.38.2 je hostovaná přímo u aplikace (ověřená z npm), už se nenačítá z cizí CDN.
+- **Případy → zakázka**: Povýšit na firemní zakázku nabídne založení zakázky rovnou v Zakázky ELZA (kód, typ, interní, čeká na kontrolu ELZY) a zapíše kód k případu (`zakazkyZaloz`).
+- **Automatika**: ruční spuštění připojí poštu k případům hned (bez 5min zámku, čerstvá klíčová slova).
+- **Kalendář na mobilu**: týdenní a měsíční mřížka už nepřetéká šířku 390 px.
+- **Ukázkový režim**: moduly bez dat ukazují vysvětlení místo technické chyby.
+- **Testy**: nový `test/e2e-demo.py` (všech 30 modulů, PC i mobil, stabilní i beta, hlídá chyby JS, přetékání a pokusy o odeslání pošty).
+- **Ostrý test (tkrejci@elzy.cz, živý web)**: 30 modulů bez chyby a bez porušení CSP; celý běh případu WORK-20261122-0001 (založení, údaje, povýšení, zápis času, testovací e-mail sobě, automatické připojení pošty, uzavření s výsledkem). Založen seznam NastaveniAplikace, synchronizace nastavení a sdílené menu uloženy. Toky Power Automate T3, T4, T9, T10 zapnuté, poslední běhy úspěšné.
+- Neověřeno: ostré založení zakázky z případu (spustilo by tok T9), volání Copilota (čeká souhlas správce).
+
 ## 0.28.0 (2026-11-22)
 - Mobil: textová pole a výběry v Úlohách pro agenty a dalších modulech se na úzké šířce přizpůsobí šířce displeje; lišty tlačítek se zalamují.
 - Synchronizace nastavení: při chybě 403 (aplikace nesmí zakládat seznamy) se zobrazí srozumitelné vysvětlení, nastavení zůstane v zařízení.

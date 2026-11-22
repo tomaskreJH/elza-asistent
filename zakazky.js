@@ -12,6 +12,13 @@ async function zload(f){if(!f&&ZD.length&&Date.now()-ZT<3e5)return ZD;ZD=await z
 function nk(c){return String(c||"").trim().toLowerCase()}
 window.zakazkyFind=async function(c){if(!nk(c))return null;await zload();return ZD.filter(function(x){return nk(x.Title)==nk(c)})[0]||null};
 window.zakazkyOpen=function(c){window._zakOpen=c;go("zakazky")};
+window.zakazkyZaloz=async function(o){var W=[SP+"/AllSites.Write"],t;try{t=(await m.acquireTokenSilent({scopes:W,account:acc})).accessToken}catch(e){t=(await m.acquireTokenPopup({scopes:W,account:acc})).accessToken}
+ var h={Authorization:"Bearer "+t,Accept:"application/json;odata=nometadata","Content-Type":"application/json;odata=nometadata"};
+ var kod=String(o.kod||"").trim();if(!kod)throw new Error("Chybí kód zakázky");await zload(true);if(ZD.some(function(x){return nk(x.Title)==nk(kod)}))throw new Error("Zakázka "+kod+" už existuje");
+ var u=await fetch(SP+ZS+"/_api/web/ensureuser",{method:"POST",headers:h,body:JSON.stringify({logonName:"i:0#.f|membership|"+acc.username})});if(!u.ok)throw new Error("Uživatel: HTTP "+u.status);var uid=(await u.json()).Id;
+ var TY=["pco","pd","elektro_rd","prumysl","revize","servis","jine"];
+ var b={Title:kod,Nazev:String(o.nazev||kod).slice(0,250),Typ:TY.indexOf(o.typ)>=0?o.typ:"jine",Faze:"Příprava",OdpovednyId:uid,Objednatel:String(o.objednatel||"").slice(0,250),KartaPoptavky:String(o.popis||""),PoznamkaInterni:"Založeno z ELZA asistenta z případu "+(o.workId||"")+".",Publikace:"interni",CoTed:"Kontrola založení"};
+ var r=await fetch(zb("Zakazka"),{method:"POST",headers:h,body:JSON.stringify(b)});if(!r.ok)throw new Error("Zakazka: HTTP "+r.status+" "+(await r.text()).slice(0,160));ZT=0;return (await r.json()).Id};
 window.portalUrl=function(){return PORTAL};
 window.zakazkyBox=async function(cs,sel){var el=document.querySelector(sel);if(!el)return;var code=cs.ZakazkaCode||cs.PortalZakazka;
  if(!code){el.innerHTML="<h3>Zakázka a portál</h3><p class=note>Případ zatím nemá zakázku. Po povýšení na firemní zakázku nebo vyplnění pole „Zakázka v portálu“ se zde ukáže stav zakázky a portálu zákazníka.</p>";return}
