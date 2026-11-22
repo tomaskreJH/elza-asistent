@@ -11,3 +11,9 @@
 
 ## 0.21.1 (2026-11-22)
 - Role vlastnik vidí vždy všechny moduly (nová funkce hned zapnutá při vývoji); přidáno docs/POSTUP-VYVOJ.md a docs/NOVE-VLAKNO-PROMPT.md.
+
+## 0.22.0 (2026-11-22)
+- **Menu**: skupiny s podskupinami (Moje práce: Práce, Komunikace; AI: Použití; Znalosti: Předpisy a trh, Postupy a nástroje, Vazby). Nový modul **Moje menu** (Správa): každý si odškrtne viditelné položky (jen vzhled, uloženo v prohlížeči, tlačítko Obnovit vše). Modul `menu` je dostupný všem rolím.
+- **Opakované úlohy pro agenty** (`ulohy.js`): volba Jednorázově/denně/týdně/měsíčně, značka `[OPAKOVAT:…]` v zadání; po schválení nebo zamítnutí a uplynutí periody založí aplikace další úlohu ve stavu Nová (`window.ulohyRepeat`, volá ji Automatika, přepínač „Opakované úlohy“, výchozí zapnuto). Bez nového seznamu a bez placeného API. Plánované spouštění při zavřené aplikaci zůstává nevyřešeno (viz DALSI-KROKY).
+- **Návod**: tlačítko „Uložit návod do SharePointu“ vygeneruje NAVOD.md z kapitol (jeden zdroj pravdy) a zapíše ho do Shared Documents/Projekt; při neúspěchu soubor stáhne. Nové kapitoly Opakované úlohy, Menu, Návod ke stažení.
+- Ověřeno: syntaxe, smoke test v ukázkovém režimu bez chyb. Neověřeno: zápis NAVOD.md do SharePointu (cesta knihovny), ostrá data, volání AI.
