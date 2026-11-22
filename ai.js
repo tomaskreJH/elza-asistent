@@ -28,12 +28,12 @@ async function jfetch(u,o,label){var r=await fetch(u,o),t=await r.text(),j=null;
 async function copilot(c,q){var t;try{t=await gtok(false)}catch(e){try{t=await gtok(true)}catch(e2){throw new Error('Copilot zatím není povolen. Přihlášení vyžaduje souhlas správce (viz Projekt/SPRAVCE-POZADAVEK.md): '+(e2.errorMessage||e2.message||'').slice(0,160))}}
  var H={Authorization:'Bearer '+t,'Content-Type':'application/json'};
  var cv=await jfetch(G+'/copilot/conversations',{method:'POST',headers:H,body:'{}'},'Copilot');
- var body={message:{text:SYS+'\n\n'+q.task},locationHint:{timeZone:'Europe/Prague'}};if(q.data)body.additionalContext=[{text:'<data>'+q.data+'</data>'}];
+ var body={message:{text:SYS+'\n\n'+q.task},locationHint:{timeZone:'Europe/Prague'}};if(q.data)body.additionalContext=[{text:'<data>'+dd(q.data)+'</data>'}];
  var r=await jfetch(G+'/copilot/conversations/'+cv.id+'/chat',{method:'POST',headers:H,body:JSON.stringify(body)},'Copilot');
  var ms=r.messages||[];return clean(ms.length?ms[ms.length-1].text:'')}
 function key(t){return LS('elzaKey_'+t)}
 function need(t){var k=key(t);if(!k)throw new Error(t+' nemá v tomto prohlížeči API klíč. Zadejte ho v menu AI nastavení (je to placené API podle spotřeby).');return k}
-function usr(q){return q.task+(q.data?'\n\n<data>'+q.data+'</data>':'')}
+function dd(x){return String(x).replace(/<\s*\/?\s*data\s*>/gi,'[data]')} function usr(q){return q.task+(q.data?'\n\n<data>'+dd(q.data)+'</data>':'')}
 async function claude(c,q){var j=await jfetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'x-api-key':need('Claude'),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true','content-type':'application/json'},body:JSON.stringify({model:c.model,max_tokens:q.max||1500,system:SYS,messages:[{role:'user',content:usr(q)}]})},'Claude');return ((j.content||[]).map(function(x){return x.text||''}).join('')).trim()}
 async function openai(c,q){var j=await jfetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{Authorization:'Bearer '+need('ChatGPT'),'Content-Type':'application/json'},body:JSON.stringify({model:c.model,messages:[{role:'system',content:SYS},{role:'user',content:usr(q)}]})},'ChatGPT');return String(j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content||'').trim()}
 async function gemini(c,q){var j=await jfetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(c.model)+':generateContent',{method:'POST',headers:{'x-goog-api-key':need('Gemini'),'Content-Type':'application/json'},body:JSON.stringify({systemInstruction:{parts:[{text:SYS}]},contents:[{role:'user',parts:[{text:usr(q)}]}]})},'Gemini');var p=j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts||[];return p.map(function(x){return x.text||''}).join('').trim()}
