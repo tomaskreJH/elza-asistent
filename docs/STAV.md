@@ -28,3 +28,5 @@ Firmy (2026-11-22): seznam Firma na webu ZakazkyELZA je kopie číselníku cisel
 2026-11-22 22:30: první synchronizace Firma proběhla (7 966 oprav RowNo), porovnání zdroj/Firma po ní 0 / 0 / 0. Denní automatika je vypnutá, zapne se po rozhodnutí o způsobu kontroly.
 
 0.39.0: modul Lidé a školení (týmy, školení s platností, obsazení zakázek s jedním vedoucím akce), seznamy Tym, Clen, SkoleniTyp, Skoleni, Obsazeni na Zakázky ELZA (docs/SEZNAMY-LIDE.md). Čtení po dávkách bez limitu 5000. Neověřeno na ostrých datech, dokud nejsou seznamy založeny a naplněny; synchronizace zaměstnanců z Implementace365 později.
+
+0.39.1: portál čte živá data z PortalELZA2 (Prehled, Milniky, Cekani, Dokumenty; v nich jsou zatím testovací zakázky TEST-001 až 003, ZK0001, DEMO-001). Přidány Dokumenty a Postupy. Přihlášení skutečného zákazníka stále neověřeno (ověřeno účtem pracovníka).

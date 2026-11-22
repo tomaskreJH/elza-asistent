@@ -1,3 +1,6 @@
+## 0.39.1 (2026-11-22)
+- Portál zákazníka: nové moduly Dokumenty (soubory ze složky zakázky v knihovně Dokumenty webu PortalELZA2, jen čtení, odkaz otevře SharePoint podle práv zákazníka) a Postupy (šest výchozích postupů: průběh zakázky, schvalování, kontrola a revize, nahlášení poruchy, předání, změny; doplnění z volitelného seznamu Postupy na PortalELZA2: Title, Popis, Kroky po řádcích, Publikace). Ukázkový režim doplněn. Test test/portal-demo.py.
+
 ## 0.39.0 (2026-11-22)
 - Nový modul Moje práce → Lidé a školení (lidi.js): týmy (EPS, PZTS, OZO PO, revizní technici), člověk může být ve více týmech; katalog školení (technologie, výrobce, ústředna) s platností v měsících; matice školení se semaforem, hlídač platnosti (30/60/90/180 dní); obsazení zakázky: tým, požadované kvalifikace, počet lidí, nabídka kandidátů podle platných školení a volnosti, právě jeden vedoucí akce na zakázku, vědomé přidělení i bez kvalifikace.
 - Limity SharePointu: čtení po dávkách 500 podle Id (filtr Id gt, nikdy celý seznam najednou), indexované sloupce Title, Tym, Email, Typ, PlatnostDo; nic se nemaže (Stav=zruseno).
