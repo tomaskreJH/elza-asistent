@@ -92,10 +92,10 @@ function velinM(){var mn=document.getElementById('main');mn.onclick=async functi
 var KEY='elzaAuto',DEF={refresh:true,hlidac:true,notif:false,link:true,plan:true},LOG=[],LASTOV=-1,TICK=0;
 function auto(){var o={};try{o=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}return Object.assign({},DEF,o)}
 function setAuto(k,v){var o=auto();o[k]=v;try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
-function log(t){LOG.unshift(new Date().toLocaleTimeString('cs-CZ')+' · '+t);LOG=LOG.slice(0,30)}
+function log(t){if(!t)return;LOG.unshift(new Date().toLocaleTimeString('cs-CZ')+' · '+t);LOG=LOG.slice(0,30)}
 function toast(msg,v){css();var o=document.querySelector('.cx-toast');if(o)o.remove();var d=document.createElement('div');d.className='cx-toast';d.innerHTML=esc(msg)+' <button data-v="'+(v||'prehled')+'">Otevřít</button><button data-x=1>×</button>';d.onclick=function(e){if(e.target.dataset.x||e.target.dataset.v)d.remove()};document.body.appendChild(d);setTimeout(function(){if(d.parentNode)d.remove()},20000)}
 async function tick(manual){if(!tok||tok=='demo'&&!manual)return;var a=auto();if(!manual&&!a.refresh&&!a.hlidac&&!a.link&&!a.plan)return;
-try{if(a.link&&window.pripadyAutoLink&&tok!='demo'){var n=await window.pripadyAutoLink();if(n)log('Pošta: automaticky připojeno '+n+' zpráv k případům')}}catch(e){log('Připojení pošty: '+e.message)}
+try{if(a.link&&window.pripadyAutoLink&&tok!='demo'){var n=await window.pripadyAutoLink(!!manual);log(n?'Pošta: automaticky připojeno '+n+' zpráv k případům':(manual?'Pošta: nic nového k připojení':''))}}catch(e){log('Připojení pošty: '+e.message)}
 try{if(a.plan&&window.ulohyRepeat&&tok!='demo'){var np=await window.ulohyRepeat();if(np)log('Opakované úlohy: založeno '+np+' nových')}}catch(e){log('Opakované úlohy: '+e.message)}
 try{var S=await collect();SNAP=S;var M=metrics(S);log('Obnoveno: '+M.open.length+' otevřených, '+M.over.length+' po termínu, '+M.uk+' úloh ke schválení');
 if(a.hlidac&&M.over.length>0&&M.over.length!=LASTOV){var msg='Po termínu: '+M.over.length+' případů'+(M.soon.length?', do 3 dnů '+M.soon.length:'');toast(msg,'prehled');log('Hlídač: '+msg);if(a.notif&&window.Notification&&Notification.permission=='granted'){try{new Notification('ELZA Asistent',{body:msg})}catch(e){}}}
