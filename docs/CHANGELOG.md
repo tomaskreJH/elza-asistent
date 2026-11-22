@@ -1,3 +1,9 @@
+## 0.39.0 (2026-11-22)
+- Nový modul Moje práce → Lidé a školení (lidi.js): týmy (EPS, PZTS, OZO PO, revizní technici), člověk může být ve více týmech; katalog školení (technologie, výrobce, ústředna) s platností v měsících; matice školení se semaforem, hlídač platnosti (30/60/90/180 dní); obsazení zakázky: tým, požadované kvalifikace, počet lidí, nabídka kandidátů podle platných školení a volnosti, právě jeden vedoucí akce na zakázku, vědomé přidělení i bez kvalifikace.
+- Limity SharePointu: čtení po dávkách 500 podle Id (filtr Id gt, nikdy celý seznam najednou), indexované sloupce Title, Tym, Email, Typ, PlatnostDo; nic se nemaže (Stav=zruseno).
+- Zápis kódem omezen na pět seznamů modulu na webu Zakázky ELZA. Tlačítko Založit chybějící seznamy (právo správy webu).
+- Návod doplněn, test test/lidi-demo.py, verze 0.39.0 (root i stable).
+
 ## 0.38.1 (2026-11-22)
 - Oprava: dávkový zápis používá sloveso MERGE, pojistka proti neshodě klíčů, modul vrací HTML.
 
