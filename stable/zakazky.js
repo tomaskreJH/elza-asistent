@@ -10,6 +10,7 @@ async function zput(l,id,b){var W=[SP+"/AllSites.Write"],t;try{t=(await m.acquir
 function dtx(d){return d?new Date(d).toLocaleDateString("cs-CZ"):""}
 async function zload(f){if(!f&&ZD.length&&Date.now()-ZT<3e5)return ZD;ZD=await zget("Zakazka","$select=Id,Title,Nazev,Typ,Faze,Objednatel,Misto,CoTed,CoDal,Publikace,Odpovedny/Title,Odpovedny/EMail&$expand=Odpovedny&$orderby=Id desc");ZT=Date.now();return ZD}
 function nk(c){return String(c||"").trim().toLowerCase()}
+window.zakazkyDalsiKod=async function(){await zload(true);var y=new Date().getFullYear(),mx=0,re=new RegExp("^Z-"+y+"-(\\d+)$","i");ZD.forEach(function(x){var q=re.exec(String(x.Title||"").trim());if(q&&+q[1]>mx)mx=+q[1]});return "Z-"+y+"-"+String(mx+1).padStart(3,"0")};
 window.zakazkyFind=async function(c){if(!nk(c))return null;await zload();return ZD.filter(function(x){return nk(x.Title)==nk(c)})[0]||null};
 window.zakazkyOpen=function(c){window._zakOpen=c;go("zakazky")};
 window.zakazkyZaloz=async function(o){var W=[SP+"/AllSites.Write"],t;try{t=(await m.acquireTokenSilent({scopes:W,account:acc})).accessToken}catch(e){t=(await m.acquireTokenPopup({scopes:W,account:acc})).accessToken}
