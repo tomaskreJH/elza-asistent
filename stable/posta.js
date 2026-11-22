@@ -3,7 +3,7 @@
 var R=["Mail.Read"],W=["Mail.ReadWrite"],SN=["Mail.Send"];
 var SEL="id,subject,from,toRecipients,receivedDateTime,sentDateTime,isRead,hasAttachments,bodyPreview,conversationId,flag,categories,webLink,isDraft";
 var WK=[["inbox","Doručená pošta"],["drafts","Koncepty"],["sentitems","Odeslaná pošta"],["archive","Archiv"],["junkemail","Nevyžádaná pošta"],["deleteditems","Odstraněná pošta"]];
-var S={fo:null,kids:{},open:{},cur:"inbox",alias:"inbox",name:"Doručená pošta",view:"vlakna",f:"vse",od:"",q:"",pole:"",dod:"",ddo:"",kat:"",pc:"",all:false,items:[],next:null,sel:null,thr:[],w:null,wd:1,err:"",c:null,busy:false,tord:GR.ls("elzaVlaknoRazeni")=="stare"?"stare":"nove"};
+var S={fo:null,kids:{},open:{},cur:"inbox",alias:"inbox",name:"Doručená pošta",view:"vlakna",f:"vse",od:"",q:"",pole:"",dod:"",ddo:"",kat:"",pc:"",all:false,items:[],next:null,sel:null,thr:[],w:null,wd:1,err:"",c:null,busy:false,tord:GR.ls("elzaVlaknoRazeni")=="stare"?"stare":"nove",lord:GR.ls("elzaSeznamRazeni")||"nove"};
 var enc=encodeURIComponent;
 function clean(t){return String(t||"").replace(/["\\]/g," ").trim()}
 function dshort(d){if(!d)return "";var x=new Date(d),n=new Date();return x.toDateString()==n.toDateString()?GR.hm(x):x.toLocaleDateString("cs-CZ",x.getFullYear()==n.getFullYear()?{day:"numeric",month:"numeric"}:{day:"numeric",month:"numeric",year:"2-digit"})}
@@ -96,6 +96,11 @@ function groups(){
     var k=S.view=="vlakna"&&x.conversationId?x.conversationId:x.id;
     if(!g[k]){g[k]={k:k,m:[x]};o.push(g[k])}else g[k].m.push(x);
   });
+  function lt(q){return Math.max.apply(null,q.m.map(function(x){return +new Date(dt(x))||0}))}
+  function un(q){return q.m.some(function(x){return !x.isRead})?1:0}
+  if(S.lord=="stare")o.sort(function(a,b){return lt(a)-lt(b)});
+  else if(S.lord=="nepr")o.sort(function(a,b){return un(b)-un(a)||lt(b)-lt(a)});
+  else o.sort(function(a,b){return lt(b)-lt(a)});
   return o;
 }
 function rl(){
@@ -117,7 +122,7 @@ function tb(){
   var po=[["","Všude"],["from","Od"],["to","Komu"],["subject","Předmět"],["body","Text zprávy"],["attachment","Příloha"]];
   return '<div class=mp-tb><div class=row><input id=mq placeholder="Hledat (Enter)" value="'+esc(S.q)+'"><select id=mpo>'+po.map(function(p){return '<option value="'+p[0]+'"'+(S.pole==p[0]?" selected":"")+'>'+p[1]+'</option>'}).join("")+'</select><button class=g data-a=go>Hledat</button></div>'+
   '<div class=row><select id=mf>'+[["vse","Všechny"],["nepr","Nepřečtené"],["priloha","S přílohou"],["oznac","Označené"]].map(function(p){return '<option value='+p[0]+(S.f==p[0]?" selected":"")+'>'+p[1]+'</option>'}).join("")+'</select><input id=mod placeholder="Odesílatel" value="'+esc(S.od)+'"><select id=mpc><option value="">Všechny případy</option><option value="_bez"'+(S.pc=="_bez"?" selected":"")+'>Bez případu</option><option value="_s"'+(S.pc=="_s"?" selected":"")+'>Jen přiřazená</option>'+pcs().map(function(c){return '<option'+(S.pc==c?" selected":"")+'>'+esc(c)+'</option>'}).join("")+'</select><select id=mk><option value="">Štítek</option>'+cats().map(function(c){return '<option'+(S.kat==c?" selected":"")+'>'+esc(c)+'</option>'}).join("")+'</select></div>'+
-  '<div class=row><input type=date id=md1 value="'+esc(S.dod)+'" title="Od data" ><input type=date id=md2 value="'+esc(S.ddo)+'" title="Do data" ><button class="g'+(S.view=="vlakna"?" on":"")+'" data-a=vw data-w=vlakna>Vlákna</button><button class="g'+(S.view=="zpravy"?" on":"")+'" data-a=vw data-w=zpravy>Zprávy</button><label style="font-size:12px"><input type=checkbox id=mall'+(S.all?" checked":"")+' style="min-width:0"> všechny složky</label></div>'+
+  '<div class=row><input type=date id=md1 value="'+esc(S.dod)+'" title="Od data" ><input type=date id=md2 value="'+esc(S.ddo)+'" title="Do data" ><button class="g'+(S.view=="vlakna"?" on":"")+'" data-a=vw data-w=vlakna>Vlákna</button><button class="g'+(S.view=="zpravy"?" on":"")+'" data-a=vw data-w=zpravy>Zprávy</button><select id=mlord title="Řazení seznamu">'+[["nove","Nejnovější nahoře"],["stare","Nejstarší nahoře"],["nepr","Nepřečtené první"]].map(function(p){return '<option value='+p[0]+(S.lord==p[0]?" selected":"")+'>'+p[1]+'</option>'}).join("")+'</select><label style="font-size:12px"><input type=checkbox id=mall'+(S.all?" checked":"")+' style="min-width:0"> všechny složky</label></div>'+
   '<div class=row><button class=b data-a=new>Nová zpráva</button><button class=g data-a=refresh>Obnovit</button><button class=g data-a=sig>Podpis</button></div></div>';
 }
 
@@ -345,6 +350,7 @@ async function onClick(e){
 function onChange(e){
   var el=e.target;
   if(el.dataset&&el.dataset.a=="wd"){S.wd=+el.value;return reloadList()}
+  if(el.id=="mlord"){S.lord=el.value;GR.ls("elzaSeznamRazeni",S.lord);return rl()}
   if(el.id=="mf"||el.id=="mk"||el.id=="mpc"||el.id=="mall"||el.id=="md1"||el.id=="md2"||el.id=="mpo"){readTb();if(el.id=="mf"||el.id=="mk"||el.id=="mpc")return rl();return reloadList()}
 }
 function onKey(e){if(e.key=="Enter"&&(e.target.id=="mq"||e.target.id=="mod")){readTb();reloadList()}}
