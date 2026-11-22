@@ -1,6 +1,6 @@
 /* ELZA Asistent: modul Zakázky (web Zakázky ELZA): přehled zakázek, čekání, milníky, schválení, dotazy, kontakty zákazníka. Řízení publikace do portálu zákazníka (PortalELZA2) a potvrzení spolupracujících osob zákazníka odpovědným pracovníkem. Nic se nezveřejní bez výslovného potvrzení. */
 (function(){
-var ZS="/sites/ZakazkyELZA",PORTAL=SP+"/sites/PortalELZA2",ZD=[],ZT=0,SEL=null,DET={};
+var ZS="/sites/ZakazkyELZA",PORTAL="https://elzycz.sharepoint.com/sites/PortalELZA2",ZD=[],ZT=0,SEL=null,DET={};
 var PUB={interni:"interní",k_publikaci:"ke zveřejnění",publikovano:"zveřejněno",stazeno:"stažené"};
 function zb(l){return SP+ZS+"/_api/web/lists/getbytitle('"+l+"')/items"}
 async function zget(l,q){await token(false);var r=await fetch(zb(l)+"?$top=500&"+q,{headers:{Authorization:"Bearer "+tok,Accept:"application/json;odata=nometadata"}});if(!r.ok)throw new Error(l+": HTTP "+r.status);return (await r.json()).value}

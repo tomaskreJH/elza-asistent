@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.24.1 (2026-11-22)
+- **Oprava (nalezeno ostrým testem živého webu)**: `zakazky.js` při načtení padal na `SP is not defined` (modul Zakázky se nezaregistroval); adresa portálu je nyní pevná konstanta. Verze 0.24.1, `?v=31`.
+
 ## 0.24.0 (2026-11-22)
 - **Sdílené menu dokončeno (BL-084 až BL-087, druhá část)**: vlastník nastavuje pořadí skupin i pořadí položek ve skupině šipkami ↑ ↓; tabulka Skupiny ukazuje i nově vytvořené skupiny. Zamčené položky (Můj den, Návod, Moje menu, Správa) zůstávají na místě. Nové funkce `build`, pole `iord`.
 - **Odolnost**: `norm0` při načtení zahodí poškozená data, neznámé položky a špatné typy, aplikace se kvůli chybnému seznamu NastaveniAplikace nerozbije.
