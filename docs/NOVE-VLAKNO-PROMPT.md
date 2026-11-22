@@ -1,2 +1,1 @@
-Elzo, pokračuj na ELZA asistentovi (repozitář tomaskreJH/elza-asistent, verze 0.30.0). Řiď se docs/POSTUP-VYVOJ.md, načti docs/STAV.md a docs/DALSI-KROKY.md a udělej bez dotazů a přerušení minimálně 3 - 5 kroků z DALSI-KROKY.md, které jde udělat. Na konci vše aktualizuj včetně Návodu, nasaď, vlákno uzavři a dej mi stejně krátký prompt dalšího vlákna.
-Přihlášení a povolení máš, pamatuj, že chci skvělou aplikaci, odzkoušenou a funkční.
+Elzo, pokračuj na ELZA asistentovi (repozitář tomaskreJH/elza-asistent, verze 0.31.0). Řiď se docs/POSTUP-VYVOJ.md, načti docs/STAV.md a docs/DALSI-KROKY.md a udělej bez dotazů a přerušení minimálně 3–5 kroků z DALSI-KROKY.md. Na konci vše aktualizuj včetně Návodu, nasaď, vlákno uzavři a dej mi stejně krátký prompt dalšího vlákna.

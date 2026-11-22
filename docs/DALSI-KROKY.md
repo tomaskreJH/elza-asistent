@@ -1,7 +1,6 @@
-# Další kroky (po 0.30.0)
-1. Ostré založení zakázky z případu na testovacím případu; předem v Power Automate zkontrolovat příjemce e-mailu toku T9 Kontrola ELZY (aby nešel kolegům ani zákazníkovi). Kód navrhne aplikace sama.
-2. Mobil: ověřit Poštu a Kalendář na skutečném telefonu, synchronizaci nastavení mezi PC a telefonem.
-3. Automatika při zavřené aplikaci: tok Power Automate nebo plánovaná relace nad frontou Ulohy a připojením pošty (po schválení).
-4. Zákaznický portál: Nabídky a zápis osob zákazníka (nejdřív upřesnit seznamy a sloupce na PortalELZA2).
-5. Copilot: odeslat správci docs/ZADOST-COPILOT.md a po souhlasu otestovat volání.
-6. Úklid testovacích dat: případ WORK-20261122-0001 a e-mail „TEST E2E WORK-20261122-0001“.
+# Další kroky (po 0.31.0)
+1. Ostré založení zakázky z případu na testovacím případu: nejdřív ty v Power Automate zkontroluj příjemce toku T9 (jen tvé adresy), pak aplikace založí.
+2. Skutečný telefon: otevři aplikaci, přihlas se, ověř synchronizaci nastavení (emulace už prošla).
+3. Schválit docs/AUTOMATIKA-NAVRH.md (tok T11 nebo plánovaná relace) a docs/NABIDKY-NAVRH.md (seznamy zákaznického portálu); po ano je aplikace založí.
+4. Copilot: odeslat správci docs/ZADOST-COPILOT.md a po souhlasu otestovat volání.
+5. Úklid testovacích dat (případ WORK-20261122-0001, e-mail TEST E2E): trvalé smazání jen po tvém ano.

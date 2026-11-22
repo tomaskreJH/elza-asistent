@@ -69,3 +69,8 @@
 - **Opakované úlohy pro agenty** (`ulohy.js`): volba Jednorázově/denně/týdně/měsíčně, značka `[OPAKOVAT:…]` v zadání; po schválení nebo zamítnutí a uplynutí periody založí aplikace další úlohu ve stavu Nová (`window.ulohyRepeat`, volá ji Automatika, přepínač „Opakované úlohy“, výchozí zapnuto). Bez nového seznamu a bez placeného API. Plánované spouštění při zavřené aplikaci zůstává nevyřešeno (viz DALSI-KROKY).
 - **Návod**: tlačítko „Uložit návod do SharePointu“ vygeneruje NAVOD.md z kapitol (jeden zdroj pravdy) a zapíše ho do Shared Documents/Projekt; při neúspěchu soubor stáhne. Nové kapitoly Opakované úlohy, Menu, Návod ke stažení.
 - Ověřeno: syntaxe, smoke test v ukázkovém režimu bez chyb. Neověřeno: zápis NAVOD.md do SharePointu (cesta knihovny), ostrá data, volání AI.
+
+## 0.31.0 (2026-11-22)
+- Povýšení případu na zakázku: potvrzení nově vyžaduje kontrolu příjemců toku T9 (jen testovací adresy u testovacího případu). Návod aktualizován.
+- Ověřeno v živé aplikaci (vestavěný prohlížeč, 375 px, účet Tomáš Krejčí): Pošta, Kalendář, Případy, Zakázky bez přetékání a bez chyb JS.
+- Nové návrhy k odsouhlasení: docs/NABIDKY-NAVRH.md (seznamy Nabidky a OsobyZakaznika), docs/AUTOMATIKA-NAVRH.md (tok T11 / plánovaná relace).
