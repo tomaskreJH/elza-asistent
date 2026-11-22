@@ -32,3 +32,5 @@ Firmy (2026-11-22): seznam Firma na webu ZakazkyELZA je kopie číselníku cisel
 0.39.1: portál čte živá data z PortalELZA2 (Prehled, Milniky, Cekani, Dokumenty; v nich jsou zatím testovací zakázky TEST-001 až 003, ZK0001, DEMO-001). Přidány Dokumenty a Postupy. Přihlášení skutečného zákazníka stále neověřeno (ověřeno účtem pracovníka).
 
 0.40.0: portál má Kontroly a revize, Dokumenty podle životního cyklu (předávací balíček), Pomoc a poruchy (e-mail), Postupy; Správa → Publikace do portálu. Help desk jako zápis do seznamu (Pozadavek, tok T13) čeká na rozhodnutí o oprávnění portálu. Seznam Kontroly na PortalELZA2 se zakládá tlačítkem v aplikaci (zatím nezaloženo). Seznamy Lidé a školení také nezaloženy.
+
+0.41.0: upozornění zákazníka na nevyhovující výsledek (portál + Publikace do portálu). Navazuje docs/NABIDKY-NAVRH.md (seznam Nabidky, osoby zákazníka): nabídky zpracovává obchodní oddělení, aplikace je jen eviduje; automatické založení poptávky (případ) a upozornění e-mailem čekají na rozhodnutí o oprávnění portálu a tok T13.

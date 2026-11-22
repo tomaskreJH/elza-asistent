@@ -1,3 +1,8 @@
+## 0.41.0 (2026-11-22)
+- Nevyhovující výsledek kontroly, zkoušky nebo revize: v portálu výrazné upozornění na Přehledu a červená karta v Kontroly a revize se závadami, doporučením a postupem (odstranění, nabídka, opakovaná kontrola). Tlačítka: Požádat o nabídku na odstranění (připraví e-mail kontaktu; nabídku zpracuje obchodní oddělení), Zkopírovat zadání pro AI zákazníka nebo dodavatele (vysvětlení, postup, otázky, text poptávky).
+- Aplikace: Publikace do portálu doplněna o Výsledek (vyhovuje, s výhradami, nevyhovuje), Závady a Doporučení; nevyhovující nelze publikovat bez doporučení. Sloupce Vysledek, Zavady, Doporuceni v seznamu Kontroly (PortalELZA2).
+- Postupy doplněny, test rozšířen, verze 0.41.0.
+
 ## 0.40.0 (2026-11-22)
 - Portál: nové části Kontroly a revize (termíny se semaforem, protokol ke stažení podle kódu kontroly, všechny protokoly), Dokumenty rozdělené podle životního cyklu zakázky (Schválená dokumentace, Návody, Protokoly, Předávací dokumentace) s ukazatelem předávacího balíčku, Pomoc a poruchy (formulář s přípravou e-mailu kontaktu, nic se nezapisuje). Postupy doplněny.
 - Aplikace: Správa → Publikace do portálu (portalpub.js): kontroly ze seznamu Kontrola (Zakázky ELZA, jen čtení) se po zaškrtnutí zveřejní do seznamu Kontroly na PortalELZA2; zápis kódem omezen na tento seznam, nic se nemaže.
