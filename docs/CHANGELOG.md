@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.25.0 (2026-11-22)
+- **Moje menu, vlastník**: nová sekce „Kdo co vidí (role)“ (matice položek a rolí z RoleAplikace, jen čtení, odkaz do Správy). Funkce `rmFill`.
+- Ostrý test živého webu po přihlášení: 30 modulů načteno bez chyby JS, Zakázky, Přehled (velín, portál: 2 zakázky, 1 osoba ke schválení), Správa a Moje menu ověřeny na ostrých datech. Uložení sdíleného menu do SharePointu neověřeno (zápis blokován), seznam NastaveniAplikace zatím neexistuje.
+- Návod: kapitola Menu doplněna. Verze 0.25.0, `?v=32`.
+
 ## 0.24.1 (2026-11-22)
 - **Oprava (nalezeno ostrým testem živého webu)**: `zakazky.js` při načtení padal na `SP is not defined` (modul Zakázky se nezaregistroval); adresa portálu je nyní pevná konstanta. Verze 0.24.1, `?v=31`.
 

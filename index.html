@@ -23,10 +23,10 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 10px
 </style>
 <aside></aside><main id=main></main>
 <script src="https://alcdn.msauth.net/browser/2.38.2/js/msal-browser.min.js"></script>
-<script>(function(){var k="stable";try{var q=/[?&]kanal=(beta|stable)/.exec(location.search);k=q?q[1]:(localStorage.getItem("elzaKanal")||"stable");if(q)localStorage.setItem("elzaKanal",k)}catch(e){}window.KANAL=k;var d=k=="beta"?"":"stable/";var L=["moduly","osobni","mapa","hledat","trh","ucet","sprava","zakazky","centrum"];{if(/[?&]demo=1/.test(location.search))L.push("demo");L.push("ai","ulohy","chat","graf","posta","kalendar","pripady","roadmapa")}L.forEach(function(n){var dd=n=="demo"?"":d;document.write('<script src="'+dd+n+'.js?v=31"><\/script>')})})()</script>
+<script>(function(){var k="stable";try{var q=/[?&]kanal=(beta|stable)/.exec(location.search);k=q?q[1]:(localStorage.getItem("elzaKanal")||"stable");if(q)localStorage.setItem("elzaKanal",k)}catch(e){}window.KANAL=k;var d=k=="beta"?"":"stable/";var L=["moduly","osobni","mapa","hledat","trh","ucet","sprava","zakazky","centrum"];{if(/[?&]demo=1/.test(location.search))L.push("demo");L.push("ai","ulohy","chat","graf","posta","kalendar","pripady","roadmapa")}L.forEach(function(n){var dd=n=="demo"?"":d;document.write('<script src="'+dd+n+'.js?v=32"><\/script>')})})()</script>
 <script>
 const CID="7822640e-2537-46eb-8db1-830d38fff665",TEN="35c5f53c-ce94-445a-b877-54965e3be6d3",HOME="https://tomaskrejh.github.io/elza-asistent/",SP="https://elzycz.sharepoint.com",SITE="/sites/ELZA-asistent",SC=[SP+"/AllSites.Read"];
-const VER="0.24.1";const $=s=>document.querySelector(s);
+const VER="0.25.0";const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const POP=window.opener&&/[#?&](code|error|state)=/.test(location.hash+location.search);
 let OPEN={};try{OPEN=JSON.parse(localStorage.getItem("elzaMenu")||"{}")}catch(e){}
