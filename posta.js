@@ -139,7 +139,7 @@ async function openThread(k){
 function renderRead(){
   var r=$("#mpr");if(!r)return;
   if(!S.thr.length){r.innerHTML='<p class=note>Vyberte zprávu.</p>';return}
-  r.innerHTML='<h2 style="margin:0 0 10px">'+esc(S.thr[0].m.subject||"(bez předmětu)")+'</h2>'+(window.PCASE&&window.PCASE[S.thr[0].m.conversationId]?'<p><span class=mp-cat>Případ '+esc(window.PCASE[S.thr[0].m.conversationId])+'</span> <span class=note>pošta probíhala nad tímto případem</span></p>':'')+S.thr.map(function(t,i){return '<div class=mp-m id=mm'+i+'>'+blk(t,i)+'</div>'}).join("");
+  r.innerHTML='<h2 style="margin:0 0 10px">'+esc(S.thr[0].m.subject||"(bez předmětu)")+'</h2>'+(window.PCASE&&window.PCASE[S.thr[0].m.conversationId]?'<p><span class=mp-cat>Případ '+esc(window.PCASE[S.thr[0].m.conversationId])+'</span> <span class=note>pošta probíhala nad tímto případem</span></p>':'')+'<div class=mp-a><button class=g data-a=aiv>AI analýza vlákna</button></div><div id=mpai class=note></div>'+S.thr.map(function(t,i){return '<div class=mp-m id=mm'+i+'>'+blk(t,i)+'</div>'}).join("");
   S.thr.forEach(function(t,i){frame(i)});
 }
 function blk(t,i){
@@ -325,6 +325,10 @@ async function onClick(e){
   if(a=="sig"){var d=GR.modal('<h2>Podpis</h2><textarea id=sg style="min-height:120px">'+esc(sign())+'</textarea><p class=note>Podpis se vkládá do nových zpráv a odpovědí. Uložen jen v tomto prohlížeči.</p><div class=gm-r><button class=b id=ok>Uložit</button><button class=g id=x>Zavřít</button></div>');d.querySelector("#x").onclick=GR.closeModal;d.querySelector("#ok").onclick=function(){GR.ls("elzaPodpis",d.querySelector("#sg").value);GR.closeModal()};return}
   if(a=="tg"){var t=S.thr[i];t.open=!t.open;var m=document.getElementById("mm"+i);m.innerHTML=blk(t,i);frame(i);if(t.open&&!t.b)loadBody(i);return}
   if(a=="img"){S.thr[i].img=true;document.getElementById("mm"+i).innerHTML=blk(S.thr[i],i);frame(i);return}
+  if(a=="aiv"){var bx=document.getElementById("mpai");if(!window.AI){bx.textContent="AI modul není načten.";return}bx.textContent="AI pracuje…";
+    try{var parts=S.thr.slice(-8).map(function(t){var f=t.m.from&&t.m.from.emailAddress||{},h=t.b&&t.b.body&&t.b.body.content||"";if(t.b&&t.b.body&&t.b.body.contentType=="html"){var d=document.createElement("div");d.innerHTML=h.replace(/<(style|script)[\s\S]*?<\/\1>/gi,"");h=d.textContent||""}h=(h||t.m.bodyPreview||"").replace(/\s+/g," ").trim().slice(0,2500);return "Od: "+(f.name||f.address||"")+" ("+dfull(dt(t.m))+")\n"+h}).join("\n---\n");
+      var rr=await AI.ask("AG-POSTA",{task:"Shrň toto e-mailové vlákno ve 3 větách, napiš kdo čeká na čí odpověď a navrhni jeden konkrétní další krok. Nic neodesílej, jen navrhni.",data:"Předmět: "+(S.thr[0].m.subject||"")+"\n"+parts,max:700});
+      bx.style.whiteSpace="pre-wrap";bx.textContent=rr+"\n(Návrh AI, zkontrolujte. Nic se neodeslalo.)"}catch(er){bx.textContent="AI: "+er.message}return}
   if(a=="at")return download(i,el.dataset.id);
   if(a=="rp")return startCompose("reply",i);
   if(a=="ra")return startCompose("all",i);
