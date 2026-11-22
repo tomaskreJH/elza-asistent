@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.24.0 (2026-11-22)
+- **Sdílené menu dokončeno (BL-084 až BL-087, druhá část)**: vlastník nastavuje pořadí skupin i pořadí položek ve skupině šipkami ↑ ↓; tabulka Skupiny ukazuje i nově vytvořené skupiny. Zamčené položky (Můj den, Návod, Moje menu, Správa) zůstávají na místě. Nové funkce `build`, pole `iord`.
+- **Odolnost**: `norm0` při načtení zahodí poškozená data, neznámé položky a špatné typy, aplikace se kvůli chybnému seznamu NastaveniAplikace nerozbije.
+- **Test**: `test/menu.test.js` (spuštění `node test/menu.test.js`) ověřuje výchozí menu, pořadí skupin a položek, přesuny, očistu dat, přejmenování i chování editoru.
+- Návod: kapitola Menu doplněna o pořadí. Verze 0.24.0, `?v=30`.
+- Neověřeno bez přihlášení: zápis a čtení seznamu NastaveniAplikace v SharePointu.
+
 ## 0.23.0 (2026-11-22)
 - **Vazby případ, zakázka a portál ELZA**: v detailu případu blok „Zakázka a portál“ (fáze, stav portálu, tlačítka Otevřít zakázku a portál zákazníka); v detailu zakázky odkaz zpět na případ, odkaz na portál (`/sites/PortalELZA2`) a nový Pohled zákazníka (náhled zveřejněných položek, počet osob s přístupem). Seznam zakázek ukazuje počet zakázek ke zveřejnění. Nové funkce: `zakazkyFind`, `zakazkyOpen`, `zakazkyBox`, `pripadOtevri`.
 - **Přehled (velín)**: dlaždice Zakázky na portálu, Ke zveřejnění, Osoby zákazníka ke schválení; v seznamu Vyžaduje pozornost upozornění z portálu.
