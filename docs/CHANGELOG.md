@@ -74,3 +74,7 @@
 - Povýšení případu na zakázku: potvrzení nově vyžaduje kontrolu příjemců toku T9 (jen testovací adresy u testovacího případu). Návod aktualizován.
 - Ověřeno v živé aplikaci (vestavěný prohlížeč, 375 px, účet Tomáš Krejčí): Pošta, Kalendář, Případy, Zakázky bez přetékání a bez chyb JS.
 - Nové návrhy k odsouhlasení: docs/NABIDKY-NAVRH.md (seznamy Nabidky a OsobyZakaznika), docs/AUTOMATIKA-NAVRH.md (tok T11 / plánovaná relace).
+
+## 0.32.0 (2026-11-22)
+- Grafický průvodce pruvodce.html (e-mail → případ → zakázka → Gantt → portál → smluvní zákazník), kapitola v Návodu.
+- docs/PORTAL-ARCHITEKTURA.md: entity, vazby, dva režimy portálu, help desk, Gantt ve dvou úrovních, toky T12 a T13, pořadí realizace.

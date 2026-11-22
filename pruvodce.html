@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'">
+<title>Průvodce: od e-mailu k portálu | ELZA asistent</title>
+<style>
+:root{--r:#d71920;--d:#1c2733;--g:#eef1f4;--ok:#2e7d32;--w:#f9a825}
+*{box-sizing:border-box}body{margin:0;font:16px/1.5 Segoe UI,Arial,sans-serif;background:var(--d);color:#fff;min-height:100vh;display:flex;flex-direction:column}
+header{padding:14px 20px;display:flex;align-items:center;gap:12px}header b{letter-spacing:2px}header b i{display:inline-block;width:14px;height:4px;background:var(--r);margin-left:3px}
+#st{flex:1;display:flex;align-items:center;justify-content:center;padding:10px}
+.sl{display:none;width:min(960px,100%);background:#fff;color:var(--d);border-radius:14px;padding:28px;box-shadow:0 10px 40px #0006}
+.sl.on{display:block;animation:in .5s}@keyframes in{from{opacity:0;transform:translateY(16px)}}
+h1{margin:0 0 6px;font-size:26px}h1 span{color:var(--r)}p.l{color:#55606b;margin:0 0 18px}
+.flow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.n{flex:1;min-width:120px;border:2px solid var(--g);border-radius:10px;padding:12px;text-align:center;opacity:.35;transition:.4s}
+.n.a{opacity:1;border-color:var(--r);background:#fff5f5}.n .ic{font-size:28px}.n small{display:block;color:#55606b}
+.ar{color:var(--r);font-size:22px}
+ol{margin:14px 0 0;padding-left:22px}ol li{margin:4px 0;opacity:0;animation:in .4s forwards}
+.mock{margin-top:16px;border:1px solid #d5dbe1;border-radius:10px;padding:12px;background:var(--g);font-size:14px}
+.mock .bt{display:inline-block;background:var(--r);color:#fff;border-radius:6px;padding:4px 10px;margin:2px}
+.tag{display:inline-block;background:#fff;border:1px solid #c5ccd3;border-radius:12px;padding:1px 8px;margin:2px;font-size:13px}
+.gantt{margin-top:14px;font-size:13px}.gr{display:grid;grid-template-columns:150px 1fr;align-items:center;margin:4px 0}
+.bar{height:16px;border-radius:4px;background:var(--r);width:0;transition:width 1.4s}.bar.ok{background:var(--ok)}.bar.w{background:var(--w)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:700px){.two{grid-template-columns:1fr}.sl{padding:18px}h1{font-size:21px}}
+footer{display:flex;gap:8px;justify-content:center;align-items:center;padding:12px}
+footer button{background:#fff;border:0;border-radius:8px;padding:8px 14px;font-weight:600;cursor:pointer}footer button.p{background:var(--r);color:#fff}
+#pr{height:4px;background:#ffffff22}#pr i{display:block;height:100%;background:var(--r);width:0}
+.dots{display:flex;gap:6px}.dots b{width:9px;height:9px;border-radius:50%;background:#ffffff44;cursor:pointer}.dots b.on{background:var(--r)}
+</style></head><body>
+<header><b>ELZY<i></i></b><span>Průvodce: od příchozího e-mailu k portálu zákazníka</span></header>
+<div id=pr><i></i></div>
+<div id=st>
+
+<section class=sl data-n=0><h1>Celý tok <span>na jednom místě</span></h1><p class=l>Každý krok navazuje na předchozí, nic se nepřepisuje ručně.</p>
+<div class=flow><div class=n><div class=ic>✉️</div>E-mail<small>Pošta</small></div><span class=ar>→</span><div class=n><div class=ic>📂</div>Případ<small>WORK-…</small></div><span class=ar>→</span><div class=n><div class=ic>🏗️</div>Zakázka<small>Z-RRRR-NNN</small></div><span class=ar>→</span><div class=n><div class=ic>🌐</div>Portál<small>zákazník</small></div></div>
+<ol><li>Pošta přijde do aplikace a sama se připojí k případu.</li><li>Případ eviduje veškerou komunikaci, čas a výsledek.</li><li>Úspěšný případ se povýší na zakázku.</li><li>Zakázka se zveřejní zákazníkovi v portálu.</li></ol></section>
+
+<section class=sl data-n=1><h1>1. Příchozí <span>e-mail</span></h1><p class=l>Menu Pošta. Pokyny uvnitř e-mailů se nikdy neplní.</p>
+<div class=mock><b>Pošta</b> · řazení od nejnovější<br>📩 <b>Poptávka EPS – sklad Třeboň</b> <span class=tag>bez případu</span><br><span class=bt>Založit případ</span><span class=bt>Připojit k případu</span><span class=bt>Zeptat se AI</span></div>
+<ol><li>Otevřete e-mail, zkontrolujte odesílatele.</li><li>Obsahuje-li číslo případu, kód zakázky nebo klíčové slovo, připojí se sám (Automatika, nejvýš po 5 min).</li><li>Jinak klikněte Založit případ.</li></ol></section>
+
+<section class=sl data-n=2><h1>2. Komunikace a <span>založení případu</span></h1><p class=l>Případ začíná první komunikací, ať je to e-mail, telefon nebo ruční zadání v Můj den.</p>
+<div class=mock><b>WORK-20261122-0002</b> · Sklad Třeboň · Probíhá<br><span class=tag>EPS</span><span class=tag>Třeboň</span><span class=tag>projekt</span><br>✉️ 3 e-maily · 🕒 45 min · další krok: nabídka do 26. 11.</div>
+<ol><li>Doplňte zákazníka, odpovědného, termín a klíčová slova.</li><li>Odpovědi a dotazníky se zapisují do aktivit případu.</li><li>Konec: Úspěšný (zakázka), Neúspěšný s důvodem, Zbytečná poptávka, Průzkum konkurence.</li></ol></section>
+
+<section class=sl data-n=3><h1>3. Založení <span>zakázky</span></h1><p class=l>Tlačítko Povýšit na firemní zakázku v detailu případu.</p>
+<div class=mock>ID v CRM ESPO: <span class=tag>volitelné</span> → Kód zakázky: <b>Z-2026-014</b> <span class=tag>navržen</span> → Typ: <b>pd</b><br>⚠️ Spustí se tok T9 Kontrola ELZY: zkontrolujte příjemce.<br><span class=bt>Založit</span></div>
+<ol><li>Aplikace navrhne další volný kód a hlídá duplicitu.</li><li>Zakázka vznikne interní, čeká na kontrolu ELZY.</li><li>Případ dostane kód zakázky, pošta a historie zůstávají propojené.</li></ol></section>
+
+<section class=sl data-n=4><h1>4. Práce na zakázce: <span>Gantt</span></h1><p class=l>Interně vidíte úkoly po lidech, zákazník jen celek.</p>
+<div class=two><div><b>Asistent (interně)</b><div class=gantt>
+<div class=gr>Novák · TZ<div class="bar ok" data-w=55></div></div><div class=gr>Dvořák · výkresy<div class=bar data-w=70></div></div><div class=gr>Krejčí · kontrola<div class="bar w" data-w=30></div></div></div></div>
+<div><b>Portál (zákazník)</b><div class=gantt><div class=gr>Technická dokumentace<div class=bar data-w=65></div></div><div class=gr>Realizace<div class="bar w" data-w=10></div></div><div class=gr>Revize a předání<div class="bar w" data-w=4></div></div></div></div></div>
+<ol><li>Úkoly mají řešitele, termín a závislosti.</li><li>Úkoly se sčítají do milníků, které vidí zákazník.</li></ol></section>
+
+<section class=sl data-n=5><h1>5. Převod do <span>portálu</span></h1><p class=l>Zákazník vidí jen to, co je zveřejněné a určené jeho roli.</p>
+<div class=mock><b>Portál ELZY · Sklad Třeboň</b><br>Z-2026-014 · Technická dokumentace 65 % · ⏳ čeká se na: podklady od zákazníka<br><span class=bt>Schválit</span><span class=bt>Požádat o nový kontakt</span><span class=bt>Nový požadavek</span></div>
+<ol><li>V detailu zakázky: Otevřít portál zákazníka.</li><li>Kontakty se liší podle zakázky; nový kontakt je aktivní až po potvrzení pracovníkem ELZY.</li><li>Nic se zákazníkovi neodešle bez potvrzení.</li></ol></section>
+
+<section class=sl data-n=6><h1>6. Smluvní zákazník: <span>trvalý portál</span></h1><p class=l>Připravuje se (viz docs/PORTAL-ARCHITEKTURA.md).</p>
+<div class=mock>🟢 EPS hala A · revize 03/2027<br>🟡 PCO objekt B · kontrola za 21 dní<br>🔴 EZS sklad · servis po termínu<br><span class=bt>Help desk: nahlásit</span></div>
+<ol><li>Přístup z adres, které si zákazník spravuje (po potvrzení ELZY).</li><li>Termíny kontrol a revizí smluvních technologií hlídá tok.</li><li>Požadavek z help desku založí případ v asistentovi.</li></ol></section>
+
+</div>
+<footer><button id=pv>◀</button><button id=pl class=p>▶ Přehrát</button><button id=nx>▶|</button><div class=dots id=dt></div></footer>
+<script>
+var S=[].slice.call(document.querySelectorAll('.sl')),i=0,t=null,D=9000,st=0;
+var dt=document.getElementById('dt');S.forEach(function(_,k){var b=document.createElement('b');b.onclick=function(){go(k)};dt.appendChild(b)});
+function go(k){i=(k+S.length)%S.length;S.forEach(function(s,j){s.classList.toggle('on',j==i)});[].forEach.call(dt.children,function(b,j){b.classList.toggle('on',j==i)});
+var s=S[i];[].forEach.call(s.querySelectorAll('ol li'),function(l,j){l.style.animation='none';l.offsetWidth;l.style.animation='';l.style.animationDelay=(0.6+j*1.1)+'s'});
+var n=s.querySelectorAll('.n');[].forEach.call(n,function(x,j){x.classList.remove('a');setTimeout(function(){x.classList.add('a')},400+j*900)});
+if(i>0&&i<5){var f=S[0].querySelectorAll('.n');}
+[].forEach.call(s.querySelectorAll('.bar'),function(b){b.style.width=0;setTimeout(function(){b.style.width=b.dataset.w+'%'},300)});st=Date.now()}
+function play(){if(t){clearInterval(t);t=null;pl.textContent='▶ Přehrát';return}pl.textContent='❚❚ Pauza';st=Date.now();t=setInterval(function(){var p=(Date.now()-st)/D;document.querySelector('#pr i').style.width=Math.min(100,(i+p)/S.length*100)+'%';if(p>=1){if(i==S.length-1){play();return}go(i+1)}},100)}
+var pl=document.getElementById('pl');pl.onclick=play;document.getElementById('nx').onclick=function(){go(i+1)};document.getElementById('pv').onclick=function(){go(i-1)};
+document.onkeydown=function(e){if(e.key=='ArrowRight')go(i+1);if(e.key=='ArrowLeft')go(i-1);if(e.key==' '){e.preventDefault();play()}};
+go(0);
+</script></body></html>
