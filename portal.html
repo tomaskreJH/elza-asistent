@@ -1,0 +1,24 @@
+<!doctype html><html lang=cs><meta charset=utf-8><meta http-equiv=Content-Security-Policy content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://login.microsoftonline.com https://elzycz.sharepoint.com; frame-src 'self' https://login.microsoftonline.com; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name=referrer content=no-referrer><meta name=viewport content="width=device-width,initial-scale=1"><title>Portál zákazníka ELZY</title><link rel=icon href=icon.svg>
+<style>
+:root{--a:#d9261c;--b:#102c54;--bg:#f5f6f8;--p:#fff;--f:#1d2a2e;--m:#5f6b6e;--l:rgba(41,49,51,.14);--ok:#1b8a4b;--w:#b35c00;--r:#b00020}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--f);font:15px/1.55 Montserrat,"Segoe UI",system-ui,sans-serif}
+header{background:var(--b);color:#fff;display:flex;align-items:center;gap:14px;padding:12px 20px;flex-wrap:wrap}
+header img{max-height:34px;max-width:140px;background:#fff;border-radius:6px;padding:3px}.wm{font-weight:700;letter-spacing:.16em;font-size:20px}.wm i{display:inline-block;width:.55em;height:.11em;background:var(--a);margin-left:3px}
+nav{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}nav button{background:none;border:0;color:#cfdaea;padding:7px 12px;border-radius:9px;font:inherit;cursor:pointer}nav button.on,nav button:hover{background:rgba(255,255,255,.16);color:#fff}
+main{max-width:1060px;margin:0 auto;padding:22px 18px 60px}h1{font-size:24px;margin:0 0 4px}h2{font-size:17px;margin:26px 0 10px}.note{color:var(--m)}
+.hero{background:var(--p);border:1px solid var(--l);border-left:6px solid var(--a);border-radius:14px;padding:18px 20px;margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--p);border:1px solid var(--l);border-radius:14px;padding:14px 16px}.card b.n{font-size:30px;display:block;line-height:1.1}
+.tag{display:inline-block;font-size:12px;padding:1px 9px;border-radius:99px;border:1px solid var(--l);color:var(--m)}.ok{color:var(--ok)}.w{color:var(--w)}.r{color:var(--r)}
+.zk{background:var(--p);border:1px solid var(--l);border-radius:14px;padding:16px 18px;margin-bottom:14px}.zk h3{margin:0 0 2px;font-size:17px}
+.tl{position:relative;height:64px;margin:14px 6px 6px;border-top:3px solid var(--l)}.tl .d{position:absolute;top:-9px;width:14px;height:14px;background:var(--a);transform:rotate(45deg);border-radius:2px}.tl .d.ok{background:var(--ok)}.tl .d.late{background:var(--r)}
+.tl .t{position:absolute;top:10px;font-size:11px;color:var(--m);transform:translateX(-50%);width:120px;text-align:center;line-height:1.25}.tl .today{position:absolute;top:-14px;height:62px;border-left:2px solid var(--a);opacity:.5}
+table{width:100%;border-collapse:collapse;background:var(--p);border:1px solid var(--l);border-radius:12px;overflow:hidden}th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--l);vertical-align:top}th{font-size:12px;color:var(--m)}
+button.b{background:var(--a);color:#fff;border:0;border-radius:10px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer}
+.demo{background:#fff3cd;color:#664d03;padding:6px 20px;font-size:13px}
+@media(max-width:640px){nav{margin-left:0;width:100%}main{padding:14px 12px 60px}}
+</style>
+<div id=demo class=demo hidden>Ukázkový režim: vymyšlená data, nic se nečte ze SharePointu.</div>
+<header><span id=logo><span class=wm>ELZY<i></i></span></span><b id=cn></b><nav id=nav></nav></header>
+<main id=main>Načítám…</main>
+<script src=msal-browser.min.js></script><script src=portal.js></script>
