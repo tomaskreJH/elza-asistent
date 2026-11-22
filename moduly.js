@@ -44,9 +44,9 @@ async function hash(t){var b=await crypto.subtle.digest("SHA-256",new TextEncode
 var ALL=[],LOG=[],ACT=null,PEND=null,MINE=false;
 function rola(){return window.PRO&&window.PRO.role||""}
 function jeVlastnik(){return rola()=="vlastnik"}
-function jeJednatel(){return rola()=="reditel"}
+function jeJednatel(){return rola()=="jednatel"}
 function nextVer(v){var a=String(v||"1.0").split(".");var n=parseInt(a[a.length-1],10);if(isNaN(n))return String(v)+".1";a[a.length-1]=n+1;return a.join(".")}
-function lvlTxt(v){return v.lvl==2?"schváleno vlastníkem i jednatelem":v.lvl==1?"schváleno vlastníkem, čeká na jednatele":"návrh"}
+function lvlTxt(v){return v.lvl==2?"schváleno vlastníkem i jednatelem":v.lvl==1?"schváleno vlastníkem":"návrh"}
 function nowTxt(){return new Date().toLocaleString("cs-CZ")}
 function clr(){for(var k in cache)delete cache[k]}
 async function wtok(){var W=[SP+"/AllSites.Write"];try{return (await m.acquireTokenSilent({scopes:W,account:acc})).accessToken}catch(e){return (await m.acquireTokenPopup({scopes:W,account:acc})).accessToken}}
@@ -78,7 +78,7 @@ async function pravidla(){
   var h="<h1>Pravidla používání AI</h1>",V=ACT||ALL[ALL.length-1];
   if(!ACT)h+="<p class=a>Zatím není žádná schválená verze. AI se nespouští.</p>";
   else{h+="<p>Platná verze <b>"+esc(ACT.Verze)+"</b> "+tags([lvlTxt(ACT)])+"</p>";
-    if(ACT.lvl==1)h+="<p class=note>Schválil vlastník"+(ACT.ow?" ("+esc(ACT.ow.Title)+", "+esc(ACT.ow.Cas)+")":"")+". Do schválení jednatelem platí jako prozatímní.</p>";
+    if(ACT.lvl==1)h+="<p class=note>Schválil vlastník"+(ACT.ow?" ("+esc(ACT.ow.Title)+", "+esc(ACT.ow.Cas)+")":"")+". Pravidla platí; schválení jednatelem se zatím nevyžaduje.</p>";
     h+=MINE?"<p>Máte potvrzeno. AI je pro vás povolena.</p>":"<p class=a>Bez vašeho potvrzení se AI nespouští.</p><button class=b data-pa=pot>Potvrzuji, že jsem pravidla přečetl(a) a budu je dodržovat</button>";
     if(ACT.lvl==1&&jeJednatel())h+=" <button class=b data-pa=jed>Schvaluji jako jednatel</button>";
     h+="<p id=ps class=note></p><div class=card><pre style=\"white-space:pre-wrap;font:inherit\">"+esc(ACT.Text)+"</pre></div><p class=note>"+esc(ACT.Poznamka)+"</p>"}

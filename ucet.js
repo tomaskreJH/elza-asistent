@@ -5,7 +5,7 @@ var ALW=["prehled","pruvodce","pravidla","ainast","ulohy"];
 var ROLES=[],PRIST={},ME=null,JT="";
 window.PRO=null;
 function csv(s){return String(s||"").split(",").map(function(x){return x.trim()}).filter(Boolean)}
-function guess(jt){var t=String(jt||"").toLowerCase();var m=[["ředitel|jednatel","reditel"],["obchod","obchod"],["marketing","marketing"],["projekt","projektant"],["technik|montér|servis","technik"],["ozo|bozp|požár|revize","ozo"],["vedouc|manažer","vedouci"],["vývoj|programát","vyvojar"]];for(var i=0;i<m.length;i++){if(new RegExp(m[i][0]).test(t))return m[i][1]}return "ostatni"}
+function guess(jt){var t=String(jt||"").toLowerCase();var m=[["ředitel","reditel"],["jednatel","jednatel"],["obchod","obchod"],["marketing","marketing"],["projekt","projektant"],["technik|montér|servis","technik"],["ozo|bozp|požár|revize","ozo"],["vedouc|manažer","vedouci"],["vývoj|programát","vyvojar"]];for(var i=0;i<m.length;i++){if(new RegExp(m[i][0]).test(t))return m[i][1]}return "ostatni"}
 async function gme(){try{var t=(await m.acquireTokenSilent({scopes:["User.Read"],account:acc})).accessToken;var r=await fetch("https://graph.microsoft.com/v1.0/me?$select=jobTitle",{headers:{Authorization:"Bearer "+t}});return r.ok?((await r.json()).jobTitle||""):""}catch(e){return ""}}
 window.profilInit=async function(){if(window._prDone)return;window._prDone=true;
 try{ROLES=await list("RoleAplikace","Title,Nazev,Moduly,Zakazano,Popis");(await list("Pristup","Title,Citlivost")).forEach(function(x){PRIST[x.Title]=x.Citlivost||""});
@@ -14,7 +14,7 @@ var rid=(ME&&ME.Role)||"ostatni";var R=ROLES.filter(function(r){return r.Title==
 var allowed=R.Moduly=="*"?null:csv(R.Moduly);var chosen=ME&&ME.Modules?csv(ME.Modules):null;var mods=allowed;if(chosen)mods=allowed?chosen.filter(function(x){return allowed.indexOf(x)>=0}):chosen;
 window.PRO={role:rid,nazev:R.Nazev,allowed:allowed,mods:mods,zak:csv(R.Zakazano),agenti:ME&&ME.Agenti?csv(ME.Agenti):null,beta:(ME&&ME.Beta=="ano")||rid=="vlastnik"||rid=="vyvojar",hotovo:!!(ME&&ME.PruvodceHotov=="ano"),potvrzenaRole:!!(ME&&ME.Role)};
 window._first=!window.PRO.hotovo};
-window.hide=function(id){var p=window.PRO;if(!p||!p.mods)return false;if(ALW.indexOf(id)>=0)return false;return p.mods.indexOf(id)<0};
+window.hide=function(id){var p=window.PRO;if(id=="sprava")return !(p&&p.role=="vlastnik");if(!p||!p.mods)return false;if(ALW.indexOf(id)>=0)return false;return p.mods.indexOf(id)<0};
 window.skillOk=function(x){var p=window.PRO;if(!p)return true;var t=PRIST[x.Title];return !t||p.zak.indexOf(t)<0};
 window.agentOk=function(x){var p=window.PRO;return !p||!p.agenti||p.agenti.indexOf(x.Title)>=0};
 window.kanalBtn=function(){if(window.KANAL=="beta"||(window.PRO&&window.PRO.beta))return "<br><button class=nav data-v=_kanal>Přepnout na "+(window.KANAL=="beta"?"stabilní":"beta")+" verzi</button>";return ""};
