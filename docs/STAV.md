@@ -1,4 +1,4 @@
 # Stav ELZA asistenta
-Verze 0.25.0 (root i stable). Moduly: Můj den, Případy, Zakázky, Pošta, Kalendář, Úlohy pro agenty, AI (nastavení, záznam, pravidla, chat, směrování, Elzáčci), Znalosti, Sledování (Přehled-velín, Roadmapa, Procesy, Stav systému, Hledat, Automatika), Správa (vč. Moje menu, sdílené menu a přehled rolí), Nápověda; opakované úlohy a export Návodu. Vazby případ, zakázka a portál ELZA (PortalELZA2).
-Ostře ověřeno 2026-11-22 (přihlášení, živá data): všech 30 modulů, Zakázky, Přehled, Správa, Moje menu.
-Čeká: uložení sdíleného menu (seznam NastaveniAplikace zatím neexistuje, zápis vyžaduje tvé potvrzení), skutečné volání AI, souhlas správce pro Copilot.
+Verze 0.26.0 (root i stable). Moduly: Můj den, Případy, Zakázky, Pošta, Kalendář, Úlohy pro agenty, AI, Znalosti, Sledování (Přehled-velín, Roadmapa, Procesy, Stav systému, Hledat, Automatika), Správa (Moje menu, sdílené menu, přehled rolí), Nápověda. Mobilní rozhraní a PWA, osobní nastavení synchronizované přes SharePoint.
+Ověřeno: nasazení 0.26.0 živě; mobilní vzhled (pošta, kalendář, menu) v demo režimu na šířce 390 px. Ostrá data 2026-11-22 ověřena v 0.25.0; v 0.26.0 NEOVĚŘENA (prohlížeč v tomto vlákně byl přihlášen testovacím účtem bez přístupu do SharePointu ELZY).
+Čeká: první uložení nastavení vlastníkem (založí seznam NastaveniAplikace, ověřit čtení na druhém zařízení), skutečné volání AI, souhlas správce pro Copilot, mobilní úprava Případů, Zakázek a dalších modulů po ostrém testu na telefonu.

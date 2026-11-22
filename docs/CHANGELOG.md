@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.26.0 (2026-11-22)
+- Mobilní rozhraní: horní lišta, spodní navigace (Můj den, Případy, Pošta, Kalendář, Více), výsuvné menu, dotykové prvky, safe-area; pošta na mobilu po jednom okně (složky, seznam, čtení, zpět); PWA (manifest, ikona, přidání na plochu).
+- Menu přehlednější: skupiny jako rozbalovací sekce s počtem položek, výchozí rozbalena jen aktuální skupina.
+- Nový nastaveni.js: osobní nastavení (téma, menu, podpis, řazení pošty, kalendář, limit AI) se synchronizuje přes SharePoint (seznam NastaveniAplikace, řádek user:e-mail, vyhrává novější změna), obnova při návratu do aplikace. Kanál a API klíče zůstávají na zařízení.
+- Návod: kapitola Mobil, tablet a více zařízení.
+
 ## 0.25.0 (2026-11-22)
 - **Moje menu, vlastník**: nová sekce „Kdo co vidí (role)“ (matice položek a rolí z RoleAplikace, jen čtení, odkaz do Správy). Funkce `rmFill`.
 - Ostrý test živého webu po přihlášení: 30 modulů načteno bez chyby JS, Zakázky, Přehled (velín, portál: 2 zakázky, 1 osoba ke schválení), Správa a Moje menu ověřeny na ostrých datech. Uložení sdíleného menu do SharePointu neověřeno (zápis blokován), seznam NastaveniAplikace zatím neexistuje.
