@@ -134,7 +134,7 @@ async function cfgSave(c){await cfgEnsureList();var body={Title:'menu',Hodnota:J
  for(var k in cache)delete cache[k];CFG=norm0(c);window._cfgj=JSON.stringify(CFG);applyCfg(CFG);nav()}
 var ED=null;
 function menuEd(){var off=[];try{off=JSON.parse(localStorage.getItem('elzaMenuOff')||'[]')}catch(e){}var own=window.PRO&&window.PRO.role=='vlastnik';
- var o='<h1>Moje menu</h1><p class=note>Odškrtněte položky, které chcete v menu vidět. Platí jen pro vás v tomto prohlížeči a jde jen o vzhled, přístup řídí role. Skupiny svinete kliknutím na jejich název.</p>';
+ var o='<h1>Moje menu</h1><p class=note>Odškrtněte položky, které chcete v menu vidět. Platí jen pro vás na všech vašich zařízeních (ukládá se do SharePointu) a jde jen o vzhled, přístup řídí role. Skupiny svinete kliknutím na jejich název. Synchronizace: '+esc((window.NAST&&window.NAST.stav)||'nedostupná')+'.</p>';
  MENU.forEach(function(g){o+='<div class=cx-sec><h3>'+esc(g[0])+'</h3>';g[1].forEach(function(i){if(i[0].charAt(0)=='-'){o+='<p class=note style="margin:8px 0 2px"><b>'+esc(i[1])+'</b></p>';return}var lock=LOCK.indexOf(i[0])>=0;o+='<label class=cx-sw><input type=checkbox data-mo="'+i[0]+'"'+(off.indexOf(i[0])<0?' checked':'')+(lock?' disabled':'')+'><span>'+esc(i[1])+(lock?' <span class=note>(vždy zobrazeno)</span>':'')+(CFG.hide.indexOf(i[0])>=0?' <span class=note>(firma skryla)</span>':'')+'</span></label>'});o+='</div>'});
  o+='<div class=bar><button class=b data-mr=1>Obnovit vše (výchozí menu)</button></div>';
  if(own){var B=baseMenu();if(!ED)ED=JSON.parse(JSON.stringify(CFG));var gn=build(ED).map(function(g){return g.n});
