@@ -1,3 +1,7 @@
+## 0.36.3 (2026-11-22)
+- Ostré ověření: Smlouvy a kontroly (3 kontroly z kalendáře Kostka, semafor) a Gantt běží na živých datech bez chyb v konzoli.
+- Nový podklad docs/TOK-T12-KROKY.md (postup založení toku T12).
+
 # Změny
 ## 0.36.2 (2026-11-22)
 - Oprava: milníky v Ganttu byly obří (kolize názvu třídy s oknem v graf.js).
