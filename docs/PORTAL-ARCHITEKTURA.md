@@ -56,3 +56,6 @@ Práva řídí SharePoint (jedna skupina na zákazníka, osoba zakázky jen na p
 3. Portál: přihlášení z adres, osoby a Schválení, Gantt milníků.
 4. Help desk + T13.
 5. Nabídky (evidence, cenu vede obchod).
+
+## 9. Návrh toku T12 Termíny kontrol (pro Power Automate)
+Spouštěč: každý pracovní den 7:30. Kroky: 1) Získat položky seznamu Kontrola (Zakázky ELZA) s PristiTermin do 30 dní od dneška. 2) Pro každou: zjistit Odpovedny a technologii. 3) 30 a 7 dní před termínem poslat e-mail odpovědnému pracovníkovi (jen interní adresy). 4) Po termínu poslat upozornění odpovědnému a vedoucímu. Zákazníkovi se nic neposílá, dokud to Tomáš výslovně nezapne (samostatná podmínka v toku). Semafor v aplikaci (modul Smlouvy a kontroly) čte stejná data, takže tok a aplikace se nerozejdou.
