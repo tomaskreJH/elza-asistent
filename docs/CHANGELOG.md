@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.27.0 (2026-11-22)
+- Mobil: široké tabulky (Případy, Zakázky, Správa, Roadmapa a další) se na šířce do 800 px automaticky zobrazí jako karty s popisky sloupců; na počítači beze změny.
+
 ## 0.26.0 (2026-11-22)
 - Mobilní rozhraní: horní lišta, spodní navigace (Můj den, Případy, Pošta, Kalendář, Více), výsuvné menu, dotykové prvky, safe-area; pošta na mobilu po jednom okně (složky, seznam, čtení, zpět); PWA (manifest, ikona, přidání na plochu).
 - Menu přehlednější: skupiny jako rozbalovací sekce s počtem položek, výchozí rozbalena jen aktuální skupina.
