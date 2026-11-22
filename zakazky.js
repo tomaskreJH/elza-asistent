@@ -1,0 +1,34 @@
+/* ELZA Asistent: modul Zakázky (web Zakázky ELZA): přehled zakázek, čekání, milníky, schválení, dotazy, kontakty zákazníka. Řízení publikace do portálu zákazníka (PortalELZA2) a potvrzení spolupracujících osob zákazníka odpovědným pracovníkem. Nic se nezveřejní bez výslovného potvrzení. */
+(function(){
+var ZS="/sites/ZakazkyELZA",ZD=[],SEL=null,DET={};
+var PUB={interni:"interní",k_publikaci:"ke zveřejnění",publikovano:"zveřejněno",stazeno:"stažené"};
+function zb(l){return SP+ZS+"/_api/web/lists/getbytitle('"+l+"')/items"}
+async function zget(l,q){await token(false);var r=await fetch(zb(l)+"?$top=500&"+q,{headers:{Authorization:"Bearer "+tok,Accept:"application/json;odata=nometadata"}});if(!r.ok)throw new Error(l+": HTTP "+r.status);return (await r.json()).value}
+async function zput(l,id,b){var W=[SP+"/AllSites.Write"],t;try{t=(await m.acquireTokenSilent({scopes:W,account:acc})).accessToken}catch(e){t=(await m.acquireTokenPopup({scopes:W,account:acc})).accessToken}
+ var h={Authorization:"Bearer "+t,Accept:"application/json;odata=nometadata","Content-Type":"application/json;odata=nometadata","X-HTTP-Method":"MERGE","If-Match":"*"};
+ var r=await fetch(zb(l)+"("+id+")",{method:"POST",headers:h,body:JSON.stringify(b)});if(!r.ok)throw new Error(l+": HTTP "+r.status)}
+function dtx(d){return d?new Date(d).toLocaleDateString("cs-CZ"):""}
+async function zakazky(){
+ ZD=await zget("Zakazka","$select=Id,Title,Nazev,Typ,Faze,Objednatel,Misto,CoTed,CoDal,Publikace,Odpovedny/Title,Odpovedny/EMail&$expand=Odpovedny&$orderby=Id desc");
+ return "<h1>Zakázky</h1><p class=note>Interní pohled na web Zakázky ELZA. Zákazník vidí jen to, co je zveřejněné a určené jeho roli (portál zákazníka).</p><div class=bar><input id=q placeholder=\"Hledat kód, název, objednatele\"></div><div id=tb></div><div id=dt></div>"}
+function list(){var q=($("#q").value||"").toLowerCase();var r=ZD.filter(function(x){return !q||[x.Title,x.Nazev,x.Objednatel].join(" ").toLowerCase().indexOf(q)>=0});
+ $("#tb").innerHTML="<p class=note>"+r.length+" zakázek</p><table><tr><th>Kód<th>Název<th>Fáze<th>Odpovědný<th>Portál<th></tr>"+r.map(function(x){return "<tr><td>"+esc(x.Title)+"<td>"+esc(x.Nazev)+"<br><span class=note>"+esc(x.Objednatel)+"</span><td>"+esc(x.Faze)+"<td>"+esc(x.Odpovedny&&x.Odpovedny.Title)+"<td>"+tags([PUB[x.Publikace]||x.Publikace])+"<td><button class=b data-z="+x.Id+">Detail</button></tr>"}).join("")+"</table>"}
+function tbl(h,rows){return rows.length?"<table><tr>"+h.map(function(c){return "<th>"+c}).join("")+"</tr>"+rows.join("")+"</table>":"<p class=note>Nic.</p>"}
+async function detail(id){var z=ZD.filter(function(x){return x.Id==id})[0];SEL=z;var box=$("#dt");box.innerHTML="<p class=note>Načítám…</p>";
+ var f="$filter=KodZakazky/Title eq '"+z.Title+"'&$expand=KodZakazky";
+ try{var a=await Promise.all([zget("Cekani","$select=Id,NaKoho,OdKdy,TerminOdpovedi,Stav,Blokuje,Publikace,KodZakazky/Title&"+f),zget("Milniky","$select=Id,Title,TerminPlan,TerminOdhad,Stav,Publikace,KodZakazky/Title&"+f),zget("Schvaleni","$select=Id,Dokument,VerzeDokumentu,Schvalil,Kdy,Vysledek,KodZakazky/Title&"+f),zget("Dotazy","$select=Id,Title,Od,Komu,Termin,Stav,KodZakazky/Title&"+f),zget("Kontakty","$select=Id,Title,Firma,Role,Email,Odpovednost,StavKontaktu,NavrhlKdo,PotvrdilKdo,KodZakazky/Title&"+f)])}catch(e){box.innerHTML="<p class=r>"+esc(e.message)+"</p>";return}
+ DET={c:a[0],m:a[1],s:a[2],d:a[3],k:a[4]};
+ var mine=window.PRO&&(window.PRO.role=="vlastnik"||(acc.username||"").toLowerCase()==((z.Odpovedny&&z.Odpovedny.EMail)||"").toLowerCase());
+ box.innerHTML="<h2>"+esc(z.Title)+" "+esc(z.Nazev)+"</h2><p>Co teď: "+esc(z.CoTed)+"<br>Co dál: "+esc(z.CoDal)+"</p><p>Portál zákazníka: <b>"+esc(PUB[z.Publikace]||z.Publikace)+"</b> "+(mine?"<select id=pb>"+Object.keys(PUB).map(function(k){return "<option value="+k+(k==z.Publikace?" selected":"")+">"+PUB[k]+"</option>"}).join("")+"</select> <button class=b data-a=pub>Změnit</button>":"<span class=note>(mění odpovědný pracovník)</span>")+"</p><p id=zs class=note></p>"
+ +"<h3>Čeká se</h3>"+tbl(["Na koho","Od","Termín","Stav","Blokuje"],DET.c.map(function(x){return "<tr><td>"+esc(x.NaKoho)+"<td>"+dtx(x.OdKdy)+"<td>"+dtx(x.TerminOdpovedi)+"<td>"+esc(x.Stav)+"<td>"+esc(x.Blokuje)+"</tr>"}))
+ +"<h3>Milníky</h3>"+tbl(["Milník","Plán","Odhad","Stav"],DET.m.map(function(x){return "<tr><td>"+esc(x.Title)+"<td>"+dtx(x.TerminPlan)+"<td>"+dtx(x.TerminOdhad)+"<td>"+esc(x.Stav)+"</tr>"}))
+ +"<h3>Schválení</h3>"+tbl(["Dokument","Verze","Schválil","Kdy","Výsledek"],DET.s.map(function(x){return "<tr><td>"+esc(x.Dokument)+"<td>"+esc(x.VerzeDokumentu)+"<td>"+esc(x.Schvalil)+"<td>"+dtx(x.Kdy)+"<td>"+esc(x.Vysledek)+"</tr>"}))
+ +"<h3>Dotazy</h3>"+tbl(["Dotaz","Od","Komu","Termín","Stav"],DET.d.map(function(x){return "<tr><td>"+esc(x.Title)+"<td>"+esc(x.Od)+"<td>"+esc(x.Komu)+"<td>"+dtx(x.Termin)+"<td>"+esc(x.Stav)+"</tr>"}))
+ +"<h3>Osoby zákazníka</h3><p class=note>Zákazník navrhuje spolupracující osoby, přístup k portálu jim dá až odpovědný pracovník ELZY po potvrzení.</p>"+tbl(["Osoba","Firma","Role","E-mail","Odpovědnost","Stav",""],DET.k.map(function(x){return "<tr><td>"+esc(x.Title)+"<td>"+esc(x.Firma)+"<td>"+esc(x.Role)+"<td>"+esc(x.Email)+"<td>"+esc(x.Odpovednost)+"<td>"+esc(x.StavKontaktu)+(x.NavrhlKdo?"<br><span class=note>navrhl "+esc(x.NavrhlKdo)+"</span>":"")+"<td>"+(mine&&x.StavKontaktu=="navrzen"?"<button class=b data-a=ok data-k="+x.Id+">Potvrdit</button> ":"")+(mine&&x.StavKontaktu!="deaktivovan"?"<button class=g data-a=off data-k="+x.Id+">Deaktivovat</button>":"")+"</tr>"}))}
+async function act(a,k){var zs=function(t){$("#zs").textContent=t},now=new Date().toISOString(),me=acc.username;
+ try{if(a=="pub"){var v=$("#pb").value;if(v=="publikovano"&&!confirm("Zveřejnit zakázku "+SEL.Title+" na portálu zákazníka? Zákazník uvidí položky určené jeho roli."))return;await zput("Zakazka",SEL.Id,{Publikace:v});SEL.Publikace=v;zs("Uloženo: "+PUB[v]);list()}
+  else if(a=="ok"){await zput("Kontakty",k,{StavKontaktu:"potvrzen",PotvrdilKdo:me,PotvrdilKdy:now});zs("Osoba potvrzena.");detail(SEL.Id)}
+  else if(a=="off"){if(!confirm("Deaktivovat přístup této osoby?"))return;await zput("Kontakty",k,{StavKontaktu:"deaktivovan",DeaktivovalKdo:me,DeaktivovalKdy:now});zs("Osoba deaktivována.");detail(SEL.Id)}}catch(e){zs("Nezapsalo se: "+e.message)}}
+function zM(){list();$("#q").oninput=list;$("#main").onclick=function(e){var d=e.target.dataset||{};if(d.z)detail(d.z);else if(d.a)act(d.a,d.k)}}
+window.MODS=window.MODS||{};window.MODS.zakazky=[zakazky,zM];
+})();
