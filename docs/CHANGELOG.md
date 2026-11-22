@@ -1,4 +1,6 @@
 # Změny
+## 0.36.2 (2026-11-22)
+- Oprava: milníky v Ganttu byly obří (kolize názvu třídy s oknem v graf.js).
 ## 0.36.1 (2026-11-22)
 - Oprava: v Poště na počítači (šířka nad 800 px) se nezobrazoval text zprávy (CSS skrývalo tělo zprávy); na telefonu to fungovalo.
 - Gantt přepracován: období 6 týdnů / 3 měsíce / 6 měsíců / vše (výchozí 3 měsíce), měsíce a týdny v záhlaví, svislá mřížka po týdnech, širší sloupec názvů, menší milníky s datem v samostatných řádcích, procenta v pruzích, najetí myší zvýrazní řádek.
