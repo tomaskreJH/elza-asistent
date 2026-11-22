@@ -1,3 +1,6 @@
+## 0.38.1 (2026-11-22)
+- Oprava: dávkový zápis používá sloveso MERGE, pojistka proti neshodě klíčů, modul vrací HTML.
+
 ## 0.38.0 (2026-11-22)
 - Nový modul Správa → Synchronizace firem (firma.js): porovná zdroj ciselnik_firma (jen čtení, plní ho SQL) se seznamem Firma na ZakazkyELZA podle klíče Title (GUID), přidá nové, aktualizuje změněné, zmizelé jen označí Firma_Deleted. Ochrana: nespustí se, když má zdroj méně než 50 % záznamů cíle (probíhá nahrávání ze SQL). Hlídání stability zdroje (otisk ID/Title v prohlížeči). Volitelná denní automatika, když je aplikace otevřená. Zápis je kódem omezen na web ZakazkyELZA.
 
