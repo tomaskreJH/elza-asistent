@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.23.0 (2026-11-22)
+- **Vazby případ, zakázka a portál ELZA**: v detailu případu blok „Zakázka a portál“ (fáze, stav portálu, tlačítka Otevřít zakázku a portál zákazníka); v detailu zakázky odkaz zpět na případ, odkaz na portál (`/sites/PortalELZA2`) a nový Pohled zákazníka (náhled zveřejněných položek, počet osob s přístupem). Seznam zakázek ukazuje počet zakázek ke zveřejnění. Nové funkce: `zakazkyFind`, `zakazkyOpen`, `zakazkyBox`, `pripadOtevri`.
+- **Přehled (velín)**: dlaždice Zakázky na portálu, Ke zveřejnění, Osoby zákazníka ke schválení; v seznamu Vyžaduje pozornost upozornění z portálu.
+- **Sdílené menu (BL-084 až BL-087, první část)**: vlastník v Moje menu přesouvá položky mezi skupinami, přejmenovává skupiny a skrývá položky všem; uloženo ve SharePointu (seznam NastaveniAplikace, založí se sám při prvním uložení). Role a moduly uživatelů se dál upravují ve Správě.
+- Návod: doplněny kapitoly Případy, Zakázky a portál, Menu. Verze 0.23.0, `?v=29`.
+- Ověřeno jen syntaxí a testem skládání menu; zápis do SharePointu a čtení zakázek čeká na ostrý test po přihlášení.
+
 ## 0.21.0 (2026-11-22)
 - Nový soubor `centrum.js` (root i `stable/`), index.html načítá modul `centrum`.
 - **Přehled (velín)**: živé dlaždice (otevřené případy, po termínu, do 3 dnů, schvalování, úlohy pro agenty, zakázky, blokující čekání, nepřečtená pošta), seznam „Vyžaduje pozornost“, rozložení případů podle výsledku, zakázky podle fáze, postup vývoje. Dlaždice jsou proklikávací. Nahrazuje původní Přehled (počty seznamů).
