@@ -1,3 +1,9 @@
+## 0.40.0 (2026-11-22)
+- Portál: nové části Kontroly a revize (termíny se semaforem, protokol ke stažení podle kódu kontroly, všechny protokoly), Dokumenty rozdělené podle životního cyklu zakázky (Schválená dokumentace, Návody, Protokoly, Předávací dokumentace) s ukazatelem předávacího balíčku, Pomoc a poruchy (formulář s přípravou e-mailu kontaktu, nic se nezapisuje). Postupy doplněny.
+- Aplikace: Správa → Publikace do portálu (portalpub.js): kontroly ze seznamu Kontrola (Zakázky ELZA, jen čtení) se po zaškrtnutí zveřejní do seznamu Kontroly na PortalELZA2; zápis kódem omezen na tento seznam, nic se nemaže.
+- Konvence složek: knihovna Dokumenty na PortalELZA2 / kód zakázky / Dokumentace, Navody, Protokoly, Predani; protokol začíná kódem kontroly.
+- Test test/portal-demo.py rozšířen, verze 0.40.0.
+
 ## 0.39.1 (2026-11-22)
 - Portál zákazníka: nové moduly Dokumenty (soubory ze složky zakázky v knihovně Dokumenty webu PortalELZA2, jen čtení, odkaz otevře SharePoint podle práv zákazníka) a Postupy (šest výchozích postupů: průběh zakázky, schvalování, kontrola a revize, nahlášení poruchy, předání, změny; doplnění z volitelného seznamu Postupy na PortalELZA2: Title, Popis, Kroky po řádcích, Publikace). Ukázkový režim doplněn. Test test/portal-demo.py.
 

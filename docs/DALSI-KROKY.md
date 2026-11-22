@@ -7,3 +7,4 @@
 6. Čeká na Tomáše: příjemci T9, skutečný telefon, ZADOST-COPILOT, úklid testovacích dat, připojit konektor Microsoft 365 v Claudovi (pak lze kalendář Kostka číst i odsud).
 7. Lidé a školení: naplnit týmy a lidi, zapsat školení; napojit semafor školení do Přehledu a Můj den (window.lidiStav už existuje); úkol Hlídače platnosti školení (založit úkol odpovědnému); návaznost obsazení na Gantt po lidech; synchronizace zaměstnanců z Implementace365 až po odzkoušení.
 8. Portál: po prvním používání upravit postupy a obsah (seznam Postupy na PortalELZA2), ověřit přihlášení skutečného zákazníka, ProfilZakaznika, Schválení a požadavky (help desk).
+9. Help desk jako zápis (seznam Pozadavek, tok T13 → Případ) po rozhodnutí o oprávnění portálu; automatické vytvoření podsložek zakázky (Dokumentace, Navody, Protokoly, Predani) při povýšení případu na zakázku; schvalování dokumentace zákazníkem (Vstup-Schvaleni); upozornění zákazníkovi na blížící se kontrolu (T4/T10).
