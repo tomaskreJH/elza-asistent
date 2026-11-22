@@ -8,3 +8,6 @@
 - `ucet.js`: moduly navod a automatika jsou vždy dostupné všem rolím. `pripady.js`: vystavena funkce `pripadyAutoLink`.
 - Menu: skupina Nápověda, položka Automatika ve Sledování, Přehled přejmenován na Přehled (velín).
 - Ověřeno: syntaxe všech souborů, smoke test v ukázkovém režimu (?demo=1) bez chyb. Neověřeno: ostrá data ze SharePointu a skutečné volání AI po přihlášení.
+
+## 0.21.1 (2026-11-22)
+- Role vlastnik vidí vždy všechny moduly (nová funkce hned zapnutá při vývoji); přidáno docs/POSTUP-VYVOJ.md a docs/NOVE-VLAKNO-PROMPT.md.
