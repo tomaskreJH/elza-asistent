@@ -34,3 +34,5 @@ Firmy (2026-11-22): seznam Firma na webu ZakazkyELZA je kopie číselníku cisel
 0.40.0: portál má Kontroly a revize, Dokumenty podle životního cyklu (předávací balíček), Pomoc a poruchy (e-mail), Postupy; Správa → Publikace do portálu. Help desk jako zápis do seznamu (Pozadavek, tok T13) čeká na rozhodnutí o oprávnění portálu. Seznam Kontroly na PortalELZA2 se zakládá tlačítkem v aplikaci (zatím nezaloženo). Seznamy Lidé a školení také nezaloženy.
 
 0.41.0: upozornění zákazníka na nevyhovující výsledek (portál + Publikace do portálu). Navazuje docs/NABIDKY-NAVRH.md (seznam Nabidky, osoby zákazníka): nabídky zpracovává obchodní oddělení, aplikace je jen eviduje; automatické založení poptávky (případ) a upozornění e-mailem čekají na rozhodnutí o oprávnění portálu a tok T13.
+
+0.41.1: semafor školení v Přehledu; rozhodnutí DEC-045 až DEC-047 v docs/ROZHODNUTI-2026-11-22.md.
