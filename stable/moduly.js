@@ -1,4 +1,4 @@
-/* ELZA Asistent: moduly Prompty, Postupy, Foto příkazy, Brand, Pravidla AI. Data se čtou ze SharePointu, aplikace nic neukládá (kromě potvrzení pravidel do seznamu PotvrzeniAI). */
+/* ELZA Asistent: moduly Prompty, Postupy, Foto příkazy, Brand, Pravidla AI. Data se čtou ze SharePointu, aplikace nic neukládá (kromě potvrzení a schvalování pravidel AI v seznamech PotvrzeniAI a PravidlaAI). */
 (function(){
 var SEL="Title,ElzaId,Kind,Skupina,Model,Stav,Data";
 async function rows(L){return (await list(L,SEL)).map(function(r){var d={};try{d=JSON.parse(r.Data||"{}")}catch(e){}r.d=d;return r})}
@@ -35,17 +35,70 @@ async function brand(){BR=(await rows("Brand")).map(function(x){return x.d});ret
 function brandT(){$("#tb").innerHTML=BR.map(function(b,bi){return "<div class=card><h3>"+esc(b.nazev)+" "+tags([b.asistent,b.stav,b.rezim])+"</h3><p><b>Slogan:</b> "+esc(b.slogan)+"</p><p><b>Sdělení:</b> "+esc(b.sdeleni)+"</p><p><b>Hlas:</b> "+esc(b.hlas)+"</p><p><b>Písmo:</b> "+esc(b.pismoNadpis)+" / "+esc(b.pismoText)+"</p><p class=note>"+esc(b.logoPoznamka)+"</p><div class=grid>"+(b.barvy||[]).map(function(c,ci){return "<div class=card><input type=color value=\""+esc(c.hex)+"\" data-b="+bi+" data-k="+ci+"><br><b>"+esc(c.n)+"</b> "+esc(c.hex)+"<br>"+tags([c.role])+"<br><span class=note>"+esc(c.pouziti)+"</span></div>"}).join("")+"</div><button class=b data-x="+bi+">Zkopírovat změny pro AI</button></div>"}).join("");
 $("#tb").oninput=function(e){var t=e.target;if(t.dataset&&t.dataset.b!=null){BR[t.dataset.b].barvy[t.dataset.k].hex=t.value}};
 $("#tb").onclick=function(e){var i=e.target.dataset&&e.target.dataset.x;if(i!=null){var b=BR[i];cp("Brand "+b.nazev+" (id "+b.id+"): nové barvy "+JSON.stringify(b.barvy.map(function(c){return {n:c.n,hex:c.hex,role:c.role}})));e.target.textContent="Zkopírováno"}}}
-/* PRAVIDLA AI a potvrzení */
+/* PRAVIDLA AI: verze, schvalování (vlastník, potom jednatel), úprava a potvrzení každým uživatelem.
+   Stavy: návrh (0) > schváleno vlastníkem (1, AI už běží, čeká na jednatele) > schváleno jednatelem (2).
+   Schválení vlastníkem se eviduje v seznamu PotvrzeniAI (Verze "x.y|vlastnik", Hash textu); jednatel nastaví Stav "schváleno".
+   Změna textu po schválení zneplatní schválení i všechna potvrzení (hlídá Hash). Nová verze = nové potvrzení všemi. */
 window.aiOk=function(){return !!window._aiOk};
 async function hash(t){var b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")}
-var PR=null;
-async function pravidla(){var r=await list("PravidlaAI","Title,Verze,Stav,Text,Poznamka");PR=r[r.length-1];if(!PR)return "<h1>Pravidla AI</h1><p class=note>Pravidla zatím nejsou vložena.</p>";
-var me=(acc.username||"").toLowerCase();var c=await list("PotvrzeniAI","Title,Verze,Hash,Cas");var mine=c.filter(function(x){return (x.Title||"").toLowerCase()==me&&x.Verze==PR.Verze});var ap=PR.Stav=="schváleno";window._aiOk=ap&&mine.length>0;
-var st=!ap?"<p class=a>Pravidla jsou ve stavu <b>"+esc(PR.Stav)+"</b>. Potvrzení se otevře po schválení vlastníkem a jednatelem. Do té doby se AI nespouští.</p>":mine.length?"<p>Pravidla verze "+esc(PR.Verze)+" jste potvrdil(a) "+esc(mine[0].Cas)+". AI je pro vás povolena.</p>":"<p class=a>Bez potvrzení se AI nespouští.</p><button class=b id=pot>Potvrzuji, že jsem pravidla přečetl(a) a budu je dodržovat</button><p id=ps class=note></p>";
-return "<h1>Pravidla používání AI</h1><p>Verze "+esc(PR.Verze)+" "+tags([PR.Stav])+"</p>"+st+"<div class=card><pre style=\"white-space:pre-wrap;font:inherit\">"+esc(PR.Text)+"</pre></div><p class=note>"+esc(PR.Poznamka)+"</p>"}
-function pravidlaM(){var b=$("#pot");if(!b)return;b.onclick=async function(){b.disabled=true;var ps=$("#ps");try{var W=[SP+"/AllSites.Write"];var t;try{t=(await m.acquireTokenSilent({scopes:W,account:acc})).accessToken}catch(e){t=(await m.acquireTokenPopup({scopes:W,account:acc})).accessToken}
-var h=await hash(PR.Text);var body={Title:acc.username,Verze:PR.Verze,Hash:h,Cas:new Date().toLocaleString("cs-CZ")};
-var r=await fetch(SP+SITE+"/_api/web/lists/getbytitle('PotvrzeniAI')/items",{method:"POST",headers:{Authorization:"Bearer "+t,Accept:"application/json;odata=nometadata","Content-Type":"application/json;odata=nometadata"},body:JSON.stringify(body)});
-if(!r.ok)throw new Error("HTTP "+r.status);for(var k in cache)delete cache[k];go("pravidla")}catch(e){b.disabled=false;ps.textContent="Potvrzení se nezapsalo: "+e.message}}}
+var ALL=[],LOG=[],ACT=null,PEND=null,MINE=false;
+function rola(){return window.PRO&&window.PRO.role||""}
+function jeVlastnik(){return rola()=="vlastnik"}
+function jeJednatel(){return rola()=="reditel"}
+function nextVer(v){var a=String(v||"1.0").split(".");var n=parseInt(a[a.length-1],10);if(isNaN(n))return String(v)+".1";a[a.length-1]=n+1;return a.join(".")}
+function lvlTxt(v){return v.lvl==2?"schváleno vlastníkem i jednatelem":v.lvl==1?"schváleno vlastníkem, čeká na jednatele":"návrh"}
+function nowTxt(){return new Date().toLocaleString("cs-CZ")}
+function clr(){for(var k in cache)delete cache[k]}
+async function wtok(){var W=[SP+"/AllSites.Write"];try{return (await m.acquireTokenSilent({scopes:W,account:acc})).accessToken}catch(e){return (await m.acquireTokenPopup({scopes:W,account:acc})).accessToken}}
+async function spw(lst,id,body){var t=await wtok(),h={Authorization:"Bearer "+t,Accept:"application/json;odata=nometadata","Content-Type":"application/json;odata=nometadata"};if(id){h["X-HTTP-Method"]="MERGE";h["If-Match"]="*"}
+var r=await fetch(SP+SITE+"/_api/web/lists/getbytitle('"+lst+"')/items"+(id?"("+id+")":""),{method:"POST",headers:h,body:JSON.stringify(body)});if(!r.ok)throw new Error(lst+": HTTP "+r.status);clr()}
+function logRow(ver,h){return spw("PotvrzeniAI",0,{Title:acc.username,Verze:ver,Hash:h,Cas:nowTxt()})}
+async function stav(){
+  ALL=(await list("PravidlaAI","Id,Title,Verze,Stav,Text,Poznamka")).slice().sort(function(a,b){return a.Id-b.Id});
+  LOG=await list("PotvrzeniAI","Title,Verze,Hash,Cas");
+  var me=(acc.username||"").toLowerCase();
+  for(var i=0;i<ALL.length;i++){var v=ALL[i];v.h=await hash(v.Text||"");v.ow=LOG.filter(function(x){return x.Verze==v.Verze+"|vlastnik"&&x.Hash==v.h})[0]||null;v.jed=v.Stav=="schváleno";v.lvl=v.jed?2:v.ow?1:0}
+  ACT=null;ALL.forEach(function(v){if(v.lvl>=1)ACT=v});
+  var last=ALL[ALL.length-1]||null;PEND=last&&last!==ACT&&(!ACT||last.Id>ACT.Id)?last:null;
+  MINE=!!ACT&&LOG.some(function(x){return (x.Title||"").toLowerCase()==me&&x.Verze==ACT.Verze&&x.Hash==ACT.h});
+  window._aiOk=!!ACT&&MINE;
+}
+async function potvrdit(){await logRow(ACT.Verze,ACT.h);window._aiOk=true;MINE=true;clr()}
+window.aiRefresh=async function(){if(window._aiOk||!acc||tok=="demo")return;try{await stav()}catch(e){}};
+window.aiCheck=async function(){
+  if(!acc||!tok||tok=="demo")return;try{await stav()}catch(e){return}
+  if(!ACT||MINE||window._aiPop==ACT.Verze+ACT.h)return;window._aiPop=ACT.Verze+ACT.h;
+  var d=GR.modal('<h2>Nová pravidla AI k potvrzení</h2><p>Verze <b>'+esc(ACT.Verze)+'</b> ('+esc(lvlTxt(ACT))+'). Dokud je nepotvrdíte, AI se u vás nespouští.</p><div class=card style="max-height:45vh;overflow:auto"><pre style="white-space:pre-wrap;font:inherit">'+esc(ACT.Text)+'</pre></div><p class=note id=pp></p><div class=gm-r><button class=b id=pok>Přečetl(a) jsem a budu je dodržovat</button><button class=g id=px>Později (AI zůstane vypnutá)</button></div>',true);
+  d.querySelector("#px").onclick=GR.closeModal;
+  d.querySelector("#pok").onclick=async function(){var b=this;b.disabled=true;try{await potvrdit();GR.closeModal();if(window.cur=="pravidla"||cur=="pravidla")go("pravidla")}catch(e){b.disabled=false;d.querySelector("#pp").textContent="Potvrzení se nezapsalo: "+e.message}}
+};
+async function pravidla(){
+  await stav();if(window.profilInit){try{await window.profilInit()}catch(e){}}
+  if(!ALL.length)return "<h1>Pravidla AI</h1><p class=note>Pravidla zatím nejsou vložena.</p>"+(jeVlastnik()?"<button class=b data-pa=edit>Vytvořit první verzi</button>":"");
+  var h="<h1>Pravidla používání AI</h1>",V=ACT||ALL[ALL.length-1];
+  if(!ACT)h+="<p class=a>Zatím není žádná schválená verze. AI se nespouští.</p>";
+  else{h+="<p>Platná verze <b>"+esc(ACT.Verze)+"</b> "+tags([lvlTxt(ACT)])+"</p>";
+    if(ACT.lvl==1)h+="<p class=note>Schválil vlastník"+(ACT.ow?" ("+esc(ACT.ow.Title)+", "+esc(ACT.ow.Cas)+")":"")+". Do schválení jednatelem platí jako prozatímní.</p>";
+    h+=MINE?"<p>Máte potvrzeno. AI je pro vás povolena.</p>":"<p class=a>Bez vašeho potvrzení se AI nespouští.</p><button class=b data-pa=pot>Potvrzuji, že jsem pravidla přečetl(a) a budu je dodržovat</button>";
+    if(ACT.lvl==1&&jeJednatel())h+=" <button class=b data-pa=jed>Schvaluji jako jednatel</button>";
+    h+="<p id=ps class=note></p><div class=card><pre style=\"white-space:pre-wrap;font:inherit\">"+esc(ACT.Text)+"</pre></div><p class=note>"+esc(ACT.Poznamka)+"</p>"}
+  if(PEND){h+="<h2>Připravená nová verze "+esc(PEND.Verze)+" "+tags(["návrh"])+"</h2><p class=note>Neplatí, dokud ji nepotvrdí vlastník. Po schválení se všem uživatelům zobrazí okno s potvrzením.</p><div class=card><pre style=\"white-space:pre-wrap;font:inherit\">"+esc(PEND.Text)+"</pre></div>";
+    if(jeVlastnik())h+="<button class=b data-pa=ow>Schvaluji jako vlastník</button> <button class=g data-pa=edit>Upravit návrh</button>";else h+="<p class=note>Schvaluje vlastník.</p>"}
+  else if(jeVlastnik())h+="<p><button class=g data-pa=edit>Nová verze / úprava pravidel</button></p>";
+  h+="<h2>Historie verzí</h2><table><tr><th>Verze<th>Stav<th>Schválení vlastníkem<th>Potvrdilo uživatelů</tr>"+ALL.slice().reverse().map(function(v){return "<tr><td>"+esc(v.Verze)+"<td>"+esc(lvlTxt(v))+"<td>"+(v.ow?esc(v.ow.Title+", "+v.ow.Cas):"")+"<td>"+LOG.filter(function(x){return x.Verze==v.Verze&&x.Hash==v.h}).length+"</tr>"}).join("")+"</table>";
+  return h}
+function editor(){
+  var base=PEND||ACT||ALL[ALL.length-1]||{Verze:"0.0",Text:"",Poznamka:""},nv=PEND?PEND.Verze:nextVer(base.Verze);
+  var d=GR.modal('<h2>'+(PEND?'Úprava návrhu':'Nová verze pravidel')+'</h2><div class=row><label>Verze <input id=ev value="'+esc(nv)+'" style="min-width:80px;width:90px"></label></div><textarea id=et style="min-height:45vh;width:100%">'+esc(base.Text||"")+'</textarea><input id=en placeholder="Poznámka (co se změnilo)" style="width:100%" value="'+esc(PEND?PEND.Poznamka||"":"")+'"><p class=note id=em>Uloží se jako návrh. Platná verze se nemění, dokud návrh neschválíte.</p><div class=gm-r><button class=b id=eok>Uložit návrh</button><button class=g id=ex>Zavřít</button></div>',true);
+  d.querySelector("#ex").onclick=GR.closeModal;
+  d.querySelector("#eok").onclick=async function(){var b=this,em=d.querySelector("#em"),ver=d.querySelector("#ev").value.trim(),tx=d.querySelector("#et").value,pn=d.querySelector("#en").value;
+    if(!ver||!tx.trim()){em.textContent="Vyplňte verzi i text.";return}
+    if(ALL.some(function(v){return v.Verze==ver&&v!==PEND})){em.textContent="Verze "+ver+" už existuje, zvolte jinou.";return}
+    b.disabled=true;try{if(PEND)await spw("PravidlaAI",PEND.Id,{Verze:ver,Text:tx,Poznamka:pn});else await spw("PravidlaAI",0,{Title:"Pravidla AI",Verze:ver,Stav:"návrh",Text:tx,Poznamka:pn});GR.closeModal();go("pravidla")}catch(e){b.disabled=false;em.textContent="Nezapsalo se: "+e.message}}}
+function pravidlaM(){var ps=function(t){var e=$("#ps");if(e)e.textContent=t};
+  document.querySelectorAll("[data-pa]").forEach(function(b){b.onclick=async function(){var a=b.dataset.pa;if(a=="edit")return editor();b.disabled=true;
+    try{if(a=="pot")await potvrdit();else if(a=="ow"){if(!jeVlastnik())throw new Error("Schvaluje jen vlastník.");await logRow(PEND.Verze+"|vlastnik",PEND.h)}
+      else if(a=="jed"){if(!jeJednatel())throw new Error("Schvaluje jen jednatel.");await spw("PravidlaAI",ACT.Id,{Stav:"schváleno"});await logRow(ACT.Verze+"|jednatel",ACT.h)}
+      go("pravidla")}catch(e){b.disabled=false;ps("Nezapsalo se: "+e.message)}}})}
 window.MODS={prompty:[prompty,promptyM],postupy:[postupy,postupyM],foto:[foto,fotoM],brand:[brand,brandT],pravidla:[pravidla,pravidlaM]};
 })();
