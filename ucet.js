@@ -1,7 +1,7 @@
 /* ELZA Asistent: účet, role, průvodce a přepínač kanálu (stabilní/beta). Čte role a přístup ze SharePointu; zapisuje jen osobní nastavení přihlášeného uživatele do seznamu Uživatelé. Skrytí v aplikaci je pohodlí; skutečná ochrana dat jsou oprávnění na SharePointu. */
 (function(){
 var SU="Id,Title,Upn,Role,Modules,Beta,Agenti,Kanal,PruvodceHotov,Note,Status";
-var ALW=["prehled","pruvodce","pravidla","ainast","ulohy"];
+var ALW=["prehled","pruvodce","pravidla","ainast","ulohy","navod","automatika"];
 var ROLES=[],PRIST={},ME=null,JT="";
 window.PRO=null;
 function csv(s){return String(s||"").split(",").map(function(x){return x.trim()}).filter(Boolean)}
