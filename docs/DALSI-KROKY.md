@@ -1,6 +1,6 @@
-# Další kroky (po 0.26.0)
-1. Ostrý test 0.26.0 firemním účtem: přihlášení, změna tématu, ověřit založení seznamu NastaveniAplikace a stejné nastavení na druhém zařízení (telefon).
-2. Projít na telefonu Případy, Zakázky, Přehled, Správu, Roadmapu a opravit přetékání (tabulky na karty).
+# Další kroky (po 0.27.0)
+1. Ostrý test: změna tématu a ověření založení seznamu NastaveniAplikace, stejné nastavení na druhém zařízení (telefon).
+2. Mobil: ověřit Poštu a Kalendář na ostrých datech, doladit drobné přetékání v Úlohách pro agenty.
 3. Uložit sdílené menu poprvé (Moje menu, Uložit pro všechny).
 4. Ověřit Zeptat se AI v Návodu, AI shrnutí v Automatice, zápis NAVOD.md do SharePointu.
 5. Automatika při zavřené aplikaci (plánovaná relace Claude nad frontou Ulohy, po schválení).
