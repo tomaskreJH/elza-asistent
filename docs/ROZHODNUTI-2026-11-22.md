@@ -19,3 +19,6 @@ Nic placeného: seznamy SharePointu v licenci M365, žádné AI volání, žádn
 - Oprávnění portálu pro zápis zákazníka; přihlášení skutečného zákazníka; souhlas správce pro Copilot.
 ## Další krok
 Viz docs/DALSI-KROKY.md body 7 až 10 a docs/NOVE-VLAKNO-PROMPT.md.
+
+## DEC-048 Nabídka společně s protokolem (0.42.0)
+Zásada: zákazník má o sebe nejen pocit péče, ale skutečně dostává kompletní řešení. U každého nevyhovujícího nebo podmíněného výsledku proto aplikace nepustí do portálu samotný protokol: nejdřív musí být rozhodnuto o nápravě (nabídka připravena, nebo nápravu nenabízíme a dáme postup). Kde nabídnout umíme, jde nabídka a protokol ven společně; kde ne, zákazník dostane doporučení, postup a zadání pro AI či jiného dodavatele. Nabídku zpracuje obchod (ne vedoucí techniků); aplikace jen hlídá, že existuje. Neřešeno: aplikace nekontroluje, že soubor nabídky ve složce opravdu leží (kontrola vyžaduje kód zakázky u kontroly, bod 10 v DALSI-KROKY), a automatický e-mail zákazníkovi čeká na jeho výslovné ano.

@@ -9,3 +9,4 @@
 8. Portál: po prvním používání upravit postupy a obsah (seznam Postupy na PortalELZA2), ověřit přihlášení skutečného zákazníka, ProfilZakaznika, Schválení a požadavky (help desk).
 9. Help desk jako zápis (seznam Pozadavek, tok T13 → Případ) po rozhodnutí o oprávnění portálu; automatické vytvoření podsložek zakázky (Dokumentace, Navody, Protokoly, Predani) při povýšení případu na zakázku; schvalování dokumentace zákazníkem (Vstup-Schvaleni); upozornění zákazníkovi na blížící se kontrolu (T4/T10).
 10. Nevyhovující kontrola: automaticky založit případ/poptávku pro obchod a úkol vedoucímu, zakázka na odstranění závad, po opravě opakovaná kontrola (vazba na Nabidky); e-mailové upozornění zákazníkovi po vašem ano.
+11. Nabídka k protokolu: u kontroly evidovat kód zakázky, hlídat existenci souboru nabídky ve složce Nabidky před publikací, upozornit obchod úkolem při Výsledek nevyhovuje, e-mail zákazníkovi s protokolem i nabídkou po výslovném ano.

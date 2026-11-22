@@ -36,3 +36,5 @@ Firmy (2026-11-22): seznam Firma na webu ZakazkyELZA je kopie číselníku cisel
 0.41.0: upozornění zákazníka na nevyhovující výsledek (portál + Publikace do portálu). Navazuje docs/NABIDKY-NAVRH.md (seznam Nabidky, osoby zákazníka): nabídky zpracovává obchodní oddělení, aplikace je jen eviduje; automatické založení poptávky (případ) a upozornění e-mailem čekají na rozhodnutí o oprávnění portálu a tok T13.
 
 0.41.1: semafor školení v Přehledu; rozhodnutí DEC-045 až DEC-047 v docs/ROZHODNUTI-2026-11-22.md.
+
+0.42.0: protokol a nabídka nápravy odcházejí společně (DEC-048).
