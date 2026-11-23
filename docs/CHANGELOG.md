@@ -1,3 +1,10 @@
+## 0.56.0 (2026-11-23) – vzhled v barvách ELZY a Můj den (krok 1 z docs/INSPIRACE-SYNIRU.md)
+- Nový soubor vzhled.js (úprava stávajících modulů, žádný nový modul): A1 spodní plovoucí lišta i na počítači (Můj den, Případy, Pošta, Kalendář, Úlohy); A8 tlačítko Připnout do spodní lišty u každé stránky (na PC 2, na mobilu 1, synchronizuje se přes nastavení: klíč elzaPin); A2 horní lišta rychlých nástrojů (Úkoly, Kalendář, Šablony, Znalosti, Přehled) otevírá stávající moduly jako okno nad stránkou, Esc zavře.
+- A3 rychlý řádek úlohy (text, termín, komu, Enter) v Můj den i v Úlohách; filtry Otevřené / Moje / Agentů / Hotové / Vše. Termín se uloží do textu zadání, nový sloupec nevznikl.
+- A4 Můj den začíná osobním uvítáním (pozdrav podle hodiny, datum, svátek, počet právě pracuje a dnes hotovo); A5 karta První hotový výsledek ve třech krocích (skryje se, klíč elzaPrvniHotovo); A6 blok Čeká na vás (schválení úloh + pole pro zadání práce).
+- Barvy ELZY: námořnická #102c54, červená #ff2a17 (logo) / #d9261c (text), grafit #293133, papír #f6f4ef; světlý režim na papírovém pozadí s bílými kartami, tmavý se skleněnými kartami, jediná akcentní červená.
+- Testy: menu, ochrana, e2e demo prošly; ruční kontrola PC a mobil v ukázkovém režimu.
+
 ## 0.55.1 (2026-11-23) – tok T12 Termíny kontrol
 - Power Automate: založen a zapnut plánovaný tok T12 Termíny kontrol (každý den 7:30): čte seznam Kontroly (web PortalELZA2), filtr PristiTermin le dnes+30 dní (zahrnuje i prošlé), pošle e-mail. Testovací režim: příjemce jen tkrejci@elzy.cz. Zkušební běh prošel.
 - Seznam Kontroly nemá sloupec Odpovedny, takže adresování odpovědným a vedoucímu čeká na rozhodnutí (docs/TOK-T12-KROKY.md).

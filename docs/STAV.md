@@ -1,5 +1,5 @@
 # Stav ELZA asistenta
-Verze 0.55.1 (root i stable), 2026-11-23. Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
+Verze 0.56.0 (root i stable), 2026-11-23. Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
 
 ## Cíl (měřítko každé změny)
 Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vyřídí poštu a případy, plánuje zakázky a lidi a nic nemusí kopírovat jinam. Technici mají být co nejvíc u zákazníka, zákazník v portálu „může klidně spát“. Bezpečnost má přednost před pohodlím, pohodlí před funkcemi navíc. Nic placeného navíc, CRM a stará dokumentace jen čtení.
@@ -9,6 +9,8 @@ Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vy�
 - Případy od založení po uzavření s automatickým připojením pošty; synchronizace firem (7 967) a zaměstnanců (106 řádků = 65 osob).
 - Toky Power Automate T3, T4, T9, T10 zapnuté; T12 Termíny kontrol zapnutý v testovacím režimu (e-mail jen Tomášovi, 0.55.1).
 - Automatické testy: test/*.test.js, test/*.py (demo, falešný SharePoint) – vše prochází.
+
+- Vzhled v barvách ELZY, spodní lišta, rychlé nástroje a nový Můj den (0.56.0, vzhled.js); ostrá data neověřena (jen ukázkový režim).
 
 ## Hotovo v kódu, čeká na ostré ověření nebo klepnutí Tomáše
 - Všech 16 seznamů založeno a sloupce ověřeny (0.53.0); přehled a zakládání ve Správa → Seznamy (seznamy.js = jeden zdroj schémat). Moduly načtou ostrá data bez chyb (0.53.1). Základní data se naplní klepnutím: Lidé a školení → Naplnit základní data, Plán fází → Uložit výchozí normy (0.54.0); členy týmů doplnit podle e-mailu.
