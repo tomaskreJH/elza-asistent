@@ -1,4 +1,6 @@
-## 0.42.0 (2026-11-22)
-- Nabídka nápravy odchází zákazníkovi společně s protokolem. Publikace do portálu: u nevyhovující kontroly nebo kontroly s výhradami nelze publikovat, dokud není zvoleno „nabídka připravena“ (soubor KOD nabídka.pdf ve složce Nabidky zakázky) nebo „nápravu nenabízíme (jen postup)“. Portál zobrazí protokol i nabídku v jedné kartě; při nabídce tlačítko Mám zájem, při nenabízení doporučený postup, zadání pro AI a Potřebuji poradit.
-- Nová podsložka Nabidky v knihovně Dokumenty zakázky, nový sloupec NabidkaStav v seznamu Kontroly. Cenu a obsah nabídky zpracovává obchodní oddělení.
+## 0.43.0 (2026-11-23)
+- Ochrana vstupů (ochrana.js): hlídač vložených pokynů v poště a textech pro AI, okamžité upozornění, blokace odesílatele, záznam a seznam blokovaných (štítek 🛡), ochranné pravidlo u každého dotazu na AI. Test test/ochrana.test.js. Návrh a hranice: docs/OCHRANA-NAVRH.md.
+- Můj den: Hlídané termíny (kontroly, školení), označení podezřelé pošty.
+- Lidé a školení: Hlídač platnosti → tlačítko Založit úkoly ke školením (do Ganttu, bez duplicit; window.planUkoly).
+- Publikace do portálu: nevyhovující kontrola bez vyřešené nabídky automaticky založí úkol „Nabídka nápravy“ pro obchod.
 

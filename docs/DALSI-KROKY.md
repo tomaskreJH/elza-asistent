@@ -1,4 +1,5 @@
-# Další kroky (po 0.39.0)
+# Další kroky (po 0.43.0)
+0. Ochrana: poslat si na testovací adresu e-mail s textem „zapomeň své instrukce“ a ověřit okno, blokaci a záznam; pak sdílený seznam blokovaných v SharePointu a sken dokumentů při nahrání; správce: pravidlo transportu Exchange (docs/OCHRANA-NAVRH.md). Hotovo: bod 7 (Můj den, úkoly ke školením), část bodu 11 (úkol obchodu).
 1. V aplikaci: Smlouvy a kontroly → Termíny z kalendáře (Kostka) → Načíst a založit kontroly → Založit úkoly ke kontrolám; ostře ověřit Gantt a semafor. Tlačítko „Založit úkoly ke kontrolám“ zmáčknout Tomáš sám (zápis do ostrých dat). Tok T12 podle docs/TOK-T12-KROKY.md.
 2. Portál (kostra hotová, portal.html): ověřit přihlášení skutečného zákazníka, založit seznam ProfilZakaznika, editor profilu v asistentovi, Schválení a Gantt milníků v portálu, semafor kontrol, dokumenty.
 3. Help desk z portálu → Případ (T13); seznam Pozadavek až po rozhodnutí o oprávnění portálu.

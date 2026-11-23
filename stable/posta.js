@@ -160,6 +160,7 @@ function blk(t,i){
     if(S.w)h+='<button class=g data-a=un data-i='+i+'>'+(x.isRead?"Označit nepřečtené":"Označit přečtené")+'</button><button class=g data-a=fl data-i='+i+'>'+(x.flag&&x.flag.flagStatus=="flagged"?"Zrušit příznak":"Označit příznakem")+'</button><button class=g data-a=ar data-i='+i+'>Archivovat</button><button class=g data-a=mv data-i='+i+'>Přesunout…</button><button class=g data-a=dl data-i='+i+'>Smazat</button><button class=g data-a=ct data-i='+i+'>Štítky…</button>';
     h+='</div>';
     if((x.categories||[]).length)h+='<div>'+x.categories.map(function(c){return '<span class=mp-cat>'+esc(c)+'</span>'}).join("")+'</div>';
+    if(window.OCHRANA)h+=OCHRANA.banner(t);
     if(t.hasImg&&!t.img)h+='<div class=gbanner>Vzdálené obrázky jsou z bezpečnostních důvodů blokované. <button class=g data-a=img data-i='+i+'>Načíst obrázky</button></div>';
     h+='<iframe id=fr'+i+' sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox" title="Text zprávy"></iframe>';
     if(t.attErr)h+='<p class=note>Přílohy se nepodařilo načíst: '+esc(t.attErr)+'</p>';if(t.att&&t.att.length){h+='<div class=mp-a>'+t.att.filter(function(a){return !a.isInline||!t.cidDone[a.id]}).map(function(a){return '<button class=g data-a=at data-i='+i+' data-id="'+esc(a.id)+'">📎 '+esc(a.name)+' ('+Math.max(1,Math.round((a.size||0)/1024))+' kB)</button>'}).join("")+'</div>'}
@@ -168,7 +169,7 @@ function blk(t,i){
 }
 function frame(i){
   var t=S.thr[i];if(!t||!t.open||!t.b)return;
-  var fr=document.getElementById("fr"+i);if(!fr)return;
+  var fr=document.getElementById("fr"+i);if(!fr)return;if(t.blocked){fr.style.display='none';return}
   var csp="default-src 'none'; style-src 'unsafe-inline'; font-src data:; img-src data:"+(t.img?" https: http:":"");
   var html='<!doctype html><meta charset=utf-8><meta http-equiv="Content-Security-Policy" content="'+csp+'"><base target=_blank><style>body{font:14px/1.5 Segoe UI,Arial,sans-serif;color:#222;margin:6px;word-wrap:break-word}img{max-width:100%;height:auto}pre{white-space:pre-wrap}blockquote{margin:0 0 0 8px;padding-left:8px;border-left:3px solid #ccc;color:#555}</style>'+t.html;
   fr.onload=function(){try{fr.style.height=(fr.contentDocument.documentElement.scrollHeight+10)+"px"}catch(e){}};
@@ -191,7 +192,7 @@ async function loadBody(i){
         html=html.split("cid:"+a.contentId).join("data:"+(d.contentType||a.contentType)+";base64,"+d.contentBytes);t.cidDone[a.id]=1}catch(e){}
     }
     t.hasImg=/<img[^>]+src=["']?https?:/i.test(html);
-    t.html=html;
+    t.html=html;if(window.OCHRANA)OCHRANA.checkMail(t);
     if(S.w&&!t.m.isRead&&S.alias!="drafts"){try{await GR.req("PATCH","/me/messages/"+enc(t.m.id),{sc:W,body:{isRead:true}});t.m.isRead=true;var it=S.items.filter(function(x){return x.id==t.m.id})[0];if(it)it.isRead=true;rl()}catch(e){}}
   }catch(e){t.b={};t.html="<p>Zprávu se nepodařilo načíst ("+esc(e.message)+").</p>";t.att=[];t.cidDone={}}
   if(el){el.innerHTML=blk(t,i);frame(i)}

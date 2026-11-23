@@ -106,6 +106,8 @@ async function hlidac(st,H){H=H||60;var K=KD.K||[],U=await zget("Ukol","$select=
  if(!N.length){st("Není co zakládat, všechny blížící se kontroly už úkol mají.");return}
  if(!confirm("Založit "+N.length+" úkolů ke kontrolám s termínem do "+H+" dní?"))return;for(var i=0;i<N.length;i++){st("Zakládám "+(i+1)+" z "+N.length+"…");await zw("Ukol",0,N[i])}st("Založeno "+N.length+" úkolů, najdete je v Ganttu.")}
 
+window.planUkoly=async function(N){var U=await zget("Ukol","$select=Id,Title");if(U===null)throw new Error("Seznam Ukol neexistuje.");var have={};U.forEach(function(u){have[u.Title]=1});var n=0;for(var i=0;i<N.length;i++){var t=String(N[i].Title).slice(0,250);if(have[t])continue;have[t]=1;await zw("Ukol",0,{Title:t,Resitel:N[i].Resitel||"",Od:N[i].Od,Do:N[i].Do,Hotovo:0});n++}return n};
+
 function planTyd(K){var T=today().getTime(),W={};K.forEach(function(k){var d=pd(k.PristiTermin);if(!d)return;var n=Math.floor((d.getTime()-T)/DAY);if(n>62)return;var w=n<0?-1:Math.floor(n/7);(W[w]=W[w]||[]).push(k)});
  var ks=Object.keys(W).map(Number).sort(function(a,b){return a-b});if(!ks.length)return "<h3>Plán na 2 měsíce</h3><p class=note>Do 2 měsíců nejsou žádné kontroly. Naplňte kontroly importem nebo načtěte termíny z kalendáře.</p>";
  return "<h3>Plán na 2 měsíce (po týdnech)</h3><table><tr><th>Týden<th>Kontroly</tr>"+ks.map(function(w){var a=new Date(T+w*7*DAY),lbl=w<0?"po termínu":cz(a)+" – "+cz(new Date(a.getTime()+6*DAY));return "<tr><td>"+esc(lbl)+" ("+W[w].length+")<td>"+W[w].map(function(k){return esc(czy(pd(k.PristiTermin)))+" "+esc(k.Title)+(k.Odpovedny?" <span class=note>("+esc(k.Odpovedny)+")</span>":"")}).join("<br>")+"</tr>"}).join("")+"</table>"}
