@@ -33,6 +33,9 @@ function chybi(druh,mam){var p=POVINNE[druh]||[],m={};(mam||[]).forEach(function
 function plan(o){ok(o.obj,/^OBJ\d{5}$/,"kód objektu");ok(o.pr,/^PR\d{6}$/,"číslo zakázky");var m={};
  ["vstup","pracovni","provedeni","skutecne","predani"].forEach(function(r){m[o.obj+"/"+o.pr+"/"+ROLE[r]]=1});m[o.obj+"/"+ROLE.provozni]=1;m[o.obj+"/"+ROLE.kontrolni]=1;
  (POVINNE[o.druh]||[]).forEach(function(t){m[slozka({obj:o.obj,pr:o.pr,typ:t})]=1});return Object.keys(m).sort()}
-W.STRUKTURA={plan:plan,ROLE:ROLE,TYP:TYP,POVINNE:POVINNE,slug:slug,slozka:slozka,nazev:nazev,cesta:cesta,parse:parse,navrhTypu:navrhTypu,chybi:chybi};
+/* přenos starých souborů (0.55.0): návrh typu, role a cílové cesty pro dávku souborů; jen návrh, kopíruje se až po schválení, originál zůstává */
+function navrhDavky(files,o,from,n){from=from||0;n=n||25;return (files||[]).slice(from,from+n).map(function(f){var nm=String(f.name||""),i=nm.lastIndexOf("."),ext=i>0?nm.slice(i+1).toLowerCase():"",typ=f.typ||navrhTypu(nm+" "+(f.cesta||"")),r={name:nm,src:f.src||"",typ:typ,role:typ?ROLE[TYP[typ][0]]:"",cil:"",chyba:""};
+ try{if(!typ)throw new Error("Typ nerozpoznán, vyberte ručně");if(!ext)throw new Error("Soubor bez přípony");r.cil=cesta({obj:o.obj,pr:o.pr,typ:typ,popis:i>0?nm.slice(0,i):nm,pripona:ext,datum:String(f.datum||"").slice(0,10)||undefined})}catch(e){r.chyba=e.message}return r})}
+W.STRUKTURA={navrhDavky:navrhDavky,plan:plan,ROLE:ROLE,TYP:TYP,POVINNE:POVINNE,slug:slug,slozka:slozka,nazev:nazev,cesta:cesta,parse:parse,navrhTypu:navrhTypu,chybi:chybi};
 if(typeof module!="undefined")module.exports=W.STRUKTURA;
 })();

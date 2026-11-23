@@ -1,8 +1,8 @@
-# Další kroky (po 0.54.1) – v tomto pořadí
-1. **Tomáš, 15 minut:** schválit otisky 🛡 verze 0.54.1; Lidé a školení → Naplnit základní data; Plán fází → Uložit výchozí normy; kvalifikace technikům pilotu; doplnit členy týmů (e-mail); po týdnu souběhu vypnout v Copilotu dvě ranní úlohy.
+# Další kroky (po 0.55.0) – v tomto pořadí
+1. **Tomáš, 15 minut:** schválit otisky 🛡 verze 0.55.0; Složky zakázky → Ověřit nebo založit cílovou knihovnu a zkusit jednu dávku starých souborů; Lidé a školení → Naplnit základní data; Plán fází → Uložit výchozí normy; kvalifikace technikům pilotu; doplnit členy týmů (e-mail); po týdnu souběhu vypnout v Copilotu dvě ranní úlohy.
 2. **Pilot Plánu fází na reálné zakázce** podle docs/OVERENI-FAZI-2026-11-23.md (plán s kódem zakázky, realita po fázích); normy zpřesnit po 10 záznamech.
 3. **EspoCRM jen čtením:** Tomáš dodá adresu ESPO a kdo založí čtecího API uživatele (docs/ESPO-CTENI.md); pak tok do kopie v SharePointu a zobrazení v Případech a Zakázkách.
-4. **B zbytek:** cílová knihovna složek na ostrém webu; návrh typu a role starých souborů po dávkách se schválením.
+4. **B hotovo v kódu (0.55.0):** po první ostré dávce zpřesnit návrh typů (HINT v struktura.js) podle souborů, které zůstaly nerozpoznané.
 5. **Tok T12** (automatika při zavřené aplikaci): Ranní kontrola, Hlídání nabídek, Hlídač kontrol (docs/TOK-T12-KROKY.md).
 6. **Portál:** přihlášení skutečného zákazníka, ProfilZakaznika, schvalování a help desk (T13).
 7. **Zjednodušení:** sloučit Ranní kontrolu do Můj den, nepoužívané moduly Znalostí skrýt pro ostatní role.

@@ -1,5 +1,5 @@
 # Stav ELZA asistenta
-Verze 0.54.1 (root i stable), 2026-11-23. Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
+Verze 0.55.0 (root i stable), 2026-11-23. Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
 
 ## Cíl (měřítko každé změny)
 Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vyřídí poštu a případy, plánuje zakázky a lidi a nic nemusí kopírovat jinam. Technici mají být co nejvíc u zákazníka, zákazník v portálu „může klidně spát“. Bezpečnost má přednost před pohodlím, pohodlí před funkcemi navíc. Nic placeného navíc, CRM a stará dokumentace jen čtení.
@@ -16,6 +16,7 @@ Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vy�
 - Strážce: schválit základ otisků ve štítku 🛡 po nasazení.
 - Portál zákazníka: přihlášení skutečného zákazníka neověřeno.
 - Plán fází ověřen na ostrých datech (0.54.1): funguje, ale pilot nemá plán ani měření; postup v docs/OVERENI-FAZI-2026-11-23.md.
+- Složky zakázky (0.55.0): ověření a založení cílové knihovny a přenos starých souborů po dávkách se schválením; neověřeno na ostrém webu (první dávku pustí Tomáš).
 - EspoCRM jen čtením: návrh hotový (docs/ESPO-CTENI.md), čeká na adresu ESPO a čtecího API uživatele od správce ESPO.
 
 ## Bezpečnost

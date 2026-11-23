@@ -1,3 +1,9 @@
+## 0.55.0 (2026-11-23) – cílová knihovna a přenos starých souborů (B zbytek)
+- Složky zakázky: tlačítko Ověřit nebo založit cílovou knihovnu na ostrém webu (jen chybějící složka se založí).
+- Přenos starých souborů po dávkách 25: stará složka jen čtením, návrh typu, role a nového názvu (STRUKTURA.navrhDavky), ruční oprava typu, kopie jen schválených (SDL.copy, originál zůstává, cíl se nepřepíše). Žádný nový modul.
+- SDL: files (čtení složky), copy, exists. Test: test/struktura.test.js.
+- Návod a Průvodce aktualizovány.
+
 ## 0.54.1 (2026-11-23) – ověření Plánu fází, příprava ESPO
 - Plán fází: stejná jména lidí rozlišena osobním číslem (dřív se zaměňovali), brigádníci na konci seznamu.
 - Ověření na ostrých datech: modul bez chyb, ale zatím bez uložených plánů, norem, kvalifikací a měření (docs/OVERENI-FAZI-2026-11-23.md).

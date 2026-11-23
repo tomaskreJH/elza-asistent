@@ -57,7 +57,7 @@ footer button{background:#fff;border:0;border-radius:8px;padding:8px 14px;font-w
 
 <section class=sl data-n=3><h1>3. Založení <span>zakázky</span></h1><p class=l>Tlačítko Povýšit na firemní zakázku v detailu případu.</p>
 <div class=mock>ID v CRM ESPO: <span class=tag>volitelné</span> → Kód zakázky: <b>Z-2026-014</b> <span class=tag>navržen</span> → Typ: <b>pd</b><br>⚠️ Spustí se tok T9 Kontrola ELZY: zkontrolujte příjemce.<br><span class=bt>Založit</span></div>
-<ol><li>Aplikace navrhne další volný kód a hlídá duplicitu.</li><li>Zakázka vznikne interní, čeká na kontrolu ELZY.</li><li>Případ dostane kód zakázky, pošta a historie zůstávají propojené.</li></ol></section>
+<ol><li>Aplikace navrhne další volný kód a hlídá duplicitu.</li><li>Zakázka vznikne interní, čeká na kontrolu ELZY.</li><li>Případ dostane kód zakázky, pošta a historie zůstávají propojené.</li><li>Otevřou se Složky zakázky: ověří cílovou knihovnu, založí složky OBJ / PR / role a staré soubory po dávkách navrhnou k přenosu; kopírují se jen schválené, originál zůstává.</li></ol></section>
 
 <section class=sl data-n=4><h1>4. Práce na zakázce: <span>Gantt</span></h1><p class=l>Interně vidíte úkoly po lidech, zákazník jen celek.</p>
 <div class=two><div><b>Asistent (interně)</b><div class=gantt>
@@ -112,7 +112,7 @@ footer button{background:#fff;border:0;border-radius:8px;padding:8px 14px;font-w
 <div class=flow style="margin-top:14px"><div class=n><div class=ic>✉️</div>Příchozí zpráva</div><span class=ar>→</span><div class=n><div class=ic>🔍</div>Sken textu<small>česky a anglicky</small></div><span class=ar>→</span><div class="n bad"><div class=ic>⛔</div>Zablokováno<small>odesílatel + záznam 🛡</small></div><span class=ar>→</span><div class=n><div class=ic>🧠</div>AI nedostala nic<small>zpráva se nepředá</small></div></div>
 <ol><li>Závažný nález: červené okno, odesílatel se zablokuje, zpráva se nezobrazí ani nepředá AI.</li><li>Podezřelý nález: jen upozornění v Můj den (⚠).</li><li>Vlastní doména @elzy.cz se automaticky nikdy neblokuje.</li></ol></section>
 
-<section class=sl data-n=13><h1>13. Hotovo a <span>co dál</span></h1><p class=l>Verze 0.54.1. Průvodce i Návod v aplikaci jsou aktuální.</p>
+<section class=sl data-n=13><h1>13. Hotovo a <span>co dál</span></h1><p class=l>Verze 0.55.0. Průvodce i Návod v aplikaci jsou aktuální.</p>
 <div class=two><div class=mock><b>Hotovo</b><br>✅ Pošta, Případy, Zakázky, Gantt, Smlouvy a kontroly<br>✅ Synchronizace firem a zaměstnanců, klíč osoby<br>✅ Plán fází včetně celého řetězu zakázky<br>✅ Ukládání plánu, kvalifikací a obsazení, Gantt s přetahováním<br>✅ Nová struktura dokumentace a Analýza vstupu s učením postupů (sdíleným celým týmem)<br>✅ Zakládání složek zakázky a hlídání nabídek (5, 14, 30 dní)<br>✅ Ochrana pokynů a Strážce kódu, stránka bez vložených skriptů (CSP), otisk knihovny přihlášení (SRI)<br>✅ Portál zákazníka (kostra, živá data)</div>
 <div class=mock><b>Čeká</b><br>⏳ Souhlas správce pro Copilot<br>⏳ Naplnit základní data: Lidé a školení → Naplnit základní data, Plán fází → Uložit výchozí normy (po jednom klepnutí)<br>⏳ Tok T12 a help desk T13<br>⏳ Test na skutečném telefonu<br>⏳ Přihlášení skutečného zákazníka</div></div>
 <div class=mock style="margin-top:14px">Jedna pravda v datech, každý krok má svého vlastníka a nic se neodešle bez vašeho ano.</div></section>

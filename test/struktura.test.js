@@ -27,3 +27,6 @@ var z3=[1,2,3].map(function(){return{postup:'servis',krok:'s1',akce:'vynechano'}
 console.log('struktura a analýza OK');
 
 var pl=S.plan({obj:'OBJ02664',pr:'PR001399',druh:'kontrola'});assert.ok(pl.indexOf('OBJ02664/PR001399/1 Vstup')>=0&&pl.indexOf('OBJ02664/Provoz')>=0&&pl.indexOf('OBJ02664/Kontroly/Protokol-o-kontrole-nebo-zkousce')>=0);assert.throws(function(){S.plan({obj:'x',pr:'PR001399'})});console.log('plan OK');
+var d=S.navrhDavky([{name:'TZ_Dodatek k PBŘ.pdf',src:'/sites/X/a/TZ.pdf',datum:'2024-05-02T10:00:00Z'},{name:'foto1.jpg',src:'/sites/X/a/f.jpg'},{name:'Revizní zpráva.pdf',src:'/sites/X/a/r.pdf',datum:'2025-01-10'}],{obj:'OBJ02664',pr:'PR001399'},0,25);
+assert.equal(d.length,3);assert.equal(d[0].typ,'tz');assert.equal(d[0].cil,'OBJ02664/PR001399/3a Pro provedení/Technicka-zprava/OBJ02664_PR001399_tz_TZ-Dodatek-k-PBR_v1_2024-05-02.pdf');assert.ok(d[1].chyba&&!d[1].cil);assert.equal(d[2].role,'Kontroly');
+assert.equal(S.navrhDavky([{name:'foto1.jpg',typ:'foto_real',datum:'2025-02-01'}],{obj:'OBJ02664',pr:'PR001399'})[0].role,'3b Skutečné provedení');assert.equal(S.navrhDavky(new Array(30).fill({name:'a.pdf'}),{obj:'OBJ02664',pr:'PR001399'},25,25).length,5);console.log('davka OK');
