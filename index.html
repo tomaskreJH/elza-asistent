@@ -53,11 +53,11 @@ main table{display:block;overflow-x:auto;max-width:100%}main img,main video{max-
 </style>
 <header id=top><button data-v=_drawer aria-label="Menu">&#9776;</button><span class=wm>ELZY<i></i></span><b id=ttl></b><button data-v=_theme aria-label="Světlý nebo tmavý režim">&#9680;</button></header><div id=scrim data-v=_scrim></div><aside></aside><main id=main></main><nav id=tabs></nav>
 <script src="msal-browser.min.js?v=2.38.2"></script>
-<script>(function(){var k="stable";try{var q=/[?&]kanal=(beta|stable)/.exec(location.search);k=q?q[1]:(localStorage.getItem("elzaKanal")||"stable");if(q)localStorage.setItem("elzaKanal",k)}catch(e){}window.KANAL=k;var d=k=="beta"?"":"stable/";var L=["ochrana","straz","nastaveni","moduly","osobni","mapa","hledat","trh","ucet","sprava","zakazky","plan","faze","firma","zamestnanec","lidi","portalpub","centrum"];{if(/[?&]demo=1/.test(location.search))L.push("demo");L.push("ai","ulohy","chat","graf","posta","kalendar","pripady","roadmapa")}L.forEach(function(n){var dd=n=="demo"?"":d;document.write('<script src="'+dd+n+'.js?v=62"><\/script>')})})()</script>
+<script>(function(){var k="stable";try{var q=/[?&]kanal=(beta|stable)/.exec(location.search);k=q?q[1]:(localStorage.getItem("elzaKanal")||"stable");if(q)localStorage.setItem("elzaKanal",k)}catch(e){}window.KANAL=k;var d=k=="beta"?"":"stable/";var L=["ochrana","straz","nastaveni","moduly","osobni","mapa","hledat","trh","ucet","sprava","zakazky","plan","faze","firma","zamestnanec","osoby","lidi","portalpub","centrum"];{if(/[?&]demo=1/.test(location.search))L.push("demo");L.push("ai","ulohy","chat","graf","posta","kalendar","pripady","roadmapa")}L.forEach(function(n){var dd=n=="demo"?"":d;document.write('<script src="'+dd+n+'.js?v=63"><\/script>')})})()</script>
 <script>
 const CID="7822640e-2537-46eb-8db1-830d38fff665",TEN="35c5f53c-ce94-445a-b877-54965e3be6d3",HOME="https://tomaskrejh.github.io/elza-asistent/",SP="https://elzycz.sharepoint.com",SITE="/sites/ELZA-asistent",SC=[SP+"/AllSites.Read"];
 if(localStorage.getItem("elzaPortal")&&/[#&]code=/.test(location.hash)){location.replace("portal.html"+location.hash)}
-const VER="0.46.0";const $=s=>document.querySelector(s);
+const VER="0.47.0";const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const surl=u=>{u=String(u==null?"":u).trim();return /^(https?:|mailto:|tel:)/i.test(u)?u:"#"};window.surl=surl; const POP=window.opener&&/[#?&](code|error|state)=/.test(location.hash+location.search);
 let OPEN={};try{OPEN=JSON.parse(localStorage.getItem("elzaMenu")||"{}")}catch(e){}

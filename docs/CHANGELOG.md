@@ -1,3 +1,9 @@
+## 0.47.0 (2026-11-23)
+- Průvodce (pruvodce.html) rozšířen na 14 slidů: živá simulace toku dat (16 kroků, kdo vstupuje: skript, tok, AI, skill, člověk; záznamy v SharePointu vznikají průběžně, souhrn ukazuje, že AI sama nezapsala nic), srovnání skriptu, toku, AI agenta a skillu, cesta dotazu AI přes ochranu, tok dat od SQL po portál, interaktivní plán fází na dotek, ukázka zablokovaného podvodného e-mailu, hotovo a co čeká. Vymyšlená data. Test: python3 test/pruvodce.py.
+- Nový modul Osoby (osoby.js): klíč osoby je osobní číslo, 106 řádků Zamestnanec se skládá na osoby bez duplicit, návrh e-mailu příjmení@elzy.cz, kvalifikace s platností. Test: node test/osoby.test.js.
+- Plán fází: pole Typ zakázky (pilot Kontrola OZO PO, Celý řetěz zakázky se 8 fázemi a požadovanou kvalifikací), lidé jako osoby bez duplicit; oprava mapování množství na jednotky fází.
+- Návod: nová kapitola Osoby a kvalifikace, rozšířené kapitoly Plán fází a Grafický průvodce.
+
 ## 0.46.0 (2026-11-23)
 - Nový modul Synchronizace zaměstnanců (zamestnanec.js, Správa): kopie číselníku ciselnik_zamestnanec (Implementace365, jen čtení) do seznamu Zamestnanec na Zakázky ELZA. Klíč Title (GUID), osobní číslo se opakuje a klíčem není. Tlačítka Založit seznam a Synchronizovat teď, denní automatika, pojistky proti nahrávání zdroje a proti duplicitám. window.zamestnanci() je sdílený zdroj lidí.
 - Plán fází bere lidi z kopie zaměstnanců (výchozích 8 h, kvalifikace neověřena do naplnění Lidé a školení); bez kopie zůstávají ukázková data.

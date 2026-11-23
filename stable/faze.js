@@ -19,16 +19,30 @@ var PH=[
  {id:"us",n:"Kontrola ústředny",u:"ústředna",fix:0,per:0.5,k:0,roles:"OZO PO",team:1},
  {id:"pt",n:"Protokol a předání",u:"zakázka",fix:0.75,per:0,k:0,roles:"OZO PO",team:1}
 ];
+var TPL={
+ pilot:{n:"Kontrola OZO PO (pilot)",ph:PH.slice()},
+ retez:{n:"Celý řetěz zakázky",ph:[
+  {id:"pj",n:"Projekce",u:"objekt",fix:2,per:6,k:0,roles:"Projekt",team:1},
+  {id:"jd",n:"Jednání (zákazník, úřady, HZS)",u:"zakázka",fix:3,per:0,k:0,roles:"Projekt",team:1},
+  {id:"po",n:"Pracovní postupy a BOZP",u:"zakázka",fix:2,per:0,k:0,roles:"OZO BOZP",team:1},
+  {id:"kb",n:"Kabeláž",u:"hlásič",fix:0,per:0.15,k:1,roles:"PZTS",team:2},
+  {id:"mo",n:"Montáž a oživení",u:"hlásič",fix:2,per:0.2,k:1,roles:"PZTS",team:2},
+  {id:"kz",n:"Kontrola podle zákonů a vyhlášek",u:"ústředna",fix:1,per:1,k:0,roles:"OZO PO",team:1},
+  {id:"pk",n:"Protokol a předání",u:"zakázka",fix:1.5,per:0,k:0,roles:"OZO PO",team:1},
+  {id:"re",n:"Revize elektro",u:"objekt",fix:1,per:2,k:0,roles:"Revizní technik",team:1}
+ ]}
+};
 function can(P,role){return P.kv===false||P.sk.indexOf(role)>=0}
 var REASONS=["přístup do objektu","chybějící podklad","porucha zařízení","nový požadavek zákazníka","počasí","jiné"];
-function Model(){
+function Model(){this.tplId="pilot";
  this.q={hl:520,us:3,pv:2};this.vyska=true;this.pristup=false;this.podlazi=false;
  this.norm={};PH.forEach(function(p){this.norm[p.id]={fix:p.fix,per:p.per,src:"odhad vedoucího",n:0}},this);
  this.as={pr:["Jan Novák"],pv:["Jan Novák"],hl:["Jan Novák","Eva Horáková"],us:["Jan Novák"],pt:["Jan Novák"]};
  this.rec={};this.sel="hl";
  var ok=this,first=PEOPLE[0]&&PEOPLE[0].n;Object.keys(this.as).forEach(function(k){var v=ok.as[k].filter(function(n){return PEOPLE.some(function(P){return P.n==n})});ok.as[k]=v.length?v:[first]});
 }
-Model.prototype.unitsOf=function(p){return p.u=="zakázka"?1:(this.q[p.id]||0)};
+Model.prototype.tpl=function(id){var t=TPL[id];if(!t)return;this.tplId=id;PH.length=0;t.ph.forEach(function(p){PH.push(p)});this.norm={};PH.forEach(function(p){this.norm[p.id]={fix:p.fix,per:p.per,src:"odhad vedoucího",n:0}},this);var f=PEOPLE[0]&&PEOPLE[0].n,self=this;this.as={};this.rec={};PH.forEach(function(p){var ok=PEOPLE.filter(function(P){return can(P,p.roles)})[0];self.as[p.id]=[(ok||PEOPLE[0]||{}).n].filter(Boolean)});this.sel=PH[0].id;this.q.hl=this.q.hl||0};
+Model.prototype.unitsOf=function(p){return p.u=="zakázka"?1:(this.q[{"hlásič":"hl","ústředna":"us","objekt":"pv"}[p.u]]||0)};
 Model.prototype.coef=function(p){return p.k?(this.vyska?1.2:1)*(this.pristup?1.3:1)*(this.podlazi?1.15:1):1};
 Model.prototype.spread=function(p){var n=this.norm[p.id].n;return 0.4/Math.sqrt(1+n/3)};
 Model.prototype.hours=function(p){var n=this.norm[p.id];return (n.fix+n.per*this.unitsOf(p))*this.coef(p)};
@@ -74,7 +88,7 @@ function mount(el,opt){
   S=M.schedule();var e=end(S),tot=0,tl=0,th=0,act=0,over=0;
   S.forEach(function(r){var R=M.range(r.ph);tot+=R[1];tl+=R[0];th+=R[2];var rc=M.rec[r.ph.id]||[];if(rc.length)act+=rc[rc.length-1].hours});
   var late=0;S.forEach(function(r){var rc=M.rec[r.ph.id];if(rc&&rc.length){var x=rc[rc.length-1];if(x.hours>M.hours(r.ph)*1.2)over++}});
-  var h='<div class="tt"></div><div class="in"><label>Hlásičů<input type=number id=qh min=0 value='+M.q.hl+'></label><label>Ústředen<input type=number id=qu min=0 value='+M.q.us+'></label><label>Objektů<input type=number id=qo min=1 value='+M.q.pv+'></label>'
+  var h='<div class="tt"></div><div class="in"><label>Typ zakázky<select id=tp>'+Object.keys(TPL).map(function(k){return '<option value='+k+(M.tplId==k?' selected':'')+'>'+esc(TPL[k].n)+'</option>'}).join('')+'</select></label><label>Hlásičů<input type=number id=qh min=0 value='+M.q.hl+'></label><label>Ústředen<input type=number id=qu min=0 value='+M.q.us+'></label><label>Objektů<input type=number id=qo min=1 value='+M.q.pv+'></label>'
    +'<label class=ck><input type=checkbox id=kv'+(M.vyska?" checked":"")+'> výška nad 3,5 m ×1,2</label><label class=ck><input type=checkbox id=kp'+(M.pristup?" checked":"")+'> obtížný přístup ×1,3</label><label class=ck><input type=checkbox id=kf'+(M.podlazi?" checked":"")+'> více než 5 podlaží ×1,15</label>'
    +'<button class="b2 pri" id=ai>Navrhnout obsazení (AI)</button><button class=b2 id=sm>Nasimulovat 10 záznamů (ukázka)</button></div>';
   h+='<div class="kp"><div>Odhad práce<b>'+tot.toFixed(1)+' h</b>rozsah '+tl.toFixed(1)+' až '+th.toFixed(1)+' h</div><div>Předání (plán)<b>'+dtxt(e.d)+'</b>'+hh(e.t)+'</div><div>Odpracováno<b>'+act.toFixed(1)+' h</b>zapsaná realita</div><div class="'+(over?"al":"")+'">Fáze s odchylkou<b>'+over+'</b>nad 20 % plánu</div></div>';
@@ -138,7 +152,7 @@ function mount(el,opt){
  }
  function bind(){
   var g=function(i){return el.querySelector("#"+i)};
-  g("qh").onchange=function(){M.q.hl=+this.value||0;draw()};g("qu").onchange=function(){M.q.us=+this.value||0;draw()};g("qo").onchange=function(){M.q.pv=+this.value||1;draw()};
+  g("tp").onchange=function(){M.tpl(this.value);base=null;draw()};g("qh").onchange=function(){M.q.hl=+this.value||0;draw()};g("qu").onchange=function(){M.q.us=+this.value||0;draw()};g("qo").onchange=function(){M.q.pv=+this.value||1;draw()};
   g("kv").onchange=function(){M.vyska=this.checked;draw()};g("kp").onchange=function(){M.pristup=this.checked;draw()};g("kf").onchange=function(){M.podlazi=this.checked;draw()};
   g("ai").onclick=ai;
   g("sm").onclick=function(){PH.forEach(function(p){if(p.u=="zakázka")return;var arr=[];for(var i=0;i<10;i++){var u=M.unitsOf(p),f=1.1+((i*37)%30)/100;arr.push({hours:+(u*M.norm[p.id].per*M.coef(p)*f).toFixed(2),units:u,d:2,why:"jiné"})}M.rec[p.id]=arr;M.norm[p.id].n=10});draw();toast("Ukázka: vloženo 10 vymyšlených záznamů ke každé fázi. Skutečná data vznikají jen zápisem.")};
@@ -149,6 +163,6 @@ function mount(el,opt){
 }
 window.FAZE={mount:mount,Model:Model};
 window.MODS=window.MODS||{};
-window.MODS.faze=[function(){return "<h1>Plán fází</h1><p class=note>Odhad z množství práce, plán podle pracovní doby lidí, přesun lidí s dopadem na termín a porovnání plánu s realitou. Lidé se berou z kopie zaměstnanců (Správa → Synchronizace zaměstnanců); pracovní doba je výchozích 8 h a kvalifikace se ověří až po naplnění Lidé a školení. Plán a záznamy zatím žijí jen v tomto okně (ukládání po založení seznamů, docs/MERENI-FAZI-NAVRH.md).</p><p class=note id=fzsrc>Lidé: ukázková data.</p><div class=fz id=fz></div>"},function(){var M=window.FAZE.mount(document.getElementById("fz"));if(!window.zamestnanci)return;window.zamestnanci().then(function(rows){var o=document.getElementById("fzsrc");if(!rows||!rows.length||!o){return}
- PEOPLE.length=0;rows.forEach(function(z){PEOPLE.push({n:z.jm||("os. č. "+z.os),hpd:8,off:[],sk:[],kv:false,busy:{},note:"os. č. "+z.os+", pracovní doba výchozí"})});var f=PEOPLE[0].n;Object.keys(M.as).forEach(function(k){M.as[k]=[f]});M.redraw();o.textContent="Lidé: "+rows.length+" zaměstnanců z kopie Zamestnanec. Pracovní doba je výchozích 8 h a kvalifikace neověřena, dokud se nenaplní Lidé a školení."})}];
+window.MODS.faze=[function(){return "<h1>Plán fází</h1><p class=note>Odhad z množství práce, plán podle pracovní doby lidí, přesun lidí s dopadem na termín a porovnání plánu s realitou. Lidé se berou z kopie zaměstnanců (Správa → Synchronizace zaměstnanců); pracovní doba je výchozích 8 h a kvalifikace se ověří až po naplnění Lidé a školení. Plán a záznamy zatím žijí jen v tomto okně (ukládání po založení seznamů, docs/MERENI-FAZI-NAVRH.md).</p><p class=note id=fzsrc>Lidé: ukázková data.</p><div class=fz id=fz></div>"},function(){var M=window.FAZE.mount(document.getElementById("fz"));if(!window.zamestnanci)return;(window.osoby?window.osoby():window.zamestnanci()).then(function(rows){var o=document.getElementById("fzsrc");if(!rows||!rows.length||!o){return}
+ PEOPLE.length=0;rows.forEach(function(z){PEOPLE.push({n:z.jm||("os. č. "+z.os),hpd:8,off:[],sk:[],kv:false,busy:{},note:"os. č. "+z.os+(z.n>1?", v "+z.n+" agendách":"")+", pracovní doba výchozí"})});var f=PEOPLE[0].n;Object.keys(M.as).forEach(function(k){M.as[k]=[f]});M.redraw();o.textContent="Lidé: "+rows.length+" osob (složeno z kopie Zamestnanec podle osobního čísla, bez duplicit z více agend). Pracovní doba je výchozích 8 h a kvalifikace neověřena, dokud se nenaplní Lidé a školení."})}];
 })();

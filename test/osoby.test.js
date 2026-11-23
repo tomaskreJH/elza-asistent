@@ -1,0 +1,10 @@
+var O=require('../osoby.js'),a=require('assert');
+var rows=[{id:'a',os:'101',jm:'Kostka Jan'},{id:'b',os:'101',jm:'Kostka Jan'},{id:'c',os:'102',jm:'Jasanský Vojtěch'},{id:'d',os:'103',jm:'Novák Petr'},{id:'e',os:'103',jm:'Dvořák Pavel'},{id:'f',os:'',jm:'Bez Čísla'}];
+var o=O.sloucit(rows);a.equal(o.length,4,'4 osoby');a.equal(o[0].n,2,'Kostka ve 2 agendách');a.equal(o[0].email,'kostka@elzy.cz');a.equal(o[1].email,'jasansky@elzy.cz','bez diakritiky');a.ok(o[2].konflikt,'různá jména u jednoho čísla');a.ok(!o[0].konflikt);
+var s=[{email:'jan.kostka@elzy.cz',jmeno:'Jan Kostka'},{email:'jasansky@elzy.cz',jmeno:'Jasanský V.'}];
+a.deepEqual(O.email(o[0],s),{email:'jan.kostka@elzy.cz',jistota:'shoda'},'shoda jména bez ohledu na pořadí');a.deepEqual(O.email(o[1],s),{email:'jasansky@elzy.cz',jistota:'tvar'});a.equal(O.email(o[3],s).email,'','bez schránky');
+var kv=[{email:'kostka@elzy.cz',typ:'OZO PO',platnost:'2027-01-31'},{email:'kostka@elzy.cz',typ:'EPS',platnost:'2026-11-01'},{email:'jasansky@elzy.cz',typ:'OZO PO',platnost:''}];
+a.ok(O.ma(kv,'Kostka@elzy.cz','ozo po','2026-11-23'));a.ok(!O.ma(kv,'kostka@elzy.cz','EPS','2026-11-23'),'prošlá platnost');a.ok(O.ma(kv,'jasansky@elzy.cz','OZO PO'),'bez omezení');
+a.equal(O.schopni(o,kv,'OZO PO','2026-11-23').length,2);
+var b=O.brzy(kv,60,'2026-11-23');a.equal(b.length,1);a.ok(b.some(function(x){return x.prosle}));
+console.log('osoby.test.js OK');
