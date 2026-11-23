@@ -1,3 +1,8 @@
+## 0.54.1 (2026-11-23) – ověření Plánu fází, příprava ESPO
+- Plán fází: stejná jména lidí rozlišena osobním číslem (dřív se zaměňovali), brigádníci na konci seznamu.
+- Ověření na ostrých datech: modul bez chyb, ale zatím bez uložených plánů, norem, kvalifikací a měření (docs/OVERENI-FAZI-2026-11-23.md).
+- EspoCRM jen čtením: návrh přes čtecího API uživatele a tok do kopie v SharePointu, nezapojeno (docs/ESPO-CTENI.md).
+
 ## 0.54.0 (2026-11-23) – bezpečnost bez nákladů a základní data
 - CSP bez 'unsafe-inline' pro skripty na všech stránkách (index, portál, průvodce): vložené skripty přesunuty do boot.js, app.js, mobil.js, pruvodce.js; inline atributy událostí v kódu nejsou.
 - SRI otisk (sha384) u msal-browser.min.js v index.html i portal.html.

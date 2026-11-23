@@ -1,5 +1,5 @@
 # Stav ELZA asistenta
-Verze 0.54.0 (root i stable), 2026-11-23. Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
+Verze 0.54.1 (root i stable), 2026-11-23. Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
 
 ## Cíl (měřítko každé změny)
 Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vyřídí poštu a případy, plánuje zakázky a lidi a nic nemusí kopírovat jinam. Technici mají být co nejvíc u zákazníka, zákazník v portálu „může klidně spát“. Bezpečnost má přednost před pohodlím, pohodlí před funkcemi navíc. Nic placeného navíc, CRM a stará dokumentace jen čtení.
@@ -15,6 +15,8 @@ Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vy�
 - Ranní kontrola na ostrých datech běží (0.53.1); po týdnu souběhu vypnout dvě ranní úlohy v Copilotu (nahrazuje ranní úlohy Copilotu; ty zůstávají jako záloha do ověření).
 - Strážce: schválit základ otisků ve štítku 🛡 po nasazení.
 - Portál zákazníka: přihlášení skutečného zákazníka neověřeno.
+- Plán fází ověřen na ostrých datech (0.54.1): funguje, ale pilot nemá plán ani měření; postup v docs/OVERENI-FAZI-2026-11-23.md.
+- EspoCRM jen čtením: návrh hotový (docs/ESPO-CTENI.md), čeká na adresu ESPO a čtecího API uživatele od správce ESPO.
 
 ## Bezpečnost
 CSP na všech stránkách (object-src none, base-uri self, od 0.52.0 i referrer no-referrer), pošta v sandboxu bez skriptů a bez vzdálených obrázků, escapování všech dat, ochrana vložených pokynů (ochrana.js), Strážce integrity kódu (straz.js, integrity.json), sdílené blokace. Přístup k datům řídí práva SharePointu. Přenos šifruje HTTPS, data v M365 šifruje Microsoft, aplikace nic neukládá mimo SharePoint. GitHub 2FA a ochrana větve main zapnuty (2026-11-23). Od 0.54.0 CSP bez 'unsafe-inline' pro skripty (vložené skripty v boot.js, app.js, mobil.js, pruvodce.js) a SRI otisk u msal-browser. Styly zatím 'unsafe-inline' (nízké riziko).
