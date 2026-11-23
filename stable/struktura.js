@@ -29,6 +29,10 @@ function navrhTypu(n){var s=String(n||"").normalize("NFD").replace(/[̀-ͯ]/g,""
 /* co musí existovat při předání zakázky (podle druhu); požadované role si upraví odborně vedoucí v postupu */
 var POVINNE={realizace:["zadani","bozp","vykres_sk","tz_sk","foto_real","navod","predavaci"],kontrola:["protokol"],revize:["revize"],servis:["protokol"],projekt:["zadani","tz","vykres"],nabidka:["zadani","nabidka"]};
 function chybi(druh,mam){var p=POVINNE[druh]||[],m={};(mam||[]).forEach(function(x){m[x]=1});return p.filter(function(x){return !m[x]})}
-W.STRUKTURA={ROLE:ROLE,TYP:TYP,POVINNE:POVINNE,slug:slug,slozka:slozka,nazev:nazev,cesta:cesta,parse:parse,navrhTypu:navrhTypu,chybi:chybi};
+/* složky, které vzniknou při založení zakázky: role zakázky, typy povinné pro druh a trvalé složky objektu (Provoz, Kontroly); jen cesty, nic se nezapisuje */
+function plan(o){ok(o.obj,/^OBJ\d{5}$/,"kód objektu");ok(o.pr,/^PR\d{6}$/,"číslo zakázky");var m={};
+ ["vstup","pracovni","provedeni","skutecne","predani"].forEach(function(r){m[o.obj+"/"+o.pr+"/"+ROLE[r]]=1});m[o.obj+"/"+ROLE.provozni]=1;m[o.obj+"/"+ROLE.kontrolni]=1;
+ (POVINNE[o.druh]||[]).forEach(function(t){m[slozka({obj:o.obj,pr:o.pr,typ:t})]=1});return Object.keys(m).sort()}
+W.STRUKTURA={plan:plan,ROLE:ROLE,TYP:TYP,POVINNE:POVINNE,slug:slug,slozka:slozka,nazev:nazev,cesta:cesta,parse:parse,navrhTypu:navrhTypu,chybi:chybi};
 if(typeof module!="undefined")module.exports=W.STRUKTURA;
 })();

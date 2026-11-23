@@ -1,3 +1,10 @@
+## 0.50.0 (2026-11-23)
+- Nová společná vrstva sdilene.js (SDL): čtení po dávkách, zápis jen do popsaných seznamů, zakládání seznamů a složek po klepnutí; nic se nemaže.
+- A: Analýza vstupu sdílí postupy a zpětnou vazbu celému týmu (seznamy PostupVerze a PostupZaznam na webu Zakázky ELZA, zakládá tlačítko), druhé zařízení načte sdílené verze; schválení výchozího postupu a doplnění zdroje předpisu nebo normy u požadavku odborně vedoucím (nová verze, stará v historii); zpracovaná zpětná vazba se označí.
+- B: nový modul Složky zakázky (slozky.js, STRUKTURA.plan): při vzniku zakázky založí složky OBJ / PR / role / typ a trvalé složky objektu Provoz a Kontroly; jen nové složky, cílová knihovna nastavitelná (výchozí Shared Documents/Zakazky); odkaz z Analýzy vstupu.
+- D: nový modul Hlídání nabídek (nabidky.js, seznam NabidkaEvid): připomínky po 5, 14 a 30 dnech, fronta podle odpovědné osoby, připomenutí založí úkol, po 30 dnech návrh uzavření jako bez odpovědi; zákazníkovi se nic neposílá.
+- Testy: test/sdilene.py (falešný SharePoint), test/nabidky.test.js. Návod: kapitoly Analýza vstupu, Složky zakázky, Hlídání nabídek. Průvodce: slide Hotovo.
+
 ## 0.49.0 (2026-11-23)
 - Nová souborová struktura dokumentace (struktura.js, docs/ARCHITEKTURA-CIL.md): OBJxxxxx / PRxxxxxx / role dokumentu / typ, trvalé dokumenty u objektu, názvy bez diakritiky s verzí a datem, návrh typu ze starého názvu, povinné dokumenty při předání. Nic se nekopíruje ze staré struktury.
 - Nový modul Analýza vstupu (Moje práce): z textu pozná technologii a druh, navrhne postup, dokumenty s cílovou složkou, kvalifikaci a upozornění. Postupy se učí: zpětná vazba po krocích, po třech stejných úpravách návrh nové verze, schválením vznikne nová verze a stará zůstává v historii. Zatím pravidlově bez AI a se zpětnou vazbou v zařízení (sdílený seznam bude v dalším kroku).

@@ -56,3 +56,5 @@ Pozn. 2026-11-23: dřívější věta „osobní číslo není klíč“ platí 
 
 
 0.49.0 (2026-11-23): nová souborová struktura (struktura.js) a modul Analýza vstupu s učením postupů (analyza.js), architektura v docs/ARCHITEKTURA-CIL.md. Rozbor EspoCRM a SharePointu (jen čtení) je v dokumentu "ELZA: cílový systém řízení zakázek, lidí a plánování". Neověřeno na ostrých datech; zpětná vazba k postupům je zatím jen v zařízení. Verze čeká na schválení ve štítku 🛡.
+
+0.50.0 (2026-11-23): sdílené ukládání postupů a zpětné vazby (PostupVerze, PostupZaznam), Složky zakázky (zakládání nové struktury po klepnutí), Hlídání nabídek (NabidkaEvid, 5/14/30 dní). Test test/sdilene.py prošel s falešným SharePointem; na ostrých datech neověřeno, seznamy PostupVerze, PostupZaznam a NabidkaEvid nejsou založeny (zakládají je tlačítka v modulech po klepnutí vlastníka), složky se v ostrém SharePointu nezakládaly. Verze čeká na schválení ve štítku 🛡.

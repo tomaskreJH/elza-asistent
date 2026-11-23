@@ -25,3 +25,5 @@ assert.equal(np.verze,2);assert.equal(np.historie.length,1);assert.equal(np.hist
 var z2=[1,2,3].map(function(){return{postup:'servis',krok:'',akce:'pridano',text:'Zavolat zákazníkovi'}});assert.equal(A.navrhyVylepseni(A.knihovna(),z2)[0].typ,'pridat');
 var z3=[1,2,3].map(function(){return{postup:'servis',krok:'s1',akce:'vynechano'}});assert.equal(A.navrhyVylepseni(A.knihovna(),z3)[0].typ,'nepovinny');
 console.log('struktura a analýza OK');
+
+var pl=S.plan({obj:'OBJ02664',pr:'PR001399',druh:'kontrola'});assert.ok(pl.indexOf('OBJ02664/PR001399/1 Vstup')>=0&&pl.indexOf('OBJ02664/Provoz')>=0&&pl.indexOf('OBJ02664/Kontroly/Protokol-o-kontrole-nebo-zkousce')>=0);assert.throws(function(){S.plan({obj:'x',pr:'PR001399'})});console.log('plan OK');
