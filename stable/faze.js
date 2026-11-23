@@ -26,6 +26,7 @@ function Model(){
  this.norm={};PH.forEach(function(p){this.norm[p.id]={fix:p.fix,per:p.per,src:"odhad vedoucího",n:0}},this);
  this.as={pr:["Jan Novák"],pv:["Jan Novák"],hl:["Jan Novák","Eva Horáková"],us:["Jan Novák"],pt:["Jan Novák"]};
  this.rec={};this.sel="hl";
+ var ok=this,first=PEOPLE[0]&&PEOPLE[0].n;Object.keys(this.as).forEach(function(k){var v=ok.as[k].filter(function(n){return PEOPLE.some(function(P){return P.n==n})});ok.as[k]=v.length?v:[first]});
 }
 Model.prototype.unitsOf=function(p){return p.u=="zakázka"?1:(this.q[p.id]||0)};
 Model.prototype.coef=function(p){return p.k?(this.vyska?1.2:1)*(this.pristup?1.3:1)*(this.podlazi?1.15:1):1};
