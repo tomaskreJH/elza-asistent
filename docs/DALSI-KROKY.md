@@ -1,3 +1,4 @@
+12. Měření fází zakázek (docs/MERENI-FAZI-NAVRH.md): potvrdit vstupní normy pilotu Kontrola OZO PO a číselník důvodů odchylek; založit seznamy SablonaFaze, Norma, Koeficient, ZaznamFaze, DuvodOdchylky (po potvrzení vlastníka); zápis fází na telefonu a výpočet odhadu (verze 0.45.0); přehled plán vs. realita; až 10 vzorků na typ pro návrh úpravy norem; Průvodce a Návod k nové funkci.
 # Další kroky (po 0.44.0)
 00. Strážce: po nasazení schválit základ (štítek 🛡), ověřit na živém webu; CSP bez unsafe-inline (otisky inline skriptů); sken dokumentů při nahrání; GitHub 2FA a ochrana větve main (vlastník).
 0. Ochrana: poslat si na testovací adresu e-mail s textem „zapomeň své instrukce“ a ověřit okno, blokaci a záznam; pak sdílený seznam blokovaných v SharePointu a sken dokumentů při nahrání; správce: pravidlo transportu Exchange (docs/OCHRANA-NAVRH.md). Hotovo: bod 7 (Můj den, úkoly ke školením), část bodu 11 (úkol obchodu).
