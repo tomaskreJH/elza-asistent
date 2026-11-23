@@ -1,3 +1,6 @@
+## 0.45.0 (2026-11-23)
+- Nový modul Plán fází (faze.js, menu Moje práce): odhad času z množství práce × norma × koeficienty jako rozsah (zužuje se s počtem vzorků), plánování fází podle pracovní doby, dovolené a školení lidí, rozdělení hodin mezi více lidí, okamžitý dopad přesunu člověka na termín předání, varování při chybějícím školení, tlačítko Navrhnout obsazení, zápis reality (hodiny, jednotky, důvod odchylky nad 20 %), pruh reality pod plánem, kapacita lidí po dnech, učení norem po 10 vzorcích se schválením. Pilot Kontrola OZO PO se vstupními odhady vedoucího. Data zatím jen v okně; seznamy SablonaFaze, Norma, Koeficient, ZaznamFaze, DuvodOdchylky zatím nezaloženy (docs/MERENI-FAZI-NAVRH.md). Návod: kapitola Plán fází.
+
 ## 0.44.2 – dokumentace měření fází (2026-11-23)
 - Návrh měření fází zakázek a odhadů času (docs/MERENI-FAZI-NAVRH.md): šablony fází, jednotky práce, normy a koeficienty, zápis skutečnosti od prvního dne, učení po deseti vzorcích, směrování podle kapacity, schéma seznamů na SharePointu, pilot Kontrola OZO PO se vstupními odhady k potvrzení. Kód se nemění, verze zůstává 0.44.2.
 
