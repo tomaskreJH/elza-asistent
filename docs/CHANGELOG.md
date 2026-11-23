@@ -1,3 +1,7 @@
+## 0.46.0 (2026-11-23)
+- Nový modul Synchronizace zaměstnanců (zamestnanec.js, Správa): kopie číselníku ciselnik_zamestnanec (Implementace365, jen čtení) do seznamu Zamestnanec na Zakázky ELZA. Klíč Title (GUID), osobní číslo se opakuje a klíčem není. Tlačítka Založit seznam a Synchronizovat teď, denní automatika, pojistky proti nahrávání zdroje a proti duplicitám. window.zamestnanci() je sdílený zdroj lidí.
+- Plán fází bere lidi z kopie zaměstnanců (výchozích 8 h, kvalifikace neověřena do naplnění Lidé a školení); bez kopie zůstávají ukázková data.
+
 ## 0.45.1 (2026-11-23)
 - Plán fází: oprava vzhledu v aplikaci na PC (třídy gt, gr, gl kolidovaly se styly Ganttu v plan.js, přejmenovány na fgt, fgr, fgl; zaškrtávací pole). Ověřeno na živém webu po přihlášení.
 
