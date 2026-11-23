@@ -1,4 +1,4 @@
-# Další kroky (po 0.56.0) – v tomto pořadí
+# Další kroky (po 0.57.0) – v tomto pořadí
 1. **Tomáš, 15 minut:** schválit otisky 🛡 verze 0.55.0; Složky zakázky → Ověřit nebo založit cílovou knihovnu a zkusit jednu dávku starých souborů; Lidé a školení → Naplnit základní data; Plán fází → Uložit výchozí normy; kvalifikace technikům pilotu; doplnit členy týmů (e-mail); po týdnu souběhu vypnout v Copilotu dvě ranní úlohy.
 2. **Pilot Plánu fází na reálné zakázce** podle docs/OVERENI-FAZI-2026-11-23.md (plán s kódem zakázky, realita po fázích); normy zpřesnit po 10 záznamech.
 3. **EspoCRM jen čtením:** Tomáš dodá adresu ESPO a kdo založí čtecího API uživatele (docs/ESPO-CTENI.md); pak tok do kopie v SharePointu a zobrazení v Případech a Zakázkách.
@@ -7,7 +7,7 @@
 6. **Portál:** přihlášení skutečného zákazníka, ProfilZakaznika, schvalování a help desk (T13).
 7. **Zjednodušení:** sloučit Ranní kontrolu do Můj den, nepoužívané moduly Znalostí skrýt pro ostatní role.
 8. **AI po souhlasu správce (Copilot)**, pravidlové rozpoznání zůstává jako záloha.
-9. **Zapracování inspirace ze Syniru (docs/INSPIRACE-SYNIRU.md):** krok 1 (A1–A6, A8) hotov v 0.56.0. Další v pořadí: 2) C18–C22 do Pravidel AI, 3) B11–B14 galerie Elzáčků, 4) B15 postupy se schválením, 5) D25 statistiky. Zbývá A7 a A9 (pravý panel „Co agent ví“, nastavení jako dlaždice).
+9. **Zapracování inspirace ze Syniru (docs/INSPIRACE-SYNIRU.md):** krok 1 (A1–A6, A8) hotov v 0.56.0, krok 2 (C18–C23) hotov v 0.57.0 (zbývá schválit novou verzi Pravidel AI v aplikaci). Další v pořadí: 3) B11–B14 galerie Elzáčků, 4) B15 postupy se schválením, 5) D25 statistiky. Zbývá A7 a A9 (pravý panel „Co agent ví“, nastavení jako dlaždice).
 10. Bezpečnost dál (volitelně): styly bez 'unsafe-inline' (inline style= přesunout do tříd).
 
 Čeká na Tomáše mimo aplikaci: příjemci T9 jen testovací adresy, telefon, ZADOST-COPILOT, úklid testovacích dat, adresa ESPO.
