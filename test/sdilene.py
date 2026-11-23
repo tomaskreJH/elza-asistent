@@ -28,7 +28,7 @@ with sync_playwright() as p:
     pg.on("pageerror",lambda e:bad.append("JS: "+str(e)))
     pg.route("https://elza.test/**",lambda r:r.fulfill(body=HTML,content_type="text/html"))
     pg.goto("https://elza.test/")
-    for n in ["sdilene.js","struktura.js","analyza.js","slozky.js","nabidky.js"]:
+    for n in ["seznamy.js","sdilene.js","struktura.js","analyza.js","slozky.js","nabidky.js"]:
         pg.add_script_tag(content=rd(n))
     def mount(mod):
         pg.evaluate("(m)=>{const v=window.MODS[m];document.getElementById('main').innerHTML=v[0]();v[1]()}",mod)

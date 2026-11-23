@@ -28,7 +28,7 @@ with sync_playwright() as p:
     pg.on("pageerror",lambda e:bad.append("JS: "+str(e)))
     pg.set_content(HTML)
     pg.evaluate("""()=>{window.esc=function(s){return String(s==null?'':s)}}""")
-    pg.add_script_tag(content=JS)
+    pg.add_script_tag(content=open(os.path.join(ROOT,"seznamy.js"),encoding="utf-8").read());pg.add_script_tag(content=JS)
     pg.evaluate("""()=>{window.M=window.FAZE.mount(document.getElementById('fz'))}""")
     pg.wait_for_timeout(600)
     t=pg.inner_text("#sv")

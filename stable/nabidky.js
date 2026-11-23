@@ -20,8 +20,8 @@ if(typeof module!="undefined")module.exports=W.NABIDKY;
 if(typeof window=="undefined"||!window.document)return;
 function es(s){return typeof esc=="function"?esc(s):String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 var L="NabidkaEvid",DB=[],ST={msg:"",miss:false,loaded:false,busy:false},demo=function(){return SDL.demo()};
-SDL.def(L,[["Zakazka",2,1],["Zakaznik",2],["Odeslano",2],["Odpoved",2],["Stav",2,1],["Odpovedny",2,1],["Pripomenuto",9],["Poznamka",3]],"ELZA asistent: evidence odeslaných nabídek");
-SDL.def("Ukol",[["KodZakazky",2],["Resitel",2],["Od",4],["Do",4],["Hotovo",9],["Poznamka",3]],"ELZA asistent: úkoly");
+SDL.def(L,SEZ.S.NabidkaEvid,"ELZA asistent: evidence odeslaných nabídek");
+SDL.def("Ukol",SEZ.S.Ukol,"ELZA asistent: úkoly");
 function dnesIso(){return iso(new Date())}
 function me(){return String((window.acc&&(acc.username||acc.name))||"").toLowerCase()}
 var DEMOROWS=function(){var t=new Date();function d(n){var x=new Date(t);x.setDate(x.getDate()-n);return iso(x)}return[{Id:1,Title:"NAB-DEMO-1",Zakazka:"Z-2026-001",Zakaznik:"Ukázkový zákazník A",Odeslano:d(6),Stav:"odeslana",Odpovedny:"tkrejci@elzy.cz",Pripomenuto:0},{Id:2,Title:"NAB-DEMO-2",Zakazka:"Z-2026-002",Zakaznik:"Ukázkový zákazník B",Odeslano:d(15),Stav:"odeslana",Odpovedny:"jiny@elzy.cz",Pripomenuto:5},{Id:3,Title:"NAB-DEMO-3",Zakazka:"Z-2026-003",Zakaznik:"Ukázkový zákazník C",Odeslano:d(31),Stav:"odeslana",Odpovedny:"tkrejci@elzy.cz",Pripomenuto:14},{Id:4,Title:"NAB-DEMO-4",Zakazka:"Z-2026-004",Zakaznik:"Ukázkový zákazník D",Odeslano:d(2),Stav:"odeslana",Odpovedny:"tkrejci@elzy.cz",Pripomenuto:0}]};

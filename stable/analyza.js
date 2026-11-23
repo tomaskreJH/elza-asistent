@@ -60,7 +60,7 @@ var LS="elzaPostupVerze",LZ="elzaPostupZaznamy",CUR=null;
 function ld(k){try{return JSON.parse(localStorage.getItem(k)||"[]")}catch(e){return[]}}
 function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 var SH={stav:"",msg:""},NOW=function(){return new Date().toISOString()};
-if(window.SDL){SDL.def("PostupVerze",[["Postup",2,1],["Verze",9],["Data",3],["Stav",2],["Schvalil",2]],"ELZA asistent: verze postupů");SDL.def("PostupZaznam",[["Postup",2,1],["Verze",9],["Krok",2],["Akce",2],["Text",3],["Kdo",2],["Kdy",2],["Stav",2]],"ELZA asistent: zpětná vazba k postupům")}
+if(window.SDL){SDL.def("PostupVerze",SEZ.S.PostupVerze,"ELZA asistent: verze postupů");SDL.def("PostupZaznam",SEZ.S.PostupZaznam,"ELZA asistent: zpětná vazba k postupům")}
 function zpet(r){return{_id:r.Id,postup:r.Postup,verze:+r.Verze||1,krok:r.Krok||"",akce:r.Akce,text:r.Text||"",kdo:r.Kdo||"",kdy:r.Kdy||"",stav:r.Stav||""}}
 async function pull(){if(!window.SDL||SDL.demo()){SH.stav="demo";return}try{var V=await SDL.read("PostupVerze"),Z=await SDL.read("PostupZaznam");if(V==null||Z==null){SH.stav="chybi";return}
  var sv1=[];V.filter(function(r){return r.Stav!="zruseno"}).forEach(function(r){try{sv1.push(JSON.parse(r.Data))}catch(e){}});sv(LS,sloucVerze(ld(LS),sv1));sv(LZ,sloucZaznamy(ld(LZ),Z.map(zpet)));SH.stav="ok";SH.msg=""}catch(e){SH.stav="chyba";SH.msg=e.message}}

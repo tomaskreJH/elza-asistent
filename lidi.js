@@ -2,7 +2,7 @@
 (function(){
 var ZS="/sites/ZakazkyELZA",DEMO=/[?&]demo=1/.test(location.search),DAY=864e5;
 var F={Tym:"Nazev,Vedouci,Stav",Clen:"Email,Tym,Role,Stav",SkoleniTyp:"Nazev,Oblast,Tym,PlatnostMesice,Stav",Skoleni:"Typ,Absolvovano,PlatnostDo,Stav",Obsazeni:"Tym,Email,Jmeno,VedouciAkce,Od,Do,Stav"};
-var S={Tym:[["Nazev",2],["Vedouci",2],["Stav",2]],Clen:[["Email",2,1],["Tym",2,1],["Role",2],["Stav",2]],SkoleniTyp:[["Nazev",2],["Oblast",2],["Tym",2,1],["PlatnostMesice",9],["Stav",2]],Skoleni:[["Typ",2,1],["Absolvovano",4],["PlatnostDo",4,1],["Stav",2]],Obsazeni:[["Tym",2,1],["Email",2,1],["Jmeno",2],["VedouciAkce",8],["Od",4],["Do",4],["Stav",2]]};
+var S=SEZ.pick(["Tym","Clen","SkoleniTyp","Skoleni","Obsazeni"]);
 var ST={tab:"tymy",team:"",hor:90,ob:{kod:"",tym:"",req:[],pocet:2,od:"",do:""}},DT={},MISS=[],MSG="";
 function iso(d){return d.toISOString().slice(0,10)}
 function t0(){return iso(new Date())}
@@ -22,10 +22,7 @@ async function rd(l){if(DEMO)return demo()[l];await token(false);var a=[],last=0
 async function load(){MISS=[];await Promise.all(Object.keys(F).map(async function(l){var v=await rd(l);if(v==null){MISS.push(l);DT[l]=[]}else DT[l]=act(v)}))}
 async function tk(sc){var W=[SP+"/"+sc];try{return(await m.acquireTokenSilent({scopes:W,account:acc})).accessToken}catch(e){return(await m.acquireTokenPopup({scopes:W,account:acc})).accessToken}}
 async function w(l,id,b){if(DEMO)throw new Error("V ukázkovém režimu se nic nezapisuje.");if(!F[l])throw new Error("Zápis je povolen jen do seznamů modulu Lidé a školení.");var t=await tk("AllSites.Write"),h={Authorization:"Bearer "+t,Accept:"application/json;odata=nometadata","Content-Type":"application/json;odata=nometadata"};if(id){h["IF-MATCH"]="*";h["X-HTTP-Method"]="MERGE"}var r=await fetch(sb(l)+"/items"+(id?"("+id+")":""),{method:"POST",headers:h,body:JSON.stringify(b)});if(!r.ok)throw new Error(l+": zápis selhal, HTTP "+r.status)}
-async function mk(){if(DEMO)throw new Error("V ukázkovém režimu se nic nezakládá.");var t=await tk("AllSites.Manage"),H={Authorization:"Bearer "+t,Accept:"application/json;odata=nometadata","Content-Type":"application/json;odata=nometadata"},n=0;
- for(var i=0;i<MISS.length;i++){var l=MISS[i];if(!S[l])continue;var r=await fetch(SP+ZS+"/_api/web/lists",{method:"POST",headers:H,body:JSON.stringify({Title:l,BaseTemplate:100,Description:"ELZA asistent: Lidé a školení"})});if(!r.ok&&r.status!=409&&r.status!=500)throw new Error("Seznam "+l+": HTTP "+r.status);
-  var fl=S[l];for(var k=0;k<fl.length;k++){var f=fl[k];await fetch(sb(l)+"/fields",{method:"POST",headers:H,body:JSON.stringify({Title:f[0],FieldTypeKind:f[1]})});if(f[2])await fetch(sb(l)+"/fields/getbytitle('"+f[0]+"')",{method:"POST",headers:Object.assign({"IF-MATCH":"*","X-HTTP-Method":"MERGE"},H),body:JSON.stringify({Indexed:true})})}
-  await fetch(sb(l)+"/fields/getbytitle('Title')",{method:"POST",headers:Object.assign({"IF-MATCH":"*","X-HTTP-Method":"MERGE"},H),body:JSON.stringify({Indexed:true})});n++}return n}
+async function mk(){if(DEMO)throw new Error("V ukázkovém režimu se nic nezakládá.");return SEZ.create(MISS)}
 function sel(id,opts,cur,all){return "<select id="+id+">"+(all?"<option value=\"\">"+esc(all)+"</option>":"")+opts.map(function(o){return "<option value=\""+esc(o[0])+"\""+(o[0]==cur?" selected":"")+">"+esc(o[1])+"</option>"}).join("")+"</select>"}
 function teams(){return DT.Tym.map(function(x){return[x.Title,x.Title+" "+(x.Nazev||"")]})}
 function ppl(tm){var m={};DT.Clen.forEach(function(c){if(!tm||c.Tym==tm){var k=(c.Email||"").toLowerCase();if(k&&!m[k])m[k]={e:k,n:c.Title}}});return Object.keys(m).map(function(k){return m[k]})}

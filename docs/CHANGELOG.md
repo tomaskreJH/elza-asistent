@@ -1,3 +1,9 @@
+## 0.53.0 (2026-11-23) – sjednocené seznamy
+- Nový seznamy.js: jeden zdroj pravdy pro všech 16 seznamů (sloupce, indexy, web). Lidé a školení, Plán fází, Analýza vstupu, Hlídání nabídek a Publikace do portálu z něj berou schéma a zakládají přes SEZ.create.
+- Nový modul Správa → Seznamy: stav všech seznamů, tlačítko Založit vše chybějící, skript pro založení v přihlášeném SharePointu (když aplikace nemá AllSites.Manage).
+- Založeny na ostrém webu: Osoba, Kvalifikace, PlanFaze, ZaznamFaze, Norma, Tym, Clen, SkoleniTyp, Skoleni, Obsazeni (Zakázky ELZA), Kontroly, ProfilZakaznika (PortalELZA2); sloupce ověřeny.
+- Návod: kapitola Seznamy aplikace; Průvodce kap. 10 doplněn.
+
 ## 0.52.0 (2026-11-23) – kontrola a zjednodušení
 - Oprava: čtení seznamů SharePointu po stránkách (dřív tiše jen prvních 500 položek), odstraněna duplicitní funkce list().
 - Menu Moje práce srovnáno podle toku práce: denní práce, Případy a zakázky, Plánování a lidé; Ranní kontrola pod Můj den.
