@@ -1,3 +1,8 @@
+## 0.55.1 (2026-11-23) – tok T12 Termíny kontrol
+- Power Automate: založen a zapnut plánovaný tok T12 Termíny kontrol (každý den 7:30): čte seznam Kontroly (web PortalELZA2), filtr PristiTermin le dnes+30 dní (zahrnuje i prošlé), pošle e-mail. Testovací režim: příjemce jen tkrejci@elzy.cz. Zkušební běh prošel.
+- Seznam Kontroly nemá sloupec Odpovedny, takže adresování odpovědným a vedoucímu čeká na rozhodnutí (docs/TOK-T12-KROKY.md).
+- Návod (centrum.js, stable) a Průvodce (kap. 13) doplněny.
+
 ## 0.55.0 (2026-11-23) – cílová knihovna a přenos starých souborů (B zbytek)
 - Složky zakázky: tlačítko Ověřit nebo založit cílovou knihovnu na ostrém webu (jen chybějící složka se založí).
 - Přenos starých souborů po dávkách 25: stará složka jen čtením, návrh typu, role a nového názvu (STRUKTURA.navrhDavky), ruční oprava typu, kopie jen schválených (SDL.copy, originál zůstává, cíl se nepřepíše). Žádný nový modul.
