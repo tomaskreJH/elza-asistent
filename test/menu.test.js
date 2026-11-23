@@ -1,6 +1,6 @@
 // Test skládání sdíleného menu: node test/menu.test.js (z kořene repozitáře)
 const fs=require('fs'),assert=require('assert');
-const html=fs.readFileSync('index.html','utf8'),cx=fs.readFileSync('centrum.js','utf8');
+const html=fs.readFileSync('app.js','utf8'),cx=fs.readFileSync('centrum.js','utf8');
 const MENU=eval(html.match(/const MENU=(\[.*?\]\]\]);/s)[1]+'');
 const code=cx.slice(cx.indexOf('var BASE=null'),cx.indexOf('var mo0=window.menuOff'));
 const f=new Function('MENU',code+';return{norm0,build,applyCfg,baseMenu}');

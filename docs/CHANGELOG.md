@@ -1,3 +1,11 @@
+## 0.54.0 (2026-11-23) – bezpečnost bez nákladů a základní data
+- CSP bez 'unsafe-inline' pro skripty na všech stránkách (index, portál, průvodce): vložené skripty přesunuty do boot.js, app.js, mobil.js, pruvodce.js; inline atributy událostí v kódu nejsou.
+- SRI otisk (sha384) u msal-browser.min.js v index.html i portal.html.
+- Strážce: otisky nově zahrnují pruvodce.html a nové soubory; verze se čte z app.js (tools/hash.js, test/menu.test.js).
+- Lidé a školení: tlačítko Naplnit základní data (týmy EPS, PZTS, OZO, REV a 6 druhů školení s výchozí platností; existující nemění).
+- Plán fází: tlačítko Uložit výchozí normy, když šablona nemá normy v seznamu Norma.
+- Návod a Průvodce aktualizovány.
+
 ## 0.53.1 (2026-11-23) – opravy z ověření na ostrých datech
 - Oprava: moduly.js přepisoval window.MODS, takže moduly načtené dřív (Seznamy) se nezobrazily („modul se připravuje“). Nově se registrace slučují.
 - Ověřeno přihlášeným vlastníkem na ostrých datech bez chyb: Ranní kontrola (19 nových poptávek), Analýza vstupu, Hlídání nabídek, Plán fází, Lidé a školení, Publikace do portálu; žádný modul už nehlásí chybějící seznam.
