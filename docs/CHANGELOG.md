@@ -3,6 +3,7 @@
 - Bezpečnost: poslední krok má kontrolu vždy, kroky s citlivým zadáním (platba, nasazení, kontakt, přihlášení) také; zamítnutí kroku postup zastaví; výstup s podezřelým pokynem postup zastaví; schválení zadání (okno ochrana.js) proběhne jednou při založení; změna jde do záznamu změn.
 - Posun řetězu běží při otevření Úloh a Mého dne, po schválení v tabulce i v bloku Čeká na vás a v Automatice (Opakované úlohy). Časový start se vyřídí jen při otevřené aplikaci.
 - Nový seznam PostupRetez (seznamy.js; Správa → Seznamy → Založit chybějící); do založení se postupy ukládají jen v prohlížeči. Žádný nový modul ani menu.
+- Oprava vzhledu: spodní lišta na počítači už nezakrývá konec stránky, formulář Nový postup je sbalený, když už nějaké postupy existují.
 - test/postup.test.js; Návod (kapitola Postupy se schválením, Úlohy) a Průvodce (sekce 8, 13) aktualizovány.
 
 ## 0.58.0 (2026-11-24) – Elzáčci podle rolí (krok 3 z docs/INSPIRACE-SYNIRU.md, B11–B14)
