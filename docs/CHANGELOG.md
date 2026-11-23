@@ -1,3 +1,8 @@
+## 0.49.0 (2026-11-23)
+- Nová souborová struktura dokumentace (struktura.js, docs/ARCHITEKTURA-CIL.md): OBJxxxxx / PRxxxxxx / role dokumentu / typ, trvalé dokumenty u objektu, názvy bez diakritiky s verzí a datem, návrh typu ze starého názvu, povinné dokumenty při předání. Nic se nekopíruje ze staré struktury.
+- Nový modul Analýza vstupu (Moje práce): z textu pozná technologii a druh, navrhne postup, dokumenty s cílovou složkou, kvalifikaci a upozornění. Postupy se učí: zpětná vazba po krocích, po třech stejných úpravách návrh nové verze, schválením vznikne nová verze a stará zůstává v historii. Zatím pravidlově bez AI a se zpětnou vazbou v zařízení (sdílený seznam bude v dalším kroku).
+- Test: test/struktura.test.js. Návod: nová kapitola Analýza vstupu. Průvodce: aktualizovaný slide Hotovo.
+
 ## 0.48.0 (2026-11-23)
 - Plán fází se ukládá do SharePointu (web Zakázky ELZA): plán zakázky (PlanFaze), záznamy reality (ZaznamFaze), schválené normy (Norma), potvrzené e-maily osob (Osoba) a kvalifikace s platností (Kvalifikace). Seznamy zakládá tlačítko Založit chybějící seznamy po klepnutí; v ukázkovém režimu se nic nezapisuje. Schéma: docs/SEZNAMY-FAZE.md.
 - Kvalifikace napojená na obsazení: plán varuje, když osoba fázi nesmí dělat nebo jí kvalifikace skončí dřív než fáze; tlačítko Zapsat obsazení do Lidé a školení přenese plán po lidech do seznamu Obsazeni (po potvrzení souhrnu, jeden vedoucí akce, staré obsazení téhož kódu se označí jako zrušené).
