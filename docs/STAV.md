@@ -47,3 +47,5 @@ Vlákno 2026-11-23 večer uzavřeno ve verzi 0.45.1; nic nerozpracováno. Zadán
 
 
 0.46.0 (2026-11-23): Synchronizace zaměstnanců (zamestnanec.js). Zdroj ciselnik_zamestnanec: 106 záznamů, Title jedinečný GUID, OsCislo se opakuje u 33, Agenda_ID 1 až 3, Deleted vždy 0. Plán fází bere lidi z kopie. Seznam Zamestnanec zakládá tlačítko ve Správě; první synchronizaci spustit v aplikaci a po ní schválit verzi ve štítku 🛡.
+
+Pozn. 2026-11-23: dřívější věta „osobní číslo není klíč“ platí jen pro řádek; jako klíč osoby se osobní číslo hodí (stejný člověk ve více agendách), viz DALSI-KROKY 13b.
