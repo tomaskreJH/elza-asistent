@@ -11,7 +11,7 @@ let G=T.build(T.norm0());assert.deepStrictEqual(G.map(g=>g.n),JSON.parse(base).m
 // 2 pořadí skupin
 G=T.build(T.norm0({ord:['AI','Moje práce']}));assert.strictEqual(G[0].n,'AI');assert.strictEqual(G[1].n,'Moje práce');
 // 3 pořadí položek, zamčená 'dnes' zůstane první
-G=T.build(T.norm0({iord:['dnes','zakazky','pripady','ulohy']}));assert.deepStrictEqual(ids(G[0]).slice(0,3),['dnes','zakazky','pripady']);
+G=T.build(T.norm0({iord:['dnes','posta','rano','kalendar']}));assert.deepStrictEqual(ids(G[0]).slice(0,3),['dnes','posta','rano']);
 // 4 přesun do nové skupiny, zamčené se nehýbou
 G=T.build(T.norm0({grp:{trh:'Nová',dnes:'Nová'}}));assert.ok(G.find(g=>g.n=='Nová').it.some(i=>i[0]=='trh'));assert.ok(!G.find(g=>g.n=='Nová').it.some(i=>i[0]=='dnes'));
 // 5 poškozená/cizí data se ignorují
@@ -31,5 +31,5 @@ let h=E.menuEd();assert.ok(h.includes('data-gu')&&h.includes('data-iu')&&h.inclu
 E.menuEdM();
 const click=async d=>{const el={dataset:d,closest:q=>q.split(',').some(s=>d[s.replace(/\[data-|\]/g,'')]!==undefined)||q=='[data-cs]'&&false?el:null};await mn.onclick({target:el})};
 (async()=>{await click({gd:'0'});let o=E.getED().ord;assert.strictEqual(o[1],'Moje práce');
-await click({id:'pripady'});let io=E.getED().iord;assert.ok(io.indexOf('pripady')>io.indexOf('zakazky'),'pripady za zakazky');assert.strictEqual(io[0],'dnes');
+await click({id:'pripady'});let io=E.getED().iord;assert.ok(io.indexOf('pripady')>io.indexOf('analyza'),'pripady za analyza');assert.strictEqual(io[0],'dnes');
 console.log('editor OK')})();

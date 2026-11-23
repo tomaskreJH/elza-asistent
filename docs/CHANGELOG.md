@@ -1,3 +1,10 @@
+## 0.52.0 (2026-11-23) – kontrola a zjednodušení
+- Oprava: čtení seznamů SharePointu po stránkách (dřív tiše jen prvních 500 položek), odstraněna duplicitní funkce list().
+- Menu Moje práce srovnáno podle toku práce: denní práce, Případy a zakázky, Plánování a lidé; Ranní kontrola pod Můj den.
+- Povýšení případu na zakázku otevře Složky zakázky s předvyplněným kódem a druhem.
+- Bezpečnost: referrer no-referrer na všech stránkách, CSP Průvodce doplněna.
+- Dokumentace: nový stručný STAV.md (historie v STAV-HISTORIE.md), přepsané DALSI-KROKY.md, zpráva docs/KONTROLA-2026-11-23.md. Návod: kapitoly Menu a Složky zakázky.
+
 ## 0.51.0 (2026-11-23)
 - Nový modul Ranní kontrola (rano.js, menu Moje práce): přebírá z Copilotu naplánované úlohy „Ranní přehled dne“ (7:30) a „Ranní zpracování poptávek“ (8:00). Čte poštu od posledního pracovního dne a dnešní kalendář (jen čtení), z poptávek (bez blokovaných odesílatelů, jedna karta na vlákno) složí kartu: typ, technologie, jistota, OBJ/PR, co chybí, Předpoklady. Koncept odpovědi zadá klepnutím agentovi AG-POSTA (Úlohy). Test test/rano.test.js.
 - Poznámka: úlohy v Copilotu zatím zůstávají zapnuté jako záloha, vypnout po ověření na ostrých datech.
