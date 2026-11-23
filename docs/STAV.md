@@ -17,7 +17,7 @@ Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vy�
 - Portál zákazníka: přihlášení skutečného zákazníka neověřeno.
 
 ## Bezpečnost
-CSP na všech stránkách (object-src none, base-uri self, od 0.52.0 i referrer no-referrer), pošta v sandboxu bez skriptů a bez vzdálených obrázků, escapování všech dat, ochrana vložených pokynů (ochrana.js), Strážce integrity kódu (straz.js, integrity.json), sdílené blokace. Přístup k datům řídí práva SharePointu. Přenos šifruje HTTPS, data v M365 šifruje Microsoft, aplikace nic neukládá mimo SharePoint. Zbývá: GitHub 2FA a ochrana větve main (největší riziko: kdo má účet GitHub, mění kód), vynucené MFA pro firemní účty (správce), CSP bez unsafe-inline, SRI u msal.
+CSP na všech stránkách (object-src none, base-uri self, od 0.52.0 i referrer no-referrer), pošta v sandboxu bez skriptů a bez vzdálených obrázků, escapování všech dat, ochrana vložených pokynů (ochrana.js), Strážce integrity kódu (straz.js, integrity.json), sdílené blokace. Přístup k datům řídí práva SharePointu. Přenos šifruje HTTPS, data v M365 šifruje Microsoft, aplikace nic neukládá mimo SharePoint. Zbývá: GitHub 2FA a ochrana větve main (největší riziko: kdo má účet GitHub, mění kód), CSP bez unsafe-inline, SRI u msal.
 
 ## Čeká mimo aplikaci
 Souhlas správce pro Copilot (docs/ZADOST-COPILOT.md), tok T12 pro automatiku při zavřené aplikaci, test na skutečném telefonu.
