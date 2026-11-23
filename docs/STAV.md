@@ -42,3 +42,5 @@ Firmy (2026-11-22): seznam Firma na webu ZakazkyELZA je kopie číselníku cisel
 0.43.0: ochrana proti vloženým pokynům (docs/OCHRANA-NAVRH.md), Hlídané termíny v Můj den, úkoly ke školením, úkol obchodu při nevyhovující kontrole. Neověřeno na ostrých datech (ostrý test pošty s podezřelým e-mailem na testovací adresu; zápis úkolů klepne Tomáš). Seznamy Lidé a školení a Kontroly na PortalELZA2 stále nezaloženy.
 
 0.44.0: Strážce kódu a sdílená ochrana (docs/OCHRANA-NAVRH.md). Čeká: první schválení základu otisků ve štítku 🛡 (po nasazení), ověření na živém webu, GitHub 2FA a ochrana větve (vlastník).
+
+Vlákno 2026-11-23 večer uzavřeno ve verzi 0.45.1; nic nerozpracováno. Zadáno na další vlákno: zaměstnanci z ciselnik_zamestnanec (bod 13). Pozn.: ostrá kontrola 0.45.1 proběhla v prohlížeči přihlášeném testovacím účtem do portálu; verze 0.45.1 čeká na schválení vlastníkem ve štítku 🛡.
