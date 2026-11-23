@@ -1,3 +1,7 @@
+## 0.53.1 (2026-11-23) – opravy z ověření na ostrých datech
+- Oprava: moduly.js přepisoval window.MODS, takže moduly načtené dřív (Seznamy) se nezobrazily („modul se připravuje“). Nově se registrace slučují.
+- Ověřeno přihlášeným vlastníkem na ostrých datech bez chyb: Ranní kontrola (19 nových poptávek), Analýza vstupu, Hlídání nabídek, Plán fází, Lidé a školení, Publikace do portálu; žádný modul už nehlásí chybějící seznam.
+
 ## 0.53.0 (2026-11-23) – sjednocené seznamy
 - Nový seznamy.js: jeden zdroj pravdy pro všech 16 seznamů (sloupce, indexy, web). Lidé a školení, Plán fází, Analýza vstupu, Hlídání nabídek a Publikace do portálu z něj berou schéma a zakládají přes SEZ.create.
 - Nový modul Správa → Seznamy: stav všech seznamů, tlačítko Založit vše chybějící, skript pro založení v přihlášeném SharePointu (když aplikace nemá AllSites.Manage).

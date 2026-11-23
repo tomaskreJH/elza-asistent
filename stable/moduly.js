@@ -100,5 +100,5 @@ function pravidlaM(){var ps=function(t){var e=$("#ps");if(e)e.textContent=t};
     try{if(a=="pot")await potvrdit();else if(a=="ow"){if(!jeVlastnik())throw new Error("Schvaluje jen vlastník.");await logRow(PEND.Verze+"|vlastnik",PEND.h)}
       else if(a=="jed"){if(!jeJednatel())throw new Error("Schvaluje jen jednatel.");await spw("PravidlaAI",ACT.Id,{Stav:"schváleno"});await logRow(ACT.Verze+"|jednatel",ACT.h)}
       go("pravidla")}catch(e){b.disabled=false;ps("Nezapsalo se: "+e.message)}}})}
-window.MODS={prompty:[prompty,promptyM],postupy:[postupy,postupyM],foto:[foto,fotoM],brand:[brand,brandT],pravidla:[pravidla,pravidlaM]};
+window.MODS=Object.assign(window.MODS||{},{prompty:[prompty,promptyM],postupy:[postupy,postupyM],foto:[foto,fotoM],brand:[brand,brandT],pravidla:[pravidla,pravidlaM]});
 })();
