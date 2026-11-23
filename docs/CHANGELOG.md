@@ -1,3 +1,10 @@
+## 0.59.0 (2026-11-24) – Postupy se schválením (krok 4 z docs/INSPIRACE-SYNIRU.md, B15)
+- Úlohy pro agenty (ulohy.js): sekce Postupy (řetěz agentů). Název, 2 až 6 kroků (agent, název, zadání, volba Čekat na mé schválení), start hned nebo v zadaný čas. Každý krok je obyčejná úloha ve frontě Ulohy (značka [POSTUP:id#krok/počet]); další krok se založí po schválení, nebo sám, když krok kontrolu nemá; dostane výstup předchozího jako data (prochází hlídačem pokynů).
+- Bezpečnost: poslední krok má kontrolu vždy, kroky s citlivým zadáním (platba, nasazení, kontakt, přihlášení) také; zamítnutí kroku postup zastaví; výstup s podezřelým pokynem postup zastaví; schválení zadání (okno ochrana.js) proběhne jednou při založení; změna jde do záznamu změn.
+- Posun řetězu běží při otevření Úloh a Mého dne, po schválení v tabulce i v bloku Čeká na vás a v Automatice (Opakované úlohy). Časový start se vyřídí jen při otevřené aplikaci.
+- Nový seznam PostupRetez (seznamy.js; Správa → Seznamy → Založit chybějící); do založení se postupy ukládají jen v prohlížeči. Žádný nový modul ani menu.
+- test/postup.test.js; Návod (kapitola Postupy se schválením, Úlohy) a Průvodce (sekce 8, 13) aktualizovány.
+
 ## 0.58.0 (2026-11-24) – Elzáčci podle rolí (krok 3 z docs/INSPIRACE-SYNIRU.md, B11–B14)
 - AI nastavení (ai.js): B11 Galerie Elzáčků ve skupinách Kancelář, Obchod, Data, Technika (Technik EPS, OZO požární ochrany, Revizní technik elektro, Projektant slaboproud, Obchod a poptávky, Hlídač termínů, Zápis z porady); B13 balíček role = Elzáček + postupy s popisem „kdy se použijí“, přidání jedním klepnutím; B12 „Popište Elzáčka jednou větou“: AI navrhne jméno, skupinu, popis, pokyny a postupy, uživatel před uložením upraví a postupy odškrtne (bez AI návrh jen z věty); část Moji Elzáčci s odebráním.
 - B14 líné načítání postupů: agent dostane jen názvy a „kdy“, celý text postupu se přidá, jen když zadání obsahuje jeho téma (hledá se jen v zadání, nikdy v datech); vlastní Elzáčci dostávají své pokyny v každém dotazu.

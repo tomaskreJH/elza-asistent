@@ -42,7 +42,7 @@ Zásada: nic nekopírujeme jako aplikaci, bereme jen to, co má Syniru lépe. Ž
 3D kancelář (efekt bez užitku pro techniky), avatary/portréty, kurzy krypto, citáty – kromě svátku.
 
 ## Stav zapracování
-A1–A6, A8: 0.56.0. C18–C23: 0.57.0 (C19 vrácení jen u Úloh pro agenty). B11–B14: 0.58.0 (galerie, jedna věta, balíček role, líné načítání; B16 a B17 zatím ne).
+A1–A6, A8: 0.56.0. C18–C23: 0.57.0 (C19 vrácení jen u Úloh pro agenty). B15: 0.59.0 (Postupy v Úlohách). B11–B14: 0.58.0 (galerie, jedna věta, balíček role, líné načítání; B16 a B17 zatím ne).
 
 ## Pořadí zapracování (návrh)
 1) A1–A6 + A8 (vzhled a Můj den) → 2) C18–C22 do Pravidel AI → 3) B11–B14 galerie Elzáčků → 4) B15 postupy se schválením → 5) D25 statistiky.
