@@ -1,3 +1,6 @@
+## 0.45.1 (2026-11-23)
+- Plán fází: oprava vzhledu v aplikaci na PC (třídy gt, gr, gl kolidovaly se styly Ganttu v plan.js, přejmenovány na fgt, fgr, fgl; zaškrtávací pole). Ověřeno na živém webu po přihlášení.
+
 ## 0.45.0 (2026-11-23)
 - Nový modul Plán fází (faze.js, menu Moje práce): odhad času z množství práce × norma × koeficienty jako rozsah (zužuje se s počtem vzorků), plánování fází podle pracovní doby, dovolené a školení lidí, rozdělení hodin mezi více lidí, okamžitý dopad přesunu člověka na termín předání, varování při chybějícím školení, tlačítko Navrhnout obsazení, zápis reality (hodiny, jednotky, důvod odchylky nad 20 %), pruh reality pod plánem, kapacita lidí po dnech, učení norem po 10 vzorcích se schválením. Pilot Kontrola OZO PO se vstupními odhady vedoucího. Data zatím jen v okně; seznamy SablonaFaze, Norma, Koeficient, ZaznamFaze, DuvodOdchylky zatím nezaloženy (docs/MERENI-FAZI-NAVRH.md). Návod: kapitola Plán fází.
 
