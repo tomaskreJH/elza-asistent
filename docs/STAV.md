@@ -1,5 +1,5 @@
 # Stav ELZA asistenta
-Verze 0.57.0 (root i stable), 2026-11-23. Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
+Verze 0.58.0 (root i stable), 2026-11-24. Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
 
 ## Cíl (měřítko každé změny)
 Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vyřídí poštu a případy, plánuje zakázky a lidi a nic nemusí kopírovat jinam. Technici mají být co nejvíc u zákazníka, zákazník v portálu „může klidně spát“. Bezpečnost má přednost před pohodlím, pohodlí před funkcemi navíc. Nic placeného navíc, CRM a stará dokumentace jen čtení.
@@ -11,6 +11,7 @@ Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vy�
 - Automatické testy: test/*.test.js, test/*.py (demo, falešný SharePoint) – vše prochází.
 
 - Hranice AI agentů (0.57.0): režim schvalování, změny s vrácením u Úloh, pravidla C20–C22, Známá omezení v Návodu; v ukázkovém režimu a testech ověřeno, na ostrých datech ne.
+- Elzáčci podle rolí (0.58.0): galerie, agent jednou větou, balíčky rolí a líné načítání postupů v AI nastavení a Úlohách; ověřeno testem a v ukázkovém režimu, na ostrých datech ne (seznam ElzacekDef se zakládá ve Správa → Seznamy).
 - Vzhled v barvách ELZY, spodní lišta, rychlé nástroje a nový Můj den (0.56.0, vzhled.js); ostrá data neověřena (jen ukázkový režim).
 
 ## Hotovo v kódu, čeká na ostré ověření nebo klepnutí Tomáše
