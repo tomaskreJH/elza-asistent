@@ -1,5 +1,5 @@
 # Stav ELZA asistenta
-Verze 0.43.0 (root i stable). Moduly: Můj den, Případy, Zakázky, Gantt a termíny, Smlouvy a kontroly, Pošta, Kalendář, Úlohy pro agenty, AI, Znalosti, Sledování (Přehled-velín, Roadmapa, Procesy, Stav systému, Hledat, Automatika), Správa (Moje menu, sdílené menu, přehled rolí), Nápověda. Mobilní rozhraní a PWA, osobní nastavení synchronizované přes SharePoint (seznam NastaveniAplikace založen 2026-11-22).
+Verze 0.44.0 (root i stable). Moduly: Můj den, Případy, Zakázky, Gantt a termíny, Smlouvy a kontroly, Pošta, Kalendář, Úlohy pro agenty, AI, Znalosti, Sledování (Přehled-velín, Roadmapa, Procesy, Stav systému, Hledat, Automatika), Správa (Moje menu, sdílené menu, přehled rolí), Nápověda. Mobilní rozhraní a PWA, osobní nastavení synchronizované přes SharePoint (seznam NastaveniAplikace založen 2026-11-22).
 Bezpečnost (0.29.0): CSP, MSAL u aplikace, pošta v izolovaném okně bez skriptů, escapování dat ze SharePointu, odkazy jen https/mailto/tel, odesílání pošty jen přes potvrzení. Přístup k datům řídí práva SharePointu, role v aplikaci jen zobrazení. API klíče AI jen v prohlížeči zařízení.
 Ověřeno (0.29.0, 2026-11-22, Browser 2, tkrejci@elzy.cz): 30 modulů na ostrých datech bez chyby a bez porušení CSP; běh případu WORK-20261122-0001 od založení po uzavření včetně automatického připojení e-mailu; synchronizace nastavení a uložení sdíleného menu; toky Power Automate T3, T4, T9, T10 zapnuté a úspěšné. Automatický test test/e2e-demo.py: 30 modulů, PC i mobil 390 px, oba kanály, bez chyby.
 Toky Power Automate (vlastník Tomáš): T3 Vstup zákazníka (Dotazy, Schválení), T3 Kontakty od zákazníka, T4 Připomínky čekání (pracovní dny 7:30), T9 Kontrola ELZY (Outlook), T10 Přístupy a uvítání (pracovní dny 7:30). Pracují nad portálem a Zakázky ELZA; běh případu v aplikaci zatím žádný tok nepoužívá.
@@ -40,3 +40,5 @@ Firmy (2026-11-22): seznam Firma na webu ZakazkyELZA je kopie číselníku cisel
 0.42.0: protokol a nabídka nápravy odcházejí společně (DEC-048).
 
 0.43.0: ochrana proti vloženým pokynům (docs/OCHRANA-NAVRH.md), Hlídané termíny v Můj den, úkoly ke školením, úkol obchodu při nevyhovující kontrole. Neověřeno na ostrých datech (ostrý test pošty s podezřelým e-mailem na testovací adresu; zápis úkolů klepne Tomáš). Seznamy Lidé a školení a Kontroly na PortalELZA2 stále nezaloženy.
+
+0.44.0: Strážce kódu a sdílená ochrana (docs/OCHRANA-NAVRH.md). Čeká: první schválení základu otisků ve štítku 🛡 (po nasazení), ověření na živém webu, GitHub 2FA a ochrana větve (vlastník).

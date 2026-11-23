@@ -288,7 +288,7 @@ async function saveDraft(show){
     return true;
   }catch(e){st("Uložení se nezdařilo: "+(e.detail||e.message));return false}
 }
-async function confirmSend(){
+async function confirmSend(){if(window.STRAZ&&STRAZ.locked())throw new Error('Odesílání je zablokované: kód aplikace se změnil bez schválení (štítek 🛡).');
   grab();var c=S.c;
   if(!recips(c.to).length){st("Vyplňte alespoň jednoho příjemce (platný e-mail).");return}
   if(!(await GR.has(SN))){st("Odesílání z aplikace zatím není povoleno (chybí Mail.Send). Uložte koncept a odešlete ho v Outlooku.");return}
