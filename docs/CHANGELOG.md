@@ -1,3 +1,7 @@
+## 0.51.0 (2026-11-23)
+- Nový modul Ranní kontrola (rano.js, menu Moje práce): přebírá z Copilotu naplánované úlohy „Ranní přehled dne“ (7:30) a „Ranní zpracování poptávek“ (8:00). Čte poštu od posledního pracovního dne a dnešní kalendář (jen čtení), z poptávek (bez blokovaných odesílatelů, jedna karta na vlákno) složí kartu: typ, technologie, jistota, OBJ/PR, co chybí, Předpoklady. Koncept odpovědi zadá klepnutím agentovi AG-POSTA (Úlohy). Test test/rano.test.js.
+- Poznámka: úlohy v Copilotu zatím zůstávají zapnuté jako záloha, vypnout po ověření na ostrých datech.
+
 ## 0.50.0 (2026-11-23)
 - Nová společná vrstva sdilene.js (SDL): čtení po dávkách, zápis jen do popsaných seznamů, zakládání seznamů a složek po klepnutí; nic se nemaže.
 - A: Analýza vstupu sdílí postupy a zpětnou vazbu celému týmu (seznamy PostupVerze a PostupZaznam na webu Zakázky ELZA, zakládá tlačítko), druhé zařízení načte sdílené verze; schválení výchozího postupu a doplnění zdroje předpisu nebo normy u požadavku odborně vedoucím (nová verze, stará v historii); zpracovaná zpětná vazba se označí.
