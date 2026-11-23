@@ -12,7 +12,7 @@ function comp(){S.compiled=[];S.vzory.forEach(function(v){try{S.compiled.push([n
 async function load(){try{if(!ready()){S.stav='jen v tomto zařízení (ukázkový režim nebo nepřihlášeno)';return}
  var r=await fetch(ur("lists/getbytitle('NastaveniAplikace')/items?$filter=Title eq '"+T+"'&$select=Id,Hodnota"),{headers:{Authorization:'Bearer '+await rt(),Accept:'application/json;odata=nometadata'}});
  if(r.status==404){S.stav='jen v tomto zařízení (seznam NastaveniAplikace neexistuje)';return}if(!r.ok)throw new Error('HTTP '+r.status);
- var row=(await r.json()).value[0];if(row){S.id=row.Id;var d={};try{d=JSON.parse(row.Hodnota||'{}')}catch(e){}S.blok=d.blok||[];S.vzory=d.vzory||[];S.appr=d.appr||null;S.inc=d.inc||[]}
+ var row=(await r.json()).value[0];if(row){S.id=row.Id;var d={};try{d=JSON.parse(row.Hodnota||'{}')}catch(e){}var FP=/meta\s+http-equiv/i,n0=(d.blok||[]).length+(d.inc||[]).length;S.blok=(d.blok||[]).filter(function(b){return !FP.test(b.w||'')});S.vzory=d.vzory||[];S.appr=d.appr||null;S.inc=(d.inc||[]).filter(function(x){return !FP.test((x.h||[]).join(' '))});if(S.blok.length+S.inc.length!=n0)dirty()}
  S.stav='sdíleno přes SharePoint';comp()}catch(e){S.stav='sdílení selhalo: '+e.message}}
 function dirty(){clearTimeout(tmr);tmr=setTimeout(save,1500)}
 async function save(){if(!ready()){return}try{var h={Authorization:'Bearer '+await wt(),Accept:'application/json;odata=nometadata','Content-Type':'application/json;odata=nometadata'},b=JSON.stringify({Title:T,Hodnota:JSON.stringify({blok:S.blok,vzory:S.vzory,appr:S.appr,inc:S.inc.slice(0,100)})});

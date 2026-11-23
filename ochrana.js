@@ -33,13 +33,13 @@ function hidden(html){var h=[];var s=String(html||'');
  if(/style\s*=\s*["'][^"']*(display\s*:\s*none|font-size\s*:\s*0|visibility\s*:\s*hidden|color\s*:\s*#?(fff(fff)?|white)\b[^"']*background|opacity\s*:\s*0\b)/i.test(s))h.push('skrytý text (neviditelný pro čtenáře)');
  if((s.match(ZW)||[]).length>3)h.push('neviditelné znaky v textu');return h}
 /* scan(text, isHtml) -> {score,level,hits[]} ; level: 0 čisté, 1 podezřelé, 2 závažné */
-var CODE=[[/<\s*script\b|\bon(error|load|click|focus|mouseover|toggle|begin)\s*=|javascript\s*:|<\s*(iframe|object|embed|meta\s+http-equiv)\b|data\s*:\s*text\/html/i,3,'spustitelný kód v obsahu (script, událost, iframe, javascript:)'],[/document\.cookie|localStorage|sessionStorage|XMLHttpRequest|\bfetch\s*\(|window\.open\s*\(|\.innerHTML\s*=|\batob\s*\(/i,3,'skript pracující s daty prohlížeče nebo odesílající data']];
+var CODE=[[/<\s*script\b|\bon(error|load|click|focus|mouseover|toggle|begin)\s*=|javascript\s*:|<\s*(iframe|object|embed)\b|data\s*:\s*text\/html/i,3,'spustitelný kód v obsahu (script, událost, iframe, javascript:)'],[/document\.cookie|localStorage|sessionStorage|XMLHttpRequest|\bfetch\s*\(|window\.open\s*\(|\.innerHTML\s*=|\batob\s*\(/i,3,'skript pracující s daty prohlížeče nebo odesílající data']];
 function scan(text,isHtml){var raw=String(text||''),hits=[],score=0,t=plain(raw).replace(ZW,''),X=(window.STRAZ&&STRAZ.vzory())||[];
  if(isHtml){hidden(raw).forEach(function(d){hits.push(d);score+=2});CODE.forEach(function(c){var m=c[0].exec(raw);if(m){hits.push(c[2]+': „'+m[0].slice(0,60)+'“');score+=c[1]}})}
  var AL=P.concat(X);for(var i=0;i<AL.length;i++){var m=AL[i][0].exec(t);if(m){hits.push(AL[i][2]+': „'+m[0].slice(0,80)+'“');score+=AL[i][1]}}
  return{score:score,level:score>=3?2:score>=1?1:0,hits:hits}}
 /* seznam blokovaných odesílatelů (adresa nebo @doména), osobní nastavení v zařízení */
-function bl(){var L=jl(BK,[]),Z=(window.STRAZ&&STRAZ.blok())||[];Z.forEach(function(z){if(!L.some(function(b){return b.a==z.a}))L.push(z)});return L}
+var FP=/meta\s+http-equiv/i;function bl(){var L=jl(BK,[]).filter(function(b){return !FP.test(b.w||'')}),Z=(window.STRAZ&&STRAZ.blok())||[];Z.forEach(function(z){if(!L.some(function(b){return b.a==z.a}))L.push(z)});return L}
 function norm(a){return String(a||'').trim().toLowerCase()}
 function isBlocked(addr){addr=norm(addr);if(!addr)return false;var d='@'+addr.split('@')[1];return bl().some(function(b){return b.a==addr||b.a==d})}
 function block(addr,why){addr=norm(addr);if(!addr||isBlocked(addr))return;var L=bl();L.push({a:addr,d:new Date().toISOString(),w:String(why||'').slice(0,200)});js(BK,L);if(window.STRAZ)STRAZ.pushBlock(addr,why)}
@@ -55,7 +55,7 @@ function checkMail(t){try{var x=t.m||{},b=t.b||{},from=((b.from||x.from||{}).ema
  t.blocked=isBlocked(from);t.guard=null;
  var r=scan((x.subject||'')+' '+html,true);
  if(r.level>0){t.guard=r;var key='g'+(x.id||'');if(!checkMail.seen)checkMail.seen={};
-  if(!checkMail.seen[key]){checkMail.seen[key]=1;if(r.level==2&&from){block(from,r.hits[0]);t.blocked=true}
+  if(!checkMail.seen[key]){checkMail.seen[key]=1;if(r.level==2&&from&&!/@elzy\.cz$/i.test(from)){block(from,r.hits[0]);t.blocked=true}
    alertMe((r.level==2?'Zpráva obsahuje pokyny pro AI nebo pokus o manipulaci':'Podezřelý obsah zprávy')+(x.subject?': '+x.subject:''),r.hits,from)}}
  return t.guard}catch(e){return null}}
 function banner(t){var h='';if(t.blocked)h+='<div class=gbanner style="background:#fdecea;border:2px solid #c0392b;color:#7b241c"><b>⚠ Odesílatel je zablokován.</b> Text zprávy se nezobrazuje a nikdy se nepředá AI. <button class=g data-a=ounb>Odblokovat</button></div>';
