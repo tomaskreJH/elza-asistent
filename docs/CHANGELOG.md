@@ -1,3 +1,10 @@
+## 0.48.0 (2026-11-23)
+- Plán fází se ukládá do SharePointu (web Zakázky ELZA): plán zakázky (PlanFaze), záznamy reality (ZaznamFaze), schválené normy (Norma), potvrzené e-maily osob (Osoba) a kvalifikace s platností (Kvalifikace). Seznamy zakládá tlačítko Založit chybějící seznamy po klepnutí; v ukázkovém režimu se nic nezapisuje. Schéma: docs/SEZNAMY-FAZE.md.
+- Kvalifikace napojená na obsazení: plán varuje, když osoba fázi nesmí dělat nebo jí kvalifikace skončí dřív než fáze; tlačítko Zapsat obsazení do Lidé a školení přenese plán po lidech do seznamu Obsazeni (po potvrzení souhrnu, jeden vedoucí akce, staré obsazení téhož kódu se označí jako zrušené).
+- Gantt s přetahováním: fázi lze přetáhnout myší nebo prstem na jiný den (pevný začátek 📌, dopad na předání se ukáže hned, dřív než skončí předchozí fáze to nejde); Zrušit ruční posuny. Kalendář plánu začíná pondělím aktuálního týdne a dnešním dnem (dřív pevné datum), 4 týdny.
+- Test: test/faze-store.py (falešný SharePoint v paměti: založení seznamů, kvalifikace, plán uložit/načíst bez duplicit, obsazení s potvrzením, přetažení fáze).
+- Návod: rozšířeny kapitoly Plán fází a Osoby a kvalifikace; Průvodce: aktualizovaný slide Hotovo a co dál.
+
 ## 0.47.0 (2026-11-23)
 - Průvodce (pruvodce.html) rozšířen na 14 slidů: živá simulace toku dat (16 kroků, kdo vstupuje: skript, tok, AI, skill, člověk; záznamy v SharePointu vznikají průběžně, souhrn ukazuje, že AI sama nezapsala nic), srovnání skriptu, toku, AI agenta a skillu, cesta dotazu AI přes ochranu, tok dat od SQL po portál, interaktivní plán fází na dotek, ukázka zablokovaného podvodného e-mailu, hotovo a co čeká. Vymyšlená data. Test: python3 test/pruvodce.py.
 - Nový modul Osoby (osoby.js): klíč osoby je osobní číslo, 106 řádků Zamestnanec se skládá na osoby bez duplicit, návrh e-mailu příjmení@elzy.cz, kvalifikace s platností. Test: node test/osoby.test.js.
