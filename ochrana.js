@@ -29,9 +29,11 @@ var P=[
 P.forEach(function(p){p[0]=new RegExp(p[0].source.replace(/\\w/g,'[\\wÀ-ž]'),p[0].flags)});
 var ZW=/[​-‏⁠-⁤﻿‪-‮]/g;
 function plain(t){return String(t||'').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/\s+/g,' ')}
-function hidden(html){var h=[];var s=String(html||'');
- if(/style\s*=\s*["'][^"']*(display\s*:\s*none|font-size\s*:\s*0|visibility\s*:\s*hidden|color\s*:\s*#?(fff(fff)?|white)\b[^"']*background|opacity\s*:\s*0\b)/i.test(s))h.push('skrytý text (neviditelný pro čtenáře)');
- if((s.match(ZW)||[]).length>3)h.push('neviditelné znaky v textu');return h}
+function pat(t){var h=[],sc=0,AL=P.concat((window.STRAZ&&STRAZ.vzory())||[]);for(var i=0;i<AL.length;i++){var m=AL[i][0].exec(t);if(m){h.push([AL[i][2]+': „'+m[0].slice(0,80)+'“',AL[i][1]]);sc+=AL[i][1]}}return h}
+/* skrytý text je podezřelý jen tehdy, když ve skrytém prvku (display:none, nulové písmo, bílá na bílé) je pokyn pro AI; běžný skrytý náhled zprávy z Outlooku se ignoruje */
+var HID=/<(\w+)\b[^>]*style\s*=\s*["'][^"']*(?:display\s*:\s*none|visibility\s*:\s*hidden|font-size\s*:\s*0(?:px|pt|em|%)?\s*(?:;|["'])|opacity\s*:\s*0\s*(?:;|["'])|color\s*:\s*#?(?:fff(?:fff)?|white)\s*;[^"']*background(?:-color)?\s*:\s*#?(?:fff(?:fff)?|white))[^"']*["'][^>]*>([\s\S]{0,3000}?)<\/\1>/gi;
+function hidden(html){var h=[],s=String(html||''),m;HID.lastIndex=0;while((m=HID.exec(s))){var tx=plain(m[2]).replace(ZW,'').trim();if(tx.length<15)continue;pat(tx).forEach(function(x){if(x[1]>=2)h.push('skrytý text s pokynem pro AI: '+x[0])})}
+ if(/[\u{E0000}-\u{E007F}]/u.test(s))h.push('skryté znaky (ASCII smuggling)');return h}
 /* scan(text, isHtml) -> {score,level,hits[]} ; level: 0 čisté, 1 podezřelé, 2 závažné */
 var CODE=[[/<\s*script\b|\bon(error|load|click|focus|mouseover|toggle|begin)\s*=|javascript\s*:|<\s*(iframe|object|embed)\b|data\s*:\s*text\/html/i,3,'spustitelný kód v obsahu (script, událost, iframe, javascript:)'],[/document\.cookie|localStorage|sessionStorage|XMLHttpRequest|\bfetch\s*\(|window\.open\s*\(|\.innerHTML\s*=|\batob\s*\(/i,3,'skript pracující s daty prohlížeče nebo odesílající data']];
 function scan(text,isHtml){var raw=String(text||''),hits=[],score=0,t=plain(raw).replace(ZW,''),X=(window.STRAZ&&STRAZ.vzory())||[];

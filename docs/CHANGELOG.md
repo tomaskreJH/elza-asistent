@@ -1,3 +1,6 @@
+## 0.44.2 (2026-11-23)
+- Skrytý text: varuje se jen tehdy, když ve skrytém prvku (display:none, nulové písmo, bílá na bílé) je pokyn pro AI; běžný skrytý náhled zprávy, prázdné odstavce, mezery, průhlednost a bílý text na barevném pozadí už neplaší. Neviditelné značkové znaky (ASCII smuggling) se hlídají zvlášť, obousměrné značky a nulová šířka v běžném textu ne.
+
 ## 0.44.1 (2026-11-23)
 - Oprava: ochrana chybně hlásila běžné e-maily z Outlooku (značka meta http-equiv) jako útok a blokovala odesílatele. Značka odstraněna ze vzorů, dřívější chybné blokace a incidenty se samy smažou, vlastní doména @elzy.cz se nikdy automaticky neblokuje. Test s typickým Outlook e-mailem.
 
