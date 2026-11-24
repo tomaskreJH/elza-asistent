@@ -1,3 +1,12 @@
+## 0.61.0 (2026-11-24) – Profil firmy, Znalosti s oprávněním, Náhled před odesláním, Recepce v Chatu a Můj den
+- Nový soubor kontext.js: Profil firmy (tón, zakázané fráze, FAQ, kontakty) jako jeden zdroj pro všechny Elzáčky; přidává se do každého dotazu.
+- Znalosti s oprávněním: znalost dostane jen povolený Elzáček (* = všichni) a jen když zadání obsahuje její klíčové slovo (líné načítání, šetří limit); u každé kdo a kdy, tlačítko Vyřadit.
+- Náhled přesného kontextu před každým voláním AI (vzor Syniru kap. 10): systémová instrukce, zadání s rolí, profilem, znalostmi a postupy, přiložená data, odhad tokenů, upozornění na zakázanou frázi; Schválit a odeslat / Schválit a příště se neptat (u Elzáčka) / Zamítnout. Výchozí zapnuto.
+- Chat: volba Recepce vybere (bez AI), všichni Elzáčci včetně vlastních, pravý panel Co agent ví. Můj den: blok Recepce předá zadání do Chatu.
+- Nový seznam ZnalostElza (seznamy.js; Správa → Seznamy → Založit chybějící); do založení jen prohlížeč.
+- docs/ZADOST-CLAUDE-DESKTOP.md: přehled pro správce ke schválení aplikace Claude na PC a NB (jen běžná práva).
+- test/kontext.test.js; Návod (Chat, Profil firmy a Znalosti) a Průvodce (slide 9) aktualizovány; ?v=82.
+
 ## 0.60.0 (2026-11-24) – Katalog dovedností ze Syniru, Recepce, týmová práce a šetření tokenů
 - Nový datový soubor katalog.js: 20 Elzáčků a 38 postupů převzatých ze Syniru 0.2.82 (14 pracovních skillů, balíčky rolí, agenti z galerie, marketingová výbava), přepsaných česky a vylepšených pro ELZY: Šéf štábu (ranní přehled), Asistent kanceláře, Projektový manažer, Smlouvy, Účetní kontrola (varování na změněný účet dodavatele), Hlídač výdajů, Zákaznická podpora (+ porucha a havárie), Obchodník (podklady, ceny dělá obchod), Marketér, Propagace na sítích (příspěvek, karusel, stories, reference se souhlasem, kontrola, Google Business Profile), Video a reels (making-of, hooky), SEO a GEO, Rešeršér, Analytik dat (kontrola kvality před synchronizací), Překladatel, Personalista, Programátor, Bezpečnostní kontrola, Kontrola webu a přístupnosti, Hlídač webů. Kde má ELZA vlastní lepší řešení, zůstává a balíček má poznámku „ELZA vlastní“.
 - Galerie má skupiny Kancelář, Obchod, Marketing, Data, Lidé, Technika, Vývoj; postupy se dál načítají líně jen podle tématu zadání.

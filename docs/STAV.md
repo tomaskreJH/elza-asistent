@@ -1,5 +1,5 @@
 # Stav ELZA asistenta
-Verze 0.60.0 (root i stable), 2026-11-24. Novinka: Katalog dovedností ze Syniru, Recepce, týmová práce, mezipaměť Claude (CHANGELOG). Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
+Verze 0.61.0 (root i stable), 2026-11-24. Novinka: Profil firmy, Znalosti s oprávněním, Náhled před odesláním, Recepce v Chatu a Můj den (CHANGELOG). Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
 
 ## Cíl (měřítko každé změny)
 Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vyřídí poštu a případy, plánuje zakázky a lidi a nic nemusí kopírovat jinam. Technici mají být co nejvíc u zákazníka, zákazník v portálu „může klidně spát“. Bezpečnost má přednost před pohodlím, pohodlí před funkcemi navíc. Nic placeného navíc, CRM a stará dokumentace jen čtení.
@@ -15,6 +15,8 @@ Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vy�
 - Elzáčci podle rolí (0.58.0): galerie, agent jednou větou, balíčky rolí a líné načítání postupů v AI nastavení a Úlohách; ověřeno testem a v ukázkovém režimu, na ostrých datech ne (seznam ElzacekDef se zakládá ve Správa → Seznamy).
 - Vzhled v barvách ELZY, spodní lišta, rychlé nástroje a nový Můj den (0.56.0, vzhled.js); ostrá data neověřena (jen ukázkový režim).
 
+- Profil firmy, Znalosti s oprávněním a Náhled před odesláním (0.61.0): ověřeno testem (test/kontext.test.js) a v ukázkovém režimu, na ostrých datech ne (seznam ZnalostElza se zakládá ve Správa → Seznamy).
+
 ## Hotovo v kódu, čeká na ostré ověření nebo klepnutí Tomáše
 - Všech 16 seznamů založeno a sloupce ověřeny (0.53.0); přehled a zakládání ve Správa → Seznamy (seznamy.js = jeden zdroj schémat). Moduly načtou ostrá data bez chyb (0.53.1). Základní data se naplní klepnutím: Lidé a školení → Naplnit základní data, Plán fází → Uložit výchozí normy (0.54.0); členy týmů doplnit podle e-mailu.
 - Ranní kontrola na ostrých datech běží (0.53.1); po týdnu souběhu vypnout dvě ranní úlohy v Copilotu (nahrazuje ranní úlohy Copilotu; ty zůstávají jako záloha do ověření).
@@ -29,7 +31,7 @@ CSP na všech stránkách (object-src none, base-uri self, od 0.52.0 i referrer 
 
 ## Čeká mimo aplikaci
 Pravidla AI: vlastník otevře Pravidla AI → Nová verze (doplněk C18–C22 je předvyplněn), uloží a schválí; pak všem vyskočí okno s potvrzením.
-Souhlas správce pro Copilot (docs/ZADOST-COPILOT.md), rozšíření T12 na odpovědné osoby (po výslovném ano), test na skutečném telefonu.
+Souhlas správce pro Copilot (docs/ZADOST-COPILOT.md) a pro aplikaci Claude na PC a NB (docs/ZADOST-CLAUDE-DESKTOP.md), rozšíření T12 na odpovědné osoby (po výslovném ano), test na skutečném telefonu.
 
 ## Kontrola 2026-11-23 (0.52.0)
 Viz docs/KONTROLA-2026-11-23.md.

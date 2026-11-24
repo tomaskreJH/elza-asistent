@@ -7,6 +7,7 @@ var D=[
  [Z,"PostupVerze","verze postupů",[["Postup",2,1],["Verze",9],["Data",3],["Stav",2],["Schvalil",2]]],
  [Z,"PostupRetez","postupy: řetězy agentů se schválením",[["Vlastnik",2,1],["Data",3],["Stav",2]]],
  [Z,"ElzacekDef","Elzáčci: vlastní agenti a balíčky rolí",[["Vlastnik",2,1],["Data",3],["Stav",2]]],
+ [Z,"ZnalostElza","Znalosti a profil firmy pro Elzáčky",[["Druh",2,1],["Agenti",2],["Klic",2],["Text",3],["Stav",2],["Kdo",2],["Kdy",2]]],
  [Z,"PostupZaznam","zpětná vazba k postupům",[["Postup",2,1],["Verze",9],["Krok",2],["Akce",2],["Text",3],["Kdo",2],["Kdy",2],["Stav",2]]],
  [Z,"NabidkaEvid","evidence odeslaných nabídek",[["Zakazka",2,1],["Zakaznik",2],["Odeslano",2],["Odpoved",2],["Stav",2,1],["Odpovedny",2,1],["Pripomenuto",9],["Poznamka",3]]],
  [Z,"Ukol","úkoly",[["KodZakazky",2],["Resitel",2],["Od",4],["Do",4],["Hotovo",9],["Poznamka",3]]],
