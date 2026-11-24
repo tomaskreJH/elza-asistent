@@ -1,3 +1,10 @@
+## 0.69.0 (2026-11-24) – model podle Úsilí, skutečné limity, Noční běhy
+- Claude (předplatné): model se volí automaticky podle Úsilí Elzáčka (nízké Haiku, střední Sonnet, vysoké Opus); ruční model má přednost; uložení bez změny ukládá „auto“.
+- Výchozí Elzáčci (ELZA, Pošta, Případy, Vývoj, Video, Příspěvky) i nově přidaní z Galerie a vlastní jedou přes Claude (předplatné); Copilot zůstává volitelný (čeká na souhlas správce).
+- ElzaMost verze 2: vrací tokeny a cenový ekvivalent (do AI záznamu jako text u modelu, bez změny schématu), GET /limity (zbývající % za 5 h a 7 dní a čas obnovy ze stejného přihlášení jako /usage v Claude CLI, údaje neopouštějí PC; neoficiální zdroj, při změně „nedostupné“, nikdy nula), noční fronta (/fronta, /fronta/vysledky, /fronta/potvrdit, /fronta/nastaveni; úlohy v %LOCALAPPDATA%\ElzaMost\fronta.json, okno výchozí 22 až 6 h).
+- AI nastavení: kruhové ukazatele limitů Claude; při 80 % se přepne na Haiku, při 95 % na Ollamu (se zobrazeným upozorněním); ruční tabulka předplatného zůstává jako záloha pro Copilot a ChatGPT.
+- Nový modul nocni.js (menu AI → Noční běhy), seznam NocniFronta (Správa → Seznamy → Založit chybějící): úlohy pro vybranou stanici (PC, odložená stanice, první dostupná), předání mostu při otevření aplikace a každých 10 min, výsledek ke schválení nahoře (Čeká na vás), přijetí zapíše AI záznam. Testy: test/nocni.test.js, test/model.test.js. ?v=99.
+
 ## 0.68.4 (2026-11-24) – most snese varování Claude CLI
 - ElzaMost: varování Claude CLI na chybovém výstupu už v PowerShellu 5.1 nezastaví běh. ?v=98.
 
