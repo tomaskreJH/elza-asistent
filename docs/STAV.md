@@ -26,6 +26,8 @@ Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vy�
 - Schvalování nahoře (0.66.0): ověřeno na ostrém webu (pruh Strážce, rámeček v 🛡).
 - Elzáček Připojení EPS na PCO HZS: přidán z Galerie na ostrém webu (0.67.0); Interní stav PCO ověřen na skutečné poště MAKRO a ÚZSVM a opraven. Elzáček zatím nemá nástroj (Copilot čeká na souhlas správce, Claude API bez klíče); poběží přes Claude na předplatném po zapojení Claude CLI (viz DALSI-KROKY bod 0d).
 
+- Ověřeno na ostrém webu 2026-11-24 (0.69.5): most spárován s vestavěným prohlížečem, skutečné limity Claude (kruhy v AI nastavení, dlaždice v Můj den, ukazatel v menu), volání Claude přes most (haiku 2,6 s), modelPodle Úsilí (n=haiku, s=sonnet, v=opus), Strážce odemčený po schválení otisků. Noční běhy: fronta přijala úlohu, ale most ji nespustil (oprava 0.69.6, čeká na novou instalaci mostu).
+
 ## Hotovo v kódu, čeká na ostré ověření nebo klepnutí Tomáše
 - 0.69.0: Noční běhy a seznam NocniFronta (Správa → Seznamy → Založit chybějící), nový ElzaMost verze 2 (spustit znovu elza-most-instalace.cmd na PC, NB i odložené stanici), kruhové limity: zdroj /limity je neoficiální a neověřený; po prvním spuštění zkontrolovat v AI nastavení, že kruhy ukazují čísla.
 - Všech 16 seznamů založeno a sloupce ověřeny (0.53.0); přehled a zakládání ve Správa → Seznamy (seznamy.js = jeden zdroj schémat). Moduly načtou ostrá data bez chyb (0.53.1). Základní data se naplní klepnutím: Lidé a školení → Naplnit základní data, Plán fází → Uložit výchozí normy (0.54.0); členy týmů doplnit podle e-mailu.
