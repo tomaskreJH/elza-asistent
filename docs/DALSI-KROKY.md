@@ -1,4 +1,5 @@
-# Další kroky (po 0.59.0) – v tomto pořadí
+# Další kroky (po 0.60.0) – v tomto pořadí
+0. **Syniru do 24. 12. 2026 (beta):** dál těžit podle docs/SYNIRU-ANALYZA-2026-11-24.md: Znalosti s oprávněním po Elzáčcích, profil firmy (tón, zakázané fráze, FAQ) jako jeden zdroj pro všechny Elzáčky, náhled přesného kontextu před odesláním (A7 pravý panel „Co agent ví“), rychlá odpověď bez nástrojů ve frontě Úloh, Recepce a Týmová práce i v Chatu a Můj den, statistiky D25. Zbývá vytáhnout pokyny agentů galerie Syniru (Šéf štábu, Obchodník…) přímo z aplikace a porovnat s katalog.js.
 1. **Tomáš, 15 minut:** Správa → Seznamy → Založit chybějící (ElzacekDef, PostupRetez); v AI nastavení přidat z Galerie Elzáčky, které chceš; schválit otisky 🛡 verze 0.55.0; Složky zakázky → Ověřit nebo založit cílovou knihovnu a zkusit jednu dávku starých souborů; Lidé a školení → Naplnit základní data; Plán fází → Uložit výchozí normy; kvalifikace technikům pilotu; doplnit členy týmů (e-mail); po týdnu souběhu vypnout v Copilotu dvě ranní úlohy.
 2. **Pilot Plánu fází na reálné zakázce** podle docs/OVERENI-FAZI-2026-11-23.md (plán s kódem zakázky, realita po fázích); normy zpřesnit po 10 záznamech.
 3. **EspoCRM jen čtením:** Tomáš dodá adresu ESPO a kdo založí čtecího API uživatele (docs/ESPO-CTENI.md); pak tok do kopie v SharePointu a zobrazení v Případech a Zakázkách.

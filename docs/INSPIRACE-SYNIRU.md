@@ -42,6 +42,7 @@ Zásada: nic nekopírujeme jako aplikaci, bereme jen to, co má Syniru lépe. Ž
 3D kancelář (efekt bez užitku pro techniky), avatary/portréty, kurzy krypto, citáty – kromě svátku.
 
 ## Stav zapracování
+0.60.0: celý katalog skillů a agentů Syniru (katalog.js), Recepce, týmová práce, kontrolor, mezipaměť Claude; podrobný rozbor docs/SYNIRU-ANALYZA-2026-11-24.md.
 A1–A6, A8: 0.56.0. C18–C23: 0.57.0 (C19 vrácení jen u Úloh pro agenty). B15: 0.59.0 (Postupy v Úlohách). B11–B14: 0.58.0 (galerie, jedna věta, balíček role, líné načítání; B16 a B17 zatím ne).
 
 ## Pořadí zapracování (návrh)

@@ -1,5 +1,5 @@
 # Stav ELZA asistenta
-Verze 0.59.0 (root i stable), 2026-11-24. Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
+Verze 0.60.0 (root i stable), 2026-11-24. Novinka: Katalog dovedností ze Syniru, Recepce, týmová práce, mezipaměť Claude (CHANGELOG). Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
 
 ## Cíl (měřítko každé změny)
 Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vyřídí poštu a případy, plánuje zakázky a lidi a nic nemusí kopírovat jinam. Technici mají být co nejvíc u zákazníka, zákazník v portálu „může klidně spát“. Bezpečnost má přednost před pohodlím, pohodlí před funkcemi navíc. Nic placeného navíc, CRM a stará dokumentace jen čtení.
