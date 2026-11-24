@@ -1,3 +1,6 @@
+## 0.69.7 (2026-11-24) – instalace mostu: PATH a přihlášení
+- elza-most-instalace.cmd: nově přidá %USERPROFILE%\.local\bin do PATH uživatele (bez správce), takže příkaz claude funguje i po restartu; instalátor Claude se nespouští znovu, když už je nainstalovaný; přihlašovací okno se otevírá v domovské složce (ne ve složce tools). ?v=106.
+
 ## 0.69.6 (2026-11-24) – oprava noční fronty v mostu
 - ElzaMost: úlohy ve frontě zůstávaly ve stavu „čeká“, protože PowerShell 5.1 vrací JSON pole zabalené v poli; nová funkce Rozbal čtení fronty srovná. Most hlásí poslední chybu běhu fronty (pole nocChyba ve /stav), Noční běhy ji ukážou červeně. Ověřeno: ruční volání Claude přes most funguje (haiku, 2,6 s; jedno volání CLI má ~20 000 vstupních tokenů režie, viz DALSI-KROKY). Po nasazení spustit znovu elza-most-instalace.cmd. ?v=105.
 
