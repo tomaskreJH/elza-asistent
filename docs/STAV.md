@@ -28,7 +28,7 @@ Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vy�
 
 - Ověřeno na ostrém webu 2026-11-24 (0.69.5): most spárován s vestavěným prohlížečem, skutečné limity Claude (kruhy v AI nastavení, dlaždice v Můj den, ukazatel v menu), volání Claude přes most (haiku 2,6 s), modelPodle Úsilí (n=haiku, s=sonnet, v=opus), Strážce odemčený po schválení otisků. Noční běhy: fronta přijala úlohu, ale most ji nespustil (oprava 0.69.6, čeká na novou instalaci mostu).
 
-- Ověřeno na ostrém webu 2026-11-24 (0.69.12): Zkusit zapíše řádek do AI záznamu s modelem, tokeny a režimem (900 vstupních tokenů, lehký režim). Noční fronta nf5 čeká na restart mostu na PC (běží starý proces); most se po něm obnovuje sám.
+- Ověřeno na ostrém webu 2026-11-24 (0.69.12): Zkusit zapíše řádek do AI záznamu s modelem, tokeny a režimem (900 vstupních tokenů, lehký režim). Noční fronta nf5 ověřena na ostrém PC (0.69.13: hotovo, lehký režim, 1 482 vstupních tokenů).
 
 ## Hotovo v kódu, čeká na ostré ověření nebo klepnutí Tomáše
 - 0.69.0: Noční běhy a seznam NocniFronta (Správa → Seznamy → Založit chybějící), nový ElzaMost verze 2 (spustit znovu elza-most-instalace.cmd na PC, NB i odložené stanici), kruhové limity: zdroj /limity je neoficiální a neověřený; po prvním spuštění zkontrolovat v AI nastavení, že kruhy ukazují čísla.

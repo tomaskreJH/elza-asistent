@@ -1,3 +1,6 @@
+## 0.69.13 (2026-11-24, jen tools/) – noční fronta ověřena
+- Příčina CHYBY 1: NactiFrontu u jediné úlohy vrátila objekt místo pole, Nocni() ji proto nikdy nenašla. Opraveno @(NactiFrontu). Na ostrém PC ověřeno: nf5 hotovo (sonnet, lehký režim, 1 482 vstupních tokenů, 0,007 USD ekvivalent). Instalátor navíc ukončí starý proces, přidá HKCU Run a ověří běh.
+
 ## 0.69.12 – dodatek 2 (2026-11-24, jen tools/)
 - Po restartu PC most neběžel vůbec (v most.log žádný start po 15:44). Instalátor nově ukončí starý proces mostu, přidá start i do registru (HKCU Run) vedle složky Po spuštění a na konci ověří, že port 47321 odpovídá („OVERENO: most bezi“).
 
