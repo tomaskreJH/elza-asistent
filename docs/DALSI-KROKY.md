@@ -1,4 +1,5 @@
-# Další kroky (po 0.72.0)
+# Další kroky (po 0.73.0)
+**Nové od Tomáše (2026-11-24):** důkladná ranní analýza s doporučením a přiloženou komunikací (po souhlasu správce pro Copilot; dnes pravidlově), dohledání neznámých zákazníků mimo systém (jen jako návrh k ověření), příprava zápisu do Outlooku (kategorie/složka) místo zápisu, vrácení akce (Zpět u přiřazení pošty), aktualizace taháním dolů jen na aktuální obrazovce; jednoduchost a intuitivnost: každá obrazovka má říct, co dělat dál.
 **Tomáš (do 5 minut, jediné ruční kroky):** (1) Správa → Seznamy → Založit chybějící (Zaznam, ProcesStav); (2) ve štítku 🛡 schválit otisky 0.72.0; (3) pro čtení schránky elzy@ a zápis do kalendáře technika podle potřeby dát souhlas s právy Mail.Read.Shared a Calendars.ReadWrite.Shared (aplikace při chybějícím právu napíše, co chybí, a nic nezapíše).
 **Další vlákno:** (1) ostré ověření: uložení fotek a záznamu činnosti na MAKRO (OBJ + PR), getSchedule, zápis do kalendáře zkušebně, auto-případ z elzy@ (jen testovací poptávka z tomaskre@gmail.com), Elzáček Nabídka přes frontu a most; (2) fotka z e-mailu zákazníka jedním klepnutím do složky objektu (příloha v Poště, zdroj zakaznik); (3) sloučení nabídkových modulů podle docs/KONTROLA-2026-11-24.md; (4) odeslání zprávy po Náhledu před odesláním; (5) 0c: ÚZSVM a FW/RE k MAKRO.
 **Dlouhodobě (backlog):**

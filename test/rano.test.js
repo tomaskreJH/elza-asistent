@@ -8,3 +8,13 @@ console.log('rano.test OK',ok)
 var karty=[{cid:'a',schranka:'elzy@elzy.cz',adresa:'n@x.cz'},{cid:'b',schranka:'elzy@elzy.cz',adresa:'m@x.cz'},{cid:'c',adresa:'o@x.cz'},{cid:'d',schranka:'elzy@elzy.cz',adresa:'elzy@elzy.cz'},{cid:'e',schranka:'elzy@elzy.cz',adresa:'p@x.cz'}];
 var v=R.autoVyber(karty,{b:'W1'},5);t(v.map(function(x){return x.cid}).join()=='a,e','jen nové z elzy@, bez vlastní adresy a bez už založených');
 t(R.autoVyber(karty,{},1).length==1,'strop na jeden běh');t(R.autoVyber([],{},5).length==0,'prázdné');console.log('rano auto OK')})();
+(function(){var R=require('../rano.js'),n=0;function t(c,m){if(!c){console.log('FAIL',m);process.exit(1)}n++}
+var k={adresa:'jan@firma.cz',cid:'c1',obj:'OBJ0012',pr:'',chybi:['adresa objektu']},seznam=[{id:'WORK-1',zak:'PR1',nazev:'Firma Praha',klice:'@firma.cz'},{id:'WORK-2',zak:'',nazev:'Jiná',klice:'jine@x.cz'}];
+t(R.navrhShoda(k,seznam,{},{c1:'WORK-9'}).druh=='existujici','vlákno už má případ');
+t(R.navrhShoda(k,seznam,{},{}).druh=='shoda'&&R.navrhShoda(k,seznam,{},{}).w=='WORK-1','shoda podle domény');
+t(R.navrhShoda(k,seznam,{'jan@firma.cz':{v:'ne',n:2}},{}).druh=='ne','naučeno ne-případ');
+t(R.navrhShoda(k,seznam,{'jan@firma.cz':{v:'pripad',w:'WORK-2',n:1}},{}).w=='WORK-2','naučené zařazení má přednost před shodou');
+t(R.navrhShoda({adresa:'a@gmail.com',cid:'x'},[{id:'W',nazev:'g',klice:'@gmail.com'}],{},{}).druh=='novy','volná doména se nepoužije jako shoda');
+t(R.navrhShoda({adresa:'a@nova.cz',cid:'x'},seznam,{},{}).ok==0,'bez shody je k ověření, nic se nedomýšlí');
+t(R.navrhShoda({adresa:'a@firma.cz',cid:'x'},seznam.concat([{id:'WORK-3',nazev:'dvojí',klice:'@firma.cz'}]),{},{}).druh=='vice','více shod vyžaduje výběr');
+t(/vyžádat/.test(R.doporuceni(k)),'doporučení uvádí chybějící');console.log('rano návrhy OK ('+n+')')})();

@@ -1,3 +1,11 @@
+## 0.73.0 (2026-11-24) – Návrhy místo automatických případů, učení, Zpět
+- Společná schránka elzy@ už nezakládá případy sama (nahrazuje automatiku z 0.72.0): ne každý e-mail je případ. Ranní kontrola ke každé poptávce připraví Návrh ELZY (shoda se stávajícím případem podle odesílatele/kódu zakázky, naučené rozhodnutí, nebo nový případ; nejisté je označeno „k ověření“) a Doporučení; člověk potvrdí, přiřadí jinam, založí nový případ nebo označí „Není případ“.
+- Učení: každé rozhodnutí (potvrzení, ruční přiřazení, nový případ, ne-případ) se ukládá podle odesílatele (localStorage + ZnalostElza Druh trideni, sdíleně; v seznamu Znalostí se nezobrazuje) a příští návrh ho použije jako první.
+- Můj den: kopie nepřiřazené pošty nahrazena jednořádkovým souhrnem; třídění (přiřadit, založit případ, zbytečná) je v rámečku nahoře v Poště a po akci zůstane uživatel v Poště.
+- Navigace: obrazovka se drží v adrese (#v=…), obnovení stránky ji zachová, systémové Zpět i tlačítko ← Zpět fungují, stažení dolů na mobilu stránku neobnoví (overscroll-behavior).
+- Zápis do Outlooku zůstává jen příprava (kategorie a složky čekají na souhlas správce); neřešeno: dohledání neznámých zákazníků na internetu, důkladná AI ranní analýza (čeká na Copilot).
+- Testy: test/rano.test.js (návrhy zařazení), e2e, vzhled, průvodce prošly.
+
 ## 0.72.0 (2026-11-24) – Data z jakékoli činnosti, kalendář, elzy@, Elzáček Nabídka
 - Nový zaznam.js a seznam Zaznam (zásada docs/DATOVY-KAPITAL.md): modul Na místě (dříve Na obhlídce) ukládá fotky a strojově čitelný záznam ke KAŽDÉ činnosti (obhlídka, montáž, servis, kontrola, revize, školení, hovor, fotka od zákazníka) do trvalých Podkladů objektu, navrhne příležitosti (kamery, BOZP, PO, modernizace…) a předá je obchodu; Přehled uložených záznamů pro analýzu.
 - Proces nabídky: zápis obhlídky do kalendáře po potvrzení termínu zákazníkem (zkušebně jen do vlastního kalendáře bez účastníků; transactionId proti duplicitě; do kalendáře technika, jinak po potvrzení pozvánkou); tlačítko Elzáček Nabídka (agent AG-NABIDKA v katalogu a v Úlohách): koncept nabídky, chybějící cena nebo odkaz jde jako úkol obchodu (vedoucí Radim).
