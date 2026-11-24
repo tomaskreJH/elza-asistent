@@ -1,3 +1,6 @@
+## 0.73.2 (2026-11-24) – Schránka elzy@ se nečte
+- Rozhodnutí Tomáše: přístup do elzy@elzy.cz zatím nebude, dokud se nevyladí funkčnost; elzy@ nikdy nezakládá případ automaticky. Čtení společné schránky v Ranní kontrole vypnuto přepínačem CTI_SDILENOU (rano.js), právo Mail.Read.Shared se nevyžaduje a nehlásí se chyba. Návrhy zařazení fungují nad vlastní poštou.
+
 ## 0.73.1 (2026-11-24) – Schválení verze jedním klepnutím, důvod nedostupných limitů Claude, nastavení ranní analýzy
 - Strážce kódu: schválení verze je jedno klepnutí (zrušeno „Klepněte znovu“); po schválení hned zmizí položka „Čeká na vás“ a limity Claude se načtou znovu.
 - Limity Claude (ElzaMost): příčinou „nedostupné“ byl vypršelý krátkodobý přístupový token Claude CLI (obnovuje ho jen použití CLI). Most ho nově při chybě 401/403 obnoví drobným voláním (Haiku, „ok“), zopakuje dotaz a po každém běhu Claude limity znovu načte. Neúspěch se drží jen 15 s a aplikace ukáže důvod (dlaždice, menu). Vyžaduje spustit znovu elza-most-instalace.cmd (nová verze mostu, párovací kód zůstane).
