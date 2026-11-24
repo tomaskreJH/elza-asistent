@@ -5,4 +5,6 @@ var u=N.ulohaZ({Id:7,Data:JSON.stringify({tool:'ollama',model:'qwen3.5:4b',syste
 t(N.ulohaZ({Id:1,Data:'{rozbité'})===null&&N.ulohaZ({Id:1,Data:'{}'})===null,'vadná data se přeskočí');
 t(N.ulohaZ({Id:2,Data:JSON.stringify({tool:'x',prompt:'P'})}).tool=='claude','neznámý nástroj = claude');
 t(N.idZ('nf12')==12&&N.idZ('jine')==0,'id z mostu zpět na řádek');
+var ps=require('fs').readFileSync(__dirname+'/../tools/elza-most.ps1','utf8').split('\n').filter(function(l){return !/^\s*function /.test(l)});
+t(!ps.some(function(l){return /\b(NactiFrontu|NactiNast|VNoci|Limity|MaClaude|MaOllamu|UlozFrontu|Nocni)\(\)/.test(l)}),'PowerShell: funkce se volají bez závorek');
 console.log(bad?'SELHALO':'nocni OK');process.exit(bad?1:0);

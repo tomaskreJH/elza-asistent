@@ -1,3 +1,6 @@
+## 0.69.1 (2026-11-24) – oprava mostu
+- ElzaMost 2: chyba syntaxe PowerShellu (volání funkce NactiFrontu se závorkami) bránila startu mostu; opraveno, test hlídá volání funkcí se závorkami. Nový soubor tools/spustit-most.cmd (ruční start s viditelnou chybou). ?v=100.
+
 ## 0.69.0 (2026-11-24) – model podle Úsilí, skutečné limity, Noční běhy
 - Claude (předplatné): model se volí automaticky podle Úsilí Elzáčka (nízké Haiku, střední Sonnet, vysoké Opus); ruční model má přednost; uložení bez změny ukládá „auto“.
 - Výchozí Elzáčci (ELZA, Pošta, Případy, Vývoj, Video, Příspěvky) i nově přidaní z Galerie a vlastní jedou přes Claude (předplatné); Copilot zůstává volitelný (čeká na souhlas správce).

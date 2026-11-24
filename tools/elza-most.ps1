@@ -102,14 +102,14 @@ function VNoci(){ $n = NactiNast; if (-not $n.zapnuto) { return $false }; $h = (
 $script:Ted = $false
 function Nocni(){
   if (-not ($script:Ted -or (VNoci))) { return }
-  $f = NactiFrontu(); $i = -1
+  $f = NactiFrontu; $i = -1
   for ($k = 0; $k -lt $f.Count; $k++) { if ($f[$k].stav -eq 'ceka') { $i = $k; break } }
   if ($i -lt 0) { $script:Ted = $false; return }
   $u = $f[$i]; $u.stav = 'bezi'; UlozFrontu $f
   try {
     if ($u.tool -eq 'ollama') { $r = ZavolejOllamu $u.model $u.system $u.prompt } else { $r = ZavolejClaude $u.model $u.system $u.prompt }
   } catch { $r = @{ok=$false; chyba=$_.Exception.Message} }
-  $f = NactiFrontu()
+  $f = NactiFrontu
   foreach ($x in $f) { if ($x.id -eq $u.id) {
     $x.konec = (Get-Date -Format s)
     if ($r.ok) { $x.stav = 'hotovo'; $x.text = $r.text; $x.usage = $r.usage } else { $x.stav = 'chyba'; $x.chyba = $r.chyba }
