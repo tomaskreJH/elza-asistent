@@ -1,3 +1,6 @@
+## 0.69.10 (2026-11-24) – ElzaMost běží skrytě
+- Instalace mostu (tools/elza-most-instalace.cmd): start při přihlášení do Windows nově přes elza-most-skryty.vbs, bez jakéhokoli okna (dřív minimalizované okno PowerShellu). Párovací kód zůstává v %LOCALAPPDATA%\ElzaMost\parovaci-kod.txt. Stejný instalátor se pustí na každém zařízení (PC, NB) jednou dvojklikem.
+
 ## 0.69.9 (2026-11-24) – schválení verze bez okna confirm
 - Strážce: schválení verze ve 🛡 používalo systémové okno confirm(), které vestavěný prohlížeč Clauda nezobrazí, takže schválení nešlo potvrdit. Nově dvoustupňové potvrzení přímo v tlačítku (klepnout, pak znovu do 15 s). ?v=108.
 
