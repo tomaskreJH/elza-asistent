@@ -1,3 +1,9 @@
+## 0.68.0 (2026-11-24) – Claude CLI v aplikaci přes lokální most
+- Nové nástroje Elzáčků „Claude (předplatné)“ a „Lokální (Ollama)“: běží přes ElzaMost na 127.0.0.1 (tools/elza-most.ps1, instalace elza-most-instalace.cmd, bez správce, bez API klíče).
+- AI nastavení: Lokální most (párování, kontrola stavu) a Předplatné jednotlivých AI (plán, obnova 5 h okna a týdne).
+- Předplatné a lokální nástroje se nezapočítávají do měsíčního stropu USD. CSP: connect-src http://127.0.0.1:47321.
+- Návod: kapitola Claude CLI v aplikaci; Průvodce: snímek 13 aktualizován. Návrh: docs/CLAUDE-CLI-NAVRH.md. ?v=94.
+
 ## 0.67.1 (2026-11-24) – Interní stav PCO opravdu v detailu případu
 - Ověřeno na ostrém webu: případ MAKRO WORK-20261124-0001 založen tlačítkem Založit případ z Ranní kontroly.
 - Oprava (pozůstatek 0.66.1): funkce pohledu Interní stav PCO existovala, ale detail případu ji nevolal; teď je pod tlačítky AI.
