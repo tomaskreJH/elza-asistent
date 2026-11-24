@@ -1,3 +1,6 @@
+## 0.69.4 (2026-11-24) – limity Claude na první pohled
+- Můj den: dvě dlaždice s využitím Claude za 5 h a 7 dní přímo v záhlaví (barva podle prahů 80 a 95 %), v menu pod názvem aplikace mini ukazatel na každé obrazovce; klepnutí otevře AI nastavení. Bez spárovaného mostu ukáže „nedostupné“, ne nulu. Obnova každých 60 s. ?v=103.
+
 ## 0.69.3 (2026-11-24) – oprava ztraceného zadání u AI
 - Oprava vážné chyby: ochrana vložených pokynů vrací text a ai.js ho přiřazoval místo objektu zadání, takže Elzáčkům (běžné volání i Noční běhy) se ztrácelo zadání (model dostal „undefined“). Nově funkce zaruc: zadání se obalí ochranným pravidlem, data se jen zkontrolují. Test test/model.test.js hlídá.
 
