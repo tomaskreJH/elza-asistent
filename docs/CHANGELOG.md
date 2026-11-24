@@ -1,3 +1,6 @@
+## 0.69.12 – dodatek 2 (2026-11-24, jen tools/)
+- Po restartu PC most neběžel vůbec (v most.log žádný start po 15:44). Instalátor nově ukončí starý proces mostu, přidá start i do registru (HKCU Run) vedle složky Po spuštění a na konci ověří, že port 47321 odpovídá („OVERENO: most bezi“).
+
 ## 0.69.12 – dodatek (2026-11-24, jen tools/)
 - Ověřeno na ostrém webu: Zkusit zapisuje do AI záznamu (sonnet · 900/126 tok · lehky, tedy hluboko pod 20 000 vstupních tokenů). Noční fronta nf5 nestartovala, protože na PC běžel starý proces mostu (nový ps1 byl jen nakopírován, restart nikdo neprovedl; most.log bez „noc: spouštím“).
 - Most se nově sám obnoví: při změně vlastního skriptu (instalátor jej přepíše) se skryté spuštění zopakuje a starý proces skončí; ruční restart už nebude potřeba. Poprvé je restart nutný ještě jednou (běžící proces je starý).
