@@ -1,3 +1,9 @@
+## 0.66.0 (2026-11-24) – Schválení vždy nahoře bez rolování
+- Strážce: nová verze ukáže úplně nahoře žlutý pruh s tlačítkem; ve štítku 🛡 je schválení otisků první (rámeček Čeká na vás), záznam incidentů až pod ním. Upozornění na novou verzi se už nezapisuje do záznamu a staré takové záznamy se samy vyčistí (pozůstatek).
+- Můj den: v bloku Čeká na vás je i schválení nové verze (Otevřít schválení).
+- Úlohy: úlohy ke schválení nahoře v rámečku se Schválit/Zamítnout a v tabulce jako první.
+- Pravidlo 10 v docs/POSTUP-VYVOJ.md; Návod (Strážce) a Průvodce aktualizovány; ?v=90.
+
 ## 0.65.2 (2026-11-24) – Start vždy s úplným Můj den
 - Ověřeno na ostrém webu: při startu se mohl vykreslit pohled zachycený před načtením vzhled.js (bez bloků Čeká na vás a Ranní kontrola). Aplikace teď vybírá pohled až těsně před vykreslením; ?v=89.
 

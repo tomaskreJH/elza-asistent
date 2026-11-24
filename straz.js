@@ -31,9 +31,9 @@ async function check(again){var cur=await hashAll(),mf=await manifest(),res={t:D
  if(res.state=='ok'){if(!S.appr){res.state='zaklad';res.note='Zatím není schválen žádný základ otisků.'}else{var da=diff(cur,S.appr.f);if(da.length){res.d=da;if(S.appr.ver==ver){res.state='alarm';res.note='Kód se změnil bez změny verze.'}else{res.state='nova';res.note='Nová verze '+ver+' čeká na vaše schválení (schvalte jen pokud jste ji právě nasazovali).'}}}}
  S.integ=res;S.lock=res.state=='alarm';
  if(res.state=='alarm'&&!check.rep){check.rep=1;var hits=[res.note].concat(res.d.slice(0,5));if(window.OCHRANA)OCHRANA.alertMe('KÓD APLIKACE SE ZMĚNIL. AI a odesílání jsou zablokované do ověření.',hits,'',1)}
- if(res.state=='nova'&&!check.nrep){check.nrep=1;if(window.OCHRANA)OCHRANA.alertMe('Nová verze aplikace čeká na schválení (štítek 🛡). Schvalte, jen pokud jste ji právě nasazovali.',[res.note],'')}
  top();return res}
-function top(){var el=document.getElementById('straz-t');if(!S.lock){if(el)el.remove();return}if(!el){el=document.createElement('div');el.id='straz-t';el.style.cssText='flex:0 0 100%;order:-2;background:#c0392b;color:#fff;padding:6px 12px;font:13px Segoe UI,Arial,sans-serif;text-align:center';document.body.insertBefore(el,document.body.firstChild)}el.textContent='⚠ Kód aplikace se změnil bez schválení. AI je zablokovaná, nic neodesílejte, kontaktujte vlastníka (štítek 🛡).'}
+function top(){var el=document.getElementById('straz-t'),st=S.integ&&S.integ.state;if(!S.lock&&st!='nova'&&st!='zaklad'){if(el)el.remove();return}if(!el){el=document.createElement('div');el.id='straz-t';el.setAttribute('role','alert');el.style.cssText='flex:0 0 100%;order:-2;color:#fff;padding:6px 12px;font:13px Segoe UI,Arial,sans-serif;text-align:center';el.onclick=function(e){if(e.target.tagName=='BUTTON'&&window.OCHRANA)OCHRANA.panel()};document.body.insertBefore(el,document.body.firstChild)}
+ el.style.background=S.lock?'#c0392b':'#b9770e';el.innerHTML=S.lock?'⚠ Kód aplikace se změnil bez schválení. AI je zablokovaná, nic neodesílejte, kontaktujte vlastníka. <button style="margin-left:8px;padding:2px 10px;cursor:pointer">Podrobnosti</button>':'🛡 Nová verze '+esc((S.integ&&S.integ.ver)||'')+' čeká na schválení otisků. <button style="margin-left:8px;padding:2px 10px;cursor:pointer">Schválit nahoře v 🛡</button>'}
 /* veřejné API pro ochrana.js */
 function vzory(){return S.compiled}
 function blok(){return S.blok}
@@ -41,14 +41,16 @@ function pushBlock(a,w){if(S.blok.some(function(b){return b.a==a}))return;S.blok
 function dropBlock(a){S.blok=S.blok.filter(function(b){return b.a!=a});dirty()}
 function pushInc(o){S.inc.unshift(o);S.inc=S.inc.slice(0,100);dirty()}
 function learn(sample,popis,w){sample=String(sample||'').trim();if(sample.length<6)throw new Error('Ukázka je příliš krátká.');var s=sample.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/\s+/g,'\\s+');new RegExp(s,'i');S.vzory.push({s:s,w:w||3,p:popis||sample.slice(0,60),d:new Date().toISOString().slice(0,10)});comp();dirty()}
-function html(){var I=S.integ,c={ok:'#1e8449',nova:'#b9770e',zaklad:'#b9770e',alarm:'#c0392b'}[I&&I.state]||'#777',h='<h4>Strážce kódu a sdílená ochrana</h4><p style="font-size:12px;color:#555">Sdílení: '+esc(S.stav)+'</p>';
+function schval(){var I=S.integ,c={ok:'#1e8449',nova:'#b9770e',zaklad:'#b9770e',alarm:'#c0392b'}[I&&I.state]||'#777',h='<h4>Strážce kódu</h4><p style="font-size:12px;color:#555">Sdílení: '+esc(S.stav)+'</p>';
  h+='<div style="border-left:4px solid '+c+';padding:4px 8px">Integrita kódu: <b>'+esc(I?({ok:'v pořádku',nova:'nová verze čeká na schválení',zaklad:'bez schváleného základu',alarm:'ALARM'}[I.state]):'zatím neověřeno')+'</b>'+(I&&I.note?'<br><small>'+esc(I.note)+'</small>':'')+(I&&I.d.length?'<br><small>Soubory: '+esc(I.d.slice(0,8).join(', '))+'</small>':'')+'</div>';
  h+='<p><button data-s=chk>Zkontrolovat teď</button> '+(I&&(I.state=='nova'||I.state=='zaklad')?'<button data-s=appr>Schválit aktuální verzi</button>':'')+'</p>';
+ return h}
+function html(){var h='<h4>Sdílená ochrana</h4><p style="font-size:12px;color:#555">Sdílení: '+esc(S.stav)+'</p>';
  h+='<h4>Naučené vzory škodlivých textů a kódů ('+S.vzory.length+')</h4>'+(S.vzory.length?S.vzory.slice(-12).map(function(v,i){return '<div><small>'+esc(v.d||'')+'</small> '+esc(v.p||'')+' <button data-s=delv data-i="'+esc(v.s)+'">Smazat</button></div>'}).join(''):'<i>zatím žádné</i>')+'<div style="margin-top:6px"><textarea id=sv rows=2 style="width:98%" placeholder="Vložte ukázku škodlivého textu nebo kódu (jen jako text, nic se nespustí)"></textarea><br><input id=sp placeholder="popis" style="width:60%"> <button data-s=add>Naučit</button></div>';return h}
 async function click(t){var s=t.getAttribute&&t.getAttribute('data-s');if(!s)return false;
  try{if(s=='chk'){await check()}if(s=='appr'){if(!confirm('Schválit aktuální verzi kódu jako důvěryhodnou? Schvalte jen verzi, kterou jste právě nasadili.'))return true;var cur=S.integ.cur;S.appr={ver:(typeof VER!='undefined')?VER:'',f:cur,d:new Date().toISOString().slice(0,10)};await save();await check()}
   if(s=='add'){var v=document.getElementById('sv').value,p=document.getElementById('sp').value;learn(v,p)}
   if(s=='delv'){var k=t.getAttribute('data-i');S.vzory=S.vzory.filter(function(x){return x.s!=k});comp();dirty()}}catch(e){alert(e.message)}return true}
-window.STRAZ={S:S,load:load,check:check,vzory:vzory,blok:blok,pushBlock:pushBlock,dropBlock:dropBlock,pushInc:pushInc,learn:learn,html:html,click:click,locked:function(){return S.lock},dirty:dirty};
+window.STRAZ={S:S,load:load,check:check,vzory:vzory,blok:blok,pushBlock:pushBlock,dropBlock:dropBlock,pushInc:pushInc,learn:learn,html:html,schval:schval,ceka:function(){var t=S.integ&&S.integ.state;return t=='nova'||t=='zaklad'||t=='alarm'},click:click,locked:function(){return S.lock},dirty:dirty};
 var n=0;(function boot(){if(ready()||++n>40){if(ready()){load().then(function(){return check()}).then(function(){if(window.OCHRANA)OCHRANA.refresh&&OCHRANA.refresh()}).catch(function(){});setInterval(function(){check().catch(function(){})},30*60*1000)}else{check().catch(function(){})}return}setTimeout(boot,3000)})()
 })();
