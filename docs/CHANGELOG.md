@@ -1,3 +1,6 @@
+## 0.69.11 (2026-11-24) – kontrola konzistence
+- Opraven mrtvý odkaz v analyza.js (test/analyza.test.js neexistuje, testy jsou ve test/struktura.test.js); VER sjednocen s CHANGELOG (0.69.10 měnil jen tools/, kód zůstal 0.69.9); stable/app.js a boot.js srovnány s kořenem; ?v=109. Všechny testy (node test/*.test.js, 8 python testů) projdou, integrity.json sedí.
+
 ## 0.69.10 (2026-11-24) – ElzaMost běží skrytě
 - Instalace mostu (tools/elza-most-instalace.cmd): start při přihlášení do Windows nově přes elza-most-skryty.vbs, bez jakéhokoli okna (dřív minimalizované okno PowerShellu). Párovací kód zůstává v %LOCALAPPDATA%\ElzaMost\parovaci-kod.txt. Stejný instalátor se pustí na každém zařízení (PC, NB) jednou dvojklikem.
 

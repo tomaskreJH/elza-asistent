@@ -1,6 +1,6 @@
 /* ELZA Asistent: Analýza vstupu (0.49.0). Z textu poptávky nebo zakázky pozná technologii a druh, navrhne postup, dokumenty a složky podle nové struktury, upozorní na chybějící dokumenty a kvalifikace.
    Postup se učí: zpětná vazba k jednotlivým krokům se sbírá, po opakování Elza navrhne novou verzi postupu; stará verze zůstává v historii, nic se nepřepisuje a nemaže.
-   Rozpoznání je zatím pravidlové (bez volání AI); AI vrstva se přidá po souhlasu správce. Zdroje předpisů a norem nevypisuji z paměti, doplňuje je odborně vedoucí (pole zdroj). Čistá logika: test/analyza.test.js. */
+   Rozpoznání je zatím pravidlové (bez volání AI); AI vrstva se přidá po souhlasu správce. Zdroje předpisů a norem nevypisuji z paměti, doplňuje je odborně vedoucí (pole zdroj). Čistá logika: test/struktura.test.js. */
 (function(){var W=typeof window!="undefined"?window:globalThis;
 var S=W.STRUKTURA||(typeof require!="undefined"?require("./struktura.js"):null);
 function nrm(s){return String(s==null?"":s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase()}
