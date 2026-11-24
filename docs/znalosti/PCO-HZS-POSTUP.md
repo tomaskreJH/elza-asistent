@@ -355,3 +355,12 @@ Před odesláním ověřit:
 - [ ] nechybí servisní organizace EPS a OZO PO,
 - [ ] je řešen generální klíč, KTPO, OPPO, DZP a dvě přenosové cesty,
 - [ ] je upozorněno na nutnost souladu PBŘ, EPS, ZDP, DZP a skutečného stavu.
+
+## 12. Poznatky ze skutečných případů (porovnání 2026-11-24)
+Porovnáno se skutečnou poštou (MAKRO 10 lokalit, ÚZSVM O. Nedbala ČB, SZ Červená Lhota). Postup výše platí, doplňuje se:
+- **Poptávka více lokalit (centrála):** kontaktem bývá technický manažer na ústředí, který nezná typ ústředny ani podklady na místě. Začít jednou pilotní lokalitou (obhlídka, nabídka), ostatní lokality přidávat po vzoru. Typ ústředny a stav EPS zjistit od servisní firmy EPS dané lokality. DZP si zákazník často zajišťuje sám, ověřit kdo a do kdy.
+- **Předání obchod → technik:** obchodní zástupce poptávku přeposílá technikovi; v odpovědi zákazníkovi vždy uvést jméno a telefon technika na obhlídku a pevný termín (den, hodina, místo).
+- **Změna přenosové trasy u existujícího objektu:** aktualizaci DZP nejdřív poslat ke konzultaci referentovi HZS kraje; úpravy (datum, zpracovatel) jsou možné, dokud dokument elektronicky nepodepíše ředitel. Teprve po odsouhlasení HZS podpis a změna trasy.
+- **Po připojení na DPPC ELZY:** uzavřít smlouvu ELZY se zákazníkem o ZDP EPS (i u objektů připojených dříve; hlídat při obnově smluv).
+- **Planý poplach v provozu:** hlášení dispečinku (obsluha, informován HZS, bez výjezdu, kdo zajistí opravu) jsou provozní informace, ne poptávky; Ranní kontrola je nepočítá jako poptávky.
+- Šablona 15 se v aplikaci zobrazuje jako pohled „Interní stav PCO“ v detailu případu (odvozeno z pošty, nic se neukládá navíc).

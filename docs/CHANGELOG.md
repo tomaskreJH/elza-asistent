@@ -1,3 +1,10 @@
+## 0.66.1 (2026-11-24) – Ověření na ostrém webu, Elzáček PCO podle skutečnosti
+- Ověřeno na ostrém webu: Ranní kontrola v Můj den funguje; žlutý pruh Strážce i rámeček Čeká na vás v 🛡 jsou nahoře bez rolování.
+- Oprava: Můj den se vykreslil dřív než kontrola Strážce, schválení nové verze se teď do bloku Čeká na vás doplní samo.
+- Oprava: Ranní kontrola počítala reklamy jako poptávky (19 položek, např. nabídka publikací); hromadná pošta a poplachy z dispečinku se vynechávají, bez technologie je nutná jasná žádost.
+- Bod 0c: Elzáček PCO porovnán se skutečnou poštou (MAKRO 10 lokalit, ÚZSVM změna trasy, SZ Červená Lhota); poznatky v kap. 12 docs/znalosti/PCO-HZS-POSTUP.md a v katalog.js.
+- Případy: pohled Interní stav PCO (šablona 15) v detailu případu. Návod a Průvodce aktualizovány; ?v=91.
+
 ## 0.66.0 (2026-11-24) – Schválení vždy nahoře bez rolování
 - Strážce: nová verze ukáže úplně nahoře žlutý pruh s tlačítkem; ve štítku 🛡 je schválení otisků první (rámeček Čeká na vás), záznam incidentů až pod ním. Upozornění na novou verzi se už nezapisuje do záznamu a staré takové záznamy se samy vyčistí (pozůstatek).
 - Můj den: v bloku Čeká na vás je i schválení nové verze (Otevřít schválení).

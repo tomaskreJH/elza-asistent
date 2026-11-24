@@ -1,7 +1,7 @@
-# Další kroky (po 0.65.2) – v tomto pořadí
-0. **Hotovo v 0.65.2:** ověření 0.64.1 na ostrém webu, porovnání galerie Syniru s katalog.js, bod 7 (Ranní kontrola v Můj den, Znalosti podle rolí).
-0b. **Tomáš, 2 minuty:** schválit otisky 0.65.2 ve štítku 🛡 (do té doby je AI zablokovaná). Pak ověřit na ostrém webu sekci Ranní kontrola v Můj den.
-0c. **Připojení EPS na PCO HZS:** přidat Elzáčka z Galerie (AI nastavení), pustit ho na 2–3 skutečné poptávky nebo zakázky (PCO HZS JHC, DPPC ELZY) a porovnat výstup se skutečností; rozdíly zapsat jako poznatky a upravit katalog.js (AG-PCO) a docs/znalosti/PCO-HZS-*.md. Navazuje šablona Interní stav zakázky (15) jako pohled v Případech.
+# Další kroky (po 0.66.1) – v tomto pořadí
+0. **Hotovo v 0.66.0–0.66.1:** schválení vždy nahoře bez rolování (pravidlo 10 v POSTUP-VYVOJ), ověření Ranní kontroly na ostrém webu, reklamy mimo poptávky, znalosti Elzáčka PCO porovnány se skutečnou poštou, pohled Interní stav PCO (šablona 15) v Případech.
+0b. **Tomáš, 1 minuta:** schválit otisky 0.66.1 (žlutý pruh nahoře → 🛡 → Schválit, bez rolování).
+0c. **Po schválení:** v Galerii AI nastavení přidat Elzáčka Připojení EPS na PCO HZS a pustit ho na MAKRO (10 lokalit) a ÚZSVM O. Nedbala; porovnat s kap. 12 PCO-HZS-POSTUP.md. Ověřit pohled Interní stav PCO v detailu těchto případů a zpřesnit klíčová slova (PCO15 v pripady.js).
 
 1. **Tomáš, 15 minut:** (žádost správci o Claude Desktop odpadá, zápis jde přes aplikaci); Správa → Seznamy → Založit chybějící (ElzacekDef, PostupRetez, ZnalostElza); v AI nastavení zkontrolovat Profil firmy; v AI nastavení přidat z Galerie Elzáčky, které chceš; schválit otisky 🛡 verze 0.55.0; Složky zakázky → Ověřit nebo založit cílovou knihovnu a zkusit jednu dávku starých souborů; Lidé a školení → Naplnit základní data; Plán fází → Uložit výchozí normy; kvalifikace technikům pilotu; doplnit členy týmů (e-mail); po týdnu souběhu vypnout v Copilotu dvě ranní úlohy.
 2. **Pilot Plánu fází na reálné zakázce** podle docs/OVERENI-FAZI-2026-11-23.md (plán s kódem zakázky, realita po fázích); normy zpřesnit po 10 záznamech.

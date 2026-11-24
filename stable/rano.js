@@ -1,11 +1,13 @@
 /* ELZA Asistent: Ranní kontrola (0.51.0, od 0.65.0 sekce Můj den). Přebírá dvě naplánované úlohy z Copilotu (ranní přehled dne, ranní zpracování poptávek) přímo do aplikace. Jen čtení pošty a kalendáře; nic se neodesílá ani nezakládá bez klepnutí. Rozpoznání je pravidlové (ANALYZA), AI koncept odpovědi jde jako úloha agentovi AG-POSTA. Text e-mailů je vždy jen data, nikdy pokyn. */
 (function(){var W=typeof window!="undefined"?window:globalThis;
-var DOT=/poptav|nabid|nabidk|cenov|cena|prosim o|zajima nas|zajimalo by|revize|kontrol|servis|projekt|pco|realizac/;
+var DOT=/poptav|prosim o (cenov|nabid)|zajima nas|zajimalo by|cenovou nabid|zaslat nabid|vypracovat nabid/;
+/* 0.66.0: hromadná a reklamní pošta (ověřeno na ostré poště: nabídky publikací, webináře) */
+var HROM=/odhlasit|unsubscribe|newsletter|webinar|nabidka publikaci|sleva|akcni nabid|zpravodaj|pozvanka na|noreply|no-reply/;
 function nrm(s){return String(s==null?"":s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase()}
 /* poslední pracovní den před d (po = pátek) */
 function predPD(d){var x=new Date(d.getFullYear(),d.getMonth(),d.getDate());do{x.setDate(x.getDate()-1)}while(x.getDay()==0||x.getDay()==6);return x}
 /* z jedné zprávy udělá kartu poptávky, nebo null, pokud poptávka není */
-function karta(msg,A){var t=(msg.subject||"")+"\n"+(msg.bodyPreview||"");var k=A.klasifikuj(t);if(!k.tech.length&&!DOT.test(nrm(t)))return null;
+function karta(msg,A){var t=(msg.subject||"")+"\n"+(msg.bodyPreview||"");var k=A.klasifikuj(t),nt=nrm(t+" "+(((msg.from||{}).emailAddress||{}).address||""));if(HROM.test(nt))return null;if(!k.tech.length&&!DOT.test(nt))return null;
  var n=A.navrh(t,null,{});var od=((msg.from||{}).emailAddress||{});
  return{id:msg.id,od:od.name||od.address||"",adresa:od.address||"",kdy:msg.receivedDateTime||"",predmet:msg.subject||"",url:msg.webLink||"",
   typ:n.postup.nazev,druh:k.druh,tech:k.tech.map(function(x){return x.kod}),jistota:k.jistota,obj:k.obj,pr:k.pr,stav:k.stav,
