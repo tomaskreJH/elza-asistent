@@ -95,11 +95,12 @@ function Limity(){
 # --- noční fronta (úlohy předané aplikací, běží i bez otevřené aplikace) ---
 $FrontaSoubor = Join-Path $Slozka 'fronta.json'
 $NastSoubor = Join-Path $Slozka 'noc-nastaveni.json'
-function NactiFrontu(){ if (Test-Path $FrontaSoubor) { try { return @((Get-Content $FrontaSoubor -Raw -Encoding UTF8 | ConvertFrom-Json)) } catch {} }; return @() }
+function Rozbal($x){ foreach ($a in @($x)) { if ($a -is [System.Array]) { Rozbal $a } elseif ($null -ne $a) { $a } } }
+function NactiFrontu(){ if (Test-Path $FrontaSoubor) { try { return @(Rozbal (Get-Content $FrontaSoubor -Raw -Encoding UTF8 | ConvertFrom-Json)) } catch { $script:NocChyba = 'fronta: ' + $_.Exception.Message } }; return @() }
 function UlozFrontu($a){ ConvertTo-Json -InputObject @($a) -Depth 6 | Set-Content -Encoding UTF8 $FrontaSoubor }
 function NactiNast(){ $n = @{od=22; do=6; zapnuto=$true}; if (Test-Path $NastSoubor) { try { $x = Get-Content $NastSoubor -Raw | ConvertFrom-Json; $n = @{od=[int]$x.od; do=[int]$x.do; zapnuto=[bool]$x.zapnuto} } catch {} }; return $n }
 function VNoci(){ $n = NactiNast; if (-not $n.zapnuto) { return $false }; $h = (Get-Date).Hour; if ($n.od -gt $n.do) { return ($h -ge $n.od -or $h -lt $n.do) } else { return ($h -ge $n.od -and $h -lt $n.do) } }
-$script:Ted = $false
+$script:Ted = $false; $script:NocChyba = ''
 function Nocni(){
   if (-not ($script:Ted -or (VNoci))) { return }
   $f = NactiFrontu; $i = -1
@@ -119,7 +120,7 @@ function Nocni(){
 
 $Cekani = $L.GetContextAsync()
 while ($L.IsListening) {
-  if (-not $Cekani.Wait(3000)) { try { Nocni } catch { Zapis ('noc: ' + $_.Exception.Message) }; continue }
+  if (-not $Cekani.Wait(3000)) { try { Nocni } catch { $script:NocChyba = $_.Exception.Message; Zapis ('noc: ' + $_.Exception.Message) }; continue }
   $ctx = $Cekani.Result; $Cekani = $L.GetContextAsync(); $q = $ctx.Request
   try {
     $o = $q.Headers['Origin']
@@ -131,7 +132,7 @@ while ($L.IsListening) {
       $v = ''; if (MaClaude) { try { $v = (& $Cl --version 2>$null | Out-String).Trim() } catch {} }
       $m = @(); if (MaOllamu) { try { $m = (Invoke-RestMethod 'http://127.0.0.1:11434/api/tags').models | ForEach-Object { $_.name } } catch {} }
       $n = NactiNast
-      Odpoved $ctx 200 @{most=2; pc=$env:COMPUTERNAME; claude=$v; ollama=$m; noc=@{od=$n.od; do=$n.do; zapnuto=$n.zapnuto}}; continue
+      Odpoved $ctx 200 @{most=2; nocChyba=$script:NocChyba; pc=$env:COMPUTERNAME; claude=$v; ollama=$m; noc=@{od=$n.od; do=$n.do; zapnuto=$n.zapnuto}}; continue
     }
     if ($cesta -eq '/limity') { Odpoved $ctx 200 (Limity); continue }
     if ($cesta -eq '/fronta' -and $q.HttpMethod -eq 'GET') {
