@@ -1,3 +1,9 @@
+## 0.73.4 (2026-11-25) – Pošta jako jeden seznam karet
+- Záložka Pošta: zrušeny nadpisy „Pošta k případům“, „Nepřiřazená“ a „Přiřazená“ i odstavec o automatickém přiřazování. Jeden seznam posledních 30 vláken od nejnovějšího, každé vlákno je karta (předmět, ● nepřečtené, značka příloh, odesílatel, datum).
+- Nepřiřazené vlákno: na kartě Návrh ELZY, pole „Jak to vidíte“ (předvyplněné uloženým popisem), výběr případu a tlačítka Přiřadit, Založit případ, Zbytečná poptávka, Uložit popis. Akce čtou popis z pole u téhož vlákna; logika (link, newCase, učení) beze změny.
+- Přiřazené vlákno: jen značka případu/zakázky a tlačítko Odpojit; popis se zobrazí jako text, pokud existuje.
+- Úklid: odstraněny nepoužité proměnné a texty starého řešení; Návod v centrum.js a Průvodce (pruvodce.html) popisují novou záložku.
+
 ## 0.73.3 (2026-11-25) – Zařazení pošty jen v Poště, s vlastním popisem
 - Zrušen souhrn „Pošta k zařazení“ v Můj den i seznam poptávek se zařazením v Ranní kontrole (jedno místo místo tří). Zařazení se dělá v Poště přímo u každého vlákna: Návrh ELZY (předvybraný případ), textové pole „Jak to vidíte“ (co e-mail znamená, kam patří a proč) a tlačítko Uložit popis.
 - Popis se ukládá podle odesílatele spolu s rozhodnutím (místně i do ZnalostElza, Druh trideni) a příští návrh ho zobrazí; podklad pro učení postupů zařazení. Popis jde uložit i bez zařazení.
