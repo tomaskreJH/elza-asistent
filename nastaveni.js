@@ -1,7 +1,7 @@
 /* ELZA Asistent: osobní nastavení se synchronizuje přes SharePoint (seznam NastaveniAplikace, řádek user:<e-mail>), takže platí na všech zařízeních
    (PC, tablet, Android, iPhone). Prohlížeč drží jen rychlou kopii. Zařízení-specifické věci (kanál beta/stabilní, API klíče) se NESYNCHRONIZUJÍ. */
 (function(){
-var KEYS=['elzaTema','elzaMenu','elzaMenuOff','elzaKalPohled','elzaKalVyber','elzaPodpis','elzaVlaknoRazeni','elzaSeznamRazeni','elzaLimitUSD','elzaPin','elzaPrvniHotovo'],TSK='elzaSyncTs';
+var KEYS=['elzaTema','elzaMenu','elzaMenuOff','elzaKalPohled','elzaKalVyber','elzaPodpis','elzaVlaknoRazeni','elzaSeznamRazeni','elzaLimitUSD','elzaPin','elzaPrvniHotovo','elzaNastRezim'],TSK='elzaSyncTs';
 var st=Storage.prototype,gi=st.getItem,si=st.setItem,ri=st.removeItem,N={stav:'čeká na přihlášení',poslední:0,jeSync:false};window.NAST=N;
 function ts(){try{return JSON.parse(gi.call(localStorage,TSK)||'{}')}catch(e){return{}}}
 function setTs(o){try{si.call(localStorage,TSK,JSON.stringify(o))}catch(e){}}

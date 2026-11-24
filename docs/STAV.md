@@ -1,5 +1,5 @@
 # Stav ELZA asistenta
-Verze 0.63.0 (root i stable), 2026-11-24. Novinka: přehlednější vzhled bez plovoucích oken a lišt, přihlášení hned vidět, Elzáček s úsilím a „co smí“ (CHANGELOG). Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
+Verze 0.64.0 (root i stable), 2026-11-24. Novinka: vzhled ověřený na ostrém webu a opravený (přihlášení, pruhy nahoře, dolní část menu bez duplicit), Nastavení jako dlaždice, panel Co agent ví u Úloh, úklid pozůstatků (CHANGELOG). Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
 
 ## Cíl (měřítko každé změny)
 Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vyřídí poštu a případy, plánuje zakázky a lidi a nic nemusí kopírovat jinam. Technici mají být co nejvíc u zákazníka, zákazník v portálu „může klidně spát“. Bezpečnost má přednost před pohodlím, pohodlí před funkcemi navíc. Nic placeného navíc, CRM a stará dokumentace jen čtení.
@@ -19,12 +19,14 @@ Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vy�
 
 - Rychlá odpověď, eskalace, poznatek po běhu a statistiky D25 (0.62.0): ověřeno testem (test/rychle.test.js); fronta Úloh na ostrých datech zatím běží beze změny schématu, poznatky se ukládají do ZnalostElza (seznam se zakládá ve Správa → Seznamy).
 
-- Vzhled bez plovoucích prvků a Úsilí/Co smí u Elzáčka (0.63.0): ověřeno testy a v ukázkovém režimu; na ostrém webu ve vestavěném prohlížeči Clauda zatím neověřeno (první úkol dalšího vlákna).
+- Vzhled bez plovoucích prvků a Úsilí/Co smí u Elzáčka (0.63.0): ověřeno testy a na ostrém webu ve vestavěném prohlížeči Clauda (počítač i mobil); nalezené chyby opraveny v 0.64.0.
+
+- Nastavení jako dlaždice a panel Co agent ví u Úloh (0.64.0): ověřeno testem (test/vzhled.py) a v ukázkovém režimu; na ostrém webu po nasazení ověřit klepnutím (první úkol dalšího vlákna).
 
 ## Hotovo v kódu, čeká na ostré ověření nebo klepnutí Tomáše
 - Všech 16 seznamů založeno a sloupce ověřeny (0.53.0); přehled a zakládání ve Správa → Seznamy (seznamy.js = jeden zdroj schémat). Moduly načtou ostrá data bez chyb (0.53.1). Základní data se naplní klepnutím: Lidé a školení → Naplnit základní data, Plán fází → Uložit výchozí normy (0.54.0); členy týmů doplnit podle e-mailu.
 - Ranní kontrola na ostrých datech běží (0.53.1); po týdnu souběhu vypnout dvě ranní úlohy v Copilotu (nahrazuje ranní úlohy Copilotu; ty zůstávají jako záloha do ověření).
-- Strážce: schválit základ otisků ve štítku 🛡 po nasazení.
+- Strážce: po nasazení 0.64.0 schválit nové otisky ve štítku 🛡 (do té doby je AI zablokovaná; poplach před 0.64.0 vznikl změnou kódu beze změny verze).
 - Portál zákazníka: přihlášení skutečného zákazníka neověřeno.
 - Plán fází ověřen na ostrých datech (0.54.1): funguje, ale pilot nemá plán ani měření; postup v docs/OVERENI-FAZI-2026-11-23.md.
 - Složky zakázky (0.55.0): ověření a založení cílové knihovny a přenos starých souborů po dávkách se schválením; neověřeno na ostrém webu (první dávku pustí Tomáš).
