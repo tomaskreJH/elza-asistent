@@ -62,11 +62,13 @@ while ($L.IsListening) {
     $sr = New-Object IO.StreamReader($q.InputStream, [Text.Encoding]::UTF8); $j = $sr.ReadToEnd() | ConvertFrom-Json
     if ($cesta -eq '/claude') {
       if (-not (MaClaude)) { Odpoved $ctx 500 @{chyba='Claude CLI není nainstalován (krok 1 v Návodu).'}; continue }
-      $a = @('-p','--output-format','json','--max-turns','1','--disallowedTools','Bash,Edit,Write,WebFetch,WebSearch,NotebookEdit')
+      $a = @('-p','--output-format','json','--max-turns','1','--strict-mcp-config','--disallowedTools','Bash,Edit,Write,WebFetch,WebSearch,NotebookEdit')
       if ($j.model) { $a += @('--model', [string]$j.model) }
       if ($j.system) { $a += @('--append-system-prompt', [string]$j.system) }
       $t0 = Get-Date
-      $out = ([string]$j.prompt) | & $Cl @a 2>&1 | Out-String
+      $ef = Join-Path $Slozka 'claude-chyba.txt'
+      $out = ([string]$j.prompt) | & $Cl @a 2>$ef | Out-String
+      if (-not $out.Trim() -and (Test-Path $ef)) { $out = Get-Content $ef -Raw }
       $r = $null; try { $r = $out | ConvertFrom-Json } catch {}
       Zapis ("claude " + [int]((Get-Date)-$t0).TotalSeconds + ' s')
       if ($r -and -not $r.is_error) { Odpoved $ctx 200 @{text=[string]$r.result; s=[int]((Get-Date)-$t0).TotalSeconds} }

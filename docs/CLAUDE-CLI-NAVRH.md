@@ -7,7 +7,7 @@ Aplikace (https://tomaskrejh.github.io) → http://127.0.0.1:47321 (ElzaMost, Po
 ## Bezpečnost
 - Poslouchá jen 127.0.0.1, ne síť. Přijme jen Origin ELZA asistenta (CORS + Private Network Access).
 - Každé volání nese párovací kód (náhodných 24 znaků, %LOCALAPPDATA%\ElzaMost\parovaci-kod.txt, v aplikaci jen localStorage).
-- Claude běží s --max-turns 1 a zakázanými nástroji (Bash, Edit, Write, WebFetch, WebSearch): jen čte zadání a vrací text.
+- Claude běží s --max-turns 1, bez připojených služeb MCP (--strict-mcp-config) a se zakázanými nástroji (Bash, Edit, Write, WebFetch, WebSearch): jen čte zadání a vrací text.
 - Platí všechny vrstvy aplikace: Pravidla AI, ochrana vložených pokynů, náhled před odesláním, záznam AIZaznam. CSP povoluje jen http://127.0.0.1:47321.
 - Instalace jen pro uživatele (%LOCALAPPDATA%, složka Po spuštění), bez správce.
 

@@ -1,3 +1,6 @@
+## 0.68.3 (2026-11-24) – most bez MCP služeb
+- ElzaMost: Claude CLI běží s --strict-mcp-config (nenačítá připojené služby, rychlejší a bezpečnější), varování jdou do claude-chyba.txt, ne do odpovědi. ?v=97.
+
 ## 0.68.2 (2026-11-24) – čeština přes most
 - ElzaMost: UTF-8 pro vstup i výstup Claude CLI (dřív rozsypané české znaky). Test Elzáčka přes Claude (předplatné) na PC ověřen.
 - AI nastavení: u předplatného a Ollamy se už nezobrazuje „chybí klíč“. ?v=96.
