@@ -1,3 +1,11 @@
+## 0.62.0 (2026-11-24) – Rychlá odpověď bez nástrojů, poznatek po běhu a statistiky D25
+- Úlohy pro agenty: každé zadání dostane hlavičku s režimem. Výchozí je Rychle bez nástrojů (agent odpoví jen z kontextu, nástroje až po značce [[tools]]); Vývoj, Video a Příspěvky jedou rovnou s nástroji. Volba Režim při zadání; stejná hlavička je v krocích Postupů.
+- Eskalace: výsledek se značkou [[tools]] dostane štítek ⚡→🔧 a tlačítko Pustit s nástroji (stejná úloha znovu s nástroji, původní se zamítne, jde vrátit přes 🛡). U kroků Postupu řeší eskalaci agent sám.
+- Poznatek po běhu: řádek [[poznatek]] z výsledku se po schválení úlohy uloží do ZnalostElza (Druh poznatek), platí jen pro Elzáčka, který ho napsal, a jen k tématu zadání; v dotazu je označený jako nedůvěryhodná referenční data. Podezřelý text a duplicity se nezapíšou; v AI nastavení jde Vyřadit.
+- AI záznam a náklady: tabulka Úspěšnost a znaky po Elzáčcích za 7, 30 a 90 dní (D25).
+- test/rychle.test.js; Návod (Úlohy, AI nastavení, Profil firmy) a Průvodce (slide 9 a 13) aktualizovány; ?v=83.
+- Poznámka k provozu: zápis dělá aplikace přes SharePoint (frontu Úloh), na PC se nic neinstaluje; žádost správci o Claude Desktop (docs/ZADOST-CLAUDE-DESKTOP.md) tedy odpadá.
+
 ## 0.61.0 (2026-11-24) – Profil firmy, Znalosti s oprávněním, Náhled před odesláním, Recepce v Chatu a Můj den
 - Nový soubor kontext.js: Profil firmy (tón, zakázané fráze, FAQ, kontakty) jako jeden zdroj pro všechny Elzáčky; přidává se do každého dotazu.
 - Znalosti s oprávněním: znalost dostane jen povolený Elzáček (* = všichni) a jen když zadání obsahuje její klíčové slovo (líné načítání, šetří limit); u každé kdo a kdy, tlačítko Vyřadit.
