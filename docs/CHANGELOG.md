@@ -1,3 +1,8 @@
+## 0.64.1 (2026-11-24) – Doladění po ověření 0.64.0 na ostrém webu
+- Úlohy: pryč duplicitní rychlé zadání nad filtry (zadání je jen jedno, plný formulář s panelem Co agent ví; rychlé zadání zůstává v Můj den, blok Čeká na vás).
+- Menu: počty u zavřených skupin odpovídají tomu, co skupina po odebrání připnutých položek obsahuje; skupina, jejíž položky jsou všechny připnuté, se nezobrazí.
+- Bezpečnostní upozornění: Podrobnosti a Rozumím na jednom řádku, kdy je místo; ?v=86.
+
 ## 0.64.0 (2026-11-24) – Ověření vzhledu na ostrém webu, oprava startu, Nastavení jako dlaždice, panel Co agent ví u Úloh
 - Ověřeno na ostrém webu ve vestavěném prohlížeči Clauda (počítač i mobil). Nalezeno a opraveno: (1) před přihlášením se nezobrazila přihlašovací dlaždice a menu zůstalo vidět (rychlý start dřív než vzhled.js; stejná příčina rozbíjela i ukázkový režim u položek z vzhled.js), (2) upozornění nahoře zabírala až 200 px a odtlačila dolní část menu (Návod, 🛡, Odhlásit) mimo obrazovku, (3) položky připnuté nahoře se opakovaly ve skupinách, (4) po schválení 0.63.0 se kód změnil bez změny verze, takže Strážce hlásil poplach (verze se musí zvýšit při každé změně kódu, viz docs/POSTUP-VYVOJ.md).
 - Rozvržení: bezpečnostní upozornění je jednořádkový pruh s rozbalitelnými podrobnostmi, červený pruh Strážce kratší; výška menu se přizpůsobí pruhům a dolní část menu je vždy vidět; skupiny už neopakují položky připnuté nahoře; nahoře je Můj den, Případy, Pošta, Kalendář, Úlohy, Nastavení a jedna vaše připnutá.

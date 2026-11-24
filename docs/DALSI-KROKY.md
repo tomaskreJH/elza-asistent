@@ -1,6 +1,6 @@
-# Další kroky (po 0.64.0) – v tomto pořadí
+# Další kroky (po 0.64.1) – v tomto pořadí
 0. **Syniru do 24. 12. 2026 (beta):** hotovo v 0.61.0 až 0.64.0 (profil firmy, Znalosti, náhled, Recepce, rychlá odpověď, statistiky, úsilí a co smí, vzhled bez plovoucích prvků ověřený na ostrém webu, Nastavení jako dlaždice, panel Co agent ví u Chatu i Úloh). Zbývá jediné: porovnat pokyny agentů galerie Syniru s katalog.js (docs/SYNIRU-ANALYZA-2026-11-24.md kap. 2).
-0b. **Ověřit 0.64.0 na ostrém webu** po klepnutí Tomáše: schválit otisky ve štítku 🛡, pak ve vestavěném prohlížeči Clauda projít Nastavení (Normální a Pokročilý), Úlohy (panel Co agent ví vpravo) a menu na mobilu.
+0b. **Ověřit 0.64.1 na ostrém webu** po klepnutí Tomáše: schválit otisky ve štítku 🛡, pak ve vestavěném prohlížeči Clauda projít Nastavení (Normální a Pokročilý), Úlohy (panel Co agent ví vpravo) a menu na mobilu.
 
 1. **Tomáš, 15 minut:** (žádost správci o Claude Desktop odpadá, zápis jde přes aplikaci); Správa → Seznamy → Založit chybějící (ElzacekDef, PostupRetez, ZnalostElza); v AI nastavení zkontrolovat Profil firmy; v AI nastavení přidat z Galerie Elzáčky, které chceš; schválit otisky 🛡 verze 0.55.0; Složky zakázky → Ověřit nebo založit cílovou knihovnu a zkusit jednu dávku starých souborů; Lidé a školení → Naplnit základní data; Plán fází → Uložit výchozí normy; kvalifikace technikům pilotu; doplnit členy týmů (e-mail); po týdnu souběhu vypnout v Copilotu dvě ranní úlohy.
 2. **Pilot Plánu fází na reálné zakázce** podle docs/OVERENI-FAZI-2026-11-23.md (plán s kódem zakázky, realita po fázích); normy zpřesnit po 10 záznamech.
