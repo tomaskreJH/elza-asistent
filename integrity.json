@@ -1,6 +1,6 @@
 {
  "ver": "0.69.9",
- "d": "2026-11-24T14:21:43.901Z",
+ "d": "2026-11-24T14:25:00.183Z",
  "f": {
   "index.html": "10160c795f6a64c17cc9ffc9a52ad06f5445ff3a6e2260fc45f04d16cb9e7ba1",
   "portal.html": "a6343b5446f7e21c589bef02e95e4c8d64b828bb75ce5a8bdc30f9bc98fb1223",
@@ -52,8 +52,8 @@
   "zamestnanec.js": "738d3e039ad12a4f198506531605b163eb28ff57a6a4b48ecaa4274bdabd2bf5",
   "stable/ai.js": "69d2b96474a7d5ceb752b85adc0646bdb8a520b352f0599d4b207da6bf0b983d",
   "stable/analyza.js": "495f800d0091f480ba473760262b5d272cd288a83f41afe313e89562c228c311",
-  "stable/app.js": "0bdcd1ee9377ed67f857c2b8a5fcf8e3a2e80a14008e7ade7bb0e6b328bc3207",
-  "stable/boot.js": "404fe5c1eb832e1e96d76205c27f33680c223f08df39ce4be3b382639c447b54",
+  "stable/app.js": "752eccd92b92ad6735a92fcd9c18f53fea54e8db1d4524a5ddca64661b48ec48",
+  "stable/boot.js": "6a5e6118b87ea471be82923ffbe61ae1842060bd992f71285378ff07d8a7a2dd",
   "stable/centrum.js": "ee39c5adb6b5d8b9e6fd708dab1aa90337c5df7d77ebfb448ebaef91ee5996a4",
   "stable/chat.js": "590e7806f9dd165f90dce241300b2f6ffce0279ef0c5112e407b2684fd04c8ee",
   "stable/faze.js": "37d7f41ffbea53d5d32e068c4fc07552397137e66b99f0bd4c8b207558b2f6c4",
@@ -82,7 +82,7 @@
   "stable/seznamy.js": "ca446a62e712994236b4741093ba0e31337368ff0ddc2acff899ecbef6a23861",
   "stable/slozky.js": "c77c25633db4a0284acf986546884f0f5530e2646cef71f2d2c4795608ed38c2",
   "stable/sprava.js": "4e153cfb27101ebbe713b0a8c03652d9308dd9df76ea8b86cfae40a9cf987008",
-  "stable/straz.js": "51d30269a4f8a6b5a37d81a1c0214750cfd298092baeeae5d73ac29014c31c28",
+  "stable/straz.js": "f82749b4b32e8a5204fadcb5e4b3f68ee2df36e44b1371cda4b6c8f563393a23",
   "stable/struktura.js": "d7edeaa80d2f078936edf01cdafae32c6aaab848de793eaa00edc3249ef0c3be",
   "stable/trh.js": "dc96e933c766b0e8d613877e941712aba89571f0d6283aba306da7699576fe0a",
   "stable/ucet.js": "efaced85205edce6affb55b108d6124685d9dc3daa44fbb871c8f7c421b9dfcc",
