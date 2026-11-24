@@ -1,3 +1,6 @@
+## 0.69.9 (2026-11-24) – schválení verze bez okna confirm
+- Strážce: schválení verze ve 🛡 používalo systémové okno confirm(), které vestavěný prohlížeč Clauda nezobrazí, takže schválení nešlo potvrdit. Nově dvoustupňové potvrzení přímo v tlačítku (klepnout, pak znovu do 15 s). ?v=108.
+
 ## 0.69.8 (2026-11-24) – lehký režim Claude CLI, texty e-mailů v Interním stavu PCO, prahy podle týdne
 - ElzaMost: volání Claude CLI nově jede v lehkém režimu (--tools "", --disable-slash-commands, --no-session-persistence, --setting-sources user, vlastní krátký --system-prompt místo celého výchozího, prázdná pracovní složka bez CLAUDE.md); selže-li, automaticky se zopakuje dřívějším úplným režimem. Odpověď nese usage.rezim (lehky/plny), AI záznam ho ukáže u modelu. Úspora se změří při prvním volání (dřív ~20 000 vstupních tokenů).
 - Případy: automatické připojení pošty nově připojí FW/RE e-maily s jiným conversationId podle shodného předmětu (bez RE:/FW:/Odp:); Interní stav PCO čte po otevření detailu i text e-mailů celých konverzací případu (jen čtení) a přepočítá se.
