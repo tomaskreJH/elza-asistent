@@ -1,3 +1,6 @@
+## 0.65.1 (2026-11-24) – Můj den se nezdrží načítáním pošty
+- Ověřeno na ostrém webu: Můj den čekal na načtení pošty pro Ranní kontrolu a při startu se ukázal jen starý rychlý náhled. Sekce Ranní kontrola se teď zobrazí hned (Načítám…) a poptávky se doplní samy; ?v=88.
+
 ## 0.65.0 (2026-11-24) – Ověření 0.64.1 na ostrém webu, Ranní kontrola v Můj den, Znalosti podle rolí, Elzáček Připojení EPS na PCO HZS
 - Ověřeno na ostrém webu ve vestavěném prohlížeči Clauda: Nastavení (Normální i Pokročilý), Úlohy s panelem Co agent ví, menu a mobil (spodní lišta, Více). Nalezeno a opraveno: (1) přihlašovací okno se v prohlížeči blokujícím okna tiše nezobrazilo a přihlášení viselo – po 5 s se nabídne tlačítko Přihlásit přesměrováním; (2) při poplachu Strážce byly nahoře dva stejné pruhy – zůstává jen červený pruh Strážce, záznam incidentu se ukládá dál; (3) dolní část menu zabírala třetinu výšky – kompaktnější řádky a přepínač Tmavý/světlý režim jen v Nastavení → Vzhled (na mobilu ◐ nahoře).
 - Ranní kontrola sloučena do Můj den (sekce pod Čeká na vás); položka menu zrušena, staré odkazy ?v=rano vedou do Můj den; rano.js už nenačítá kalendář (dnešní schůzky ukazuje Můj den).
