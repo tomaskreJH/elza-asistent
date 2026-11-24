@@ -11,7 +11,7 @@ let G=T.build(T.norm0());assert.deepStrictEqual(G.map(g=>g.n),JSON.parse(base).m
 // 2 pořadí skupin
 G=T.build(T.norm0({ord:['AI','Moje práce']}));assert.strictEqual(G[0].n,'AI');assert.strictEqual(G[1].n,'Moje práce');
 // 3 pořadí položek, zamčená 'dnes' zůstane první
-G=T.build(T.norm0({iord:['dnes','posta','rano','kalendar']}));assert.deepStrictEqual(ids(G[0]).slice(0,3),['dnes','posta','rano']);
+G=T.build(T.norm0({iord:['dnes','posta','ulohy','kalendar']}));assert.deepStrictEqual(ids(G[0]).slice(0,3),['dnes','posta','ulohy']);
 // 4 přesun do nové skupiny, zamčené se nehýbou
 G=T.build(T.norm0({grp:{trh:'Nová',dnes:'Nová'}}));assert.ok(G.find(g=>g.n=='Nová').it.some(i=>i[0]=='trh'));assert.ok(!G.find(g=>g.n=='Nová').it.some(i=>i[0]=='dnes'));
 // 5 poškozená/cizí data se ignorují

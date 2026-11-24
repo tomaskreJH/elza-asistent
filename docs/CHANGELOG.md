@@ -1,3 +1,11 @@
+## 0.65.0 (2026-11-24) – Ověření 0.64.1 na ostrém webu, Ranní kontrola v Můj den, Znalosti podle rolí, Elzáček Připojení EPS na PCO HZS
+- Ověřeno na ostrém webu ve vestavěném prohlížeči Clauda: Nastavení (Normální i Pokročilý), Úlohy s panelem Co agent ví, menu a mobil (spodní lišta, Více). Nalezeno a opraveno: (1) přihlašovací okno se v prohlížeči blokujícím okna tiše nezobrazilo a přihlášení viselo – po 5 s se nabídne tlačítko Přihlásit přesměrováním; (2) při poplachu Strážce byly nahoře dva stejné pruhy – zůstává jen červený pruh Strážce, záznam incidentu se ukládá dál; (3) dolní část menu zabírala třetinu výšky – kompaktnější řádky a přepínač Tmavý/světlý režim jen v Nastavení → Vzhled (na mobilu ◐ nahoře).
+- Ranní kontrola sloučena do Můj den (sekce pod Čeká na vás); položka menu zrušena, staré odkazy ?v=rano vedou do Můj den; rano.js už nenačítá kalendář (dnešní schůzky ukazuje Můj den).
+- Znalosti: Skilly, Prompty, Foto příkazy, Brand a Mapa vazeb vidí jen vlastník a vývojář; jiné roli je zapne jen výslovný výčet modulů v roli (ne „*“).
+- Katalog porovnán s galerií Syniru: pokryto vše kromě E-shopu (ELZY nepotřebuje); pokyny „Terezy“ pro třídění pošty a poptávek převzal Elzáček Obchod a poptávky (nový postup Třídění pošty).
+- Nový Elzáček Připojení EPS na PCO HZS (skupina Technika, vlastní postup ELZY) z postupů a šablon ze zkušeností z pošty: triáž, podklady a obhlídka, předběžná nabídka, brány montáže a zkoušky, odstávka; zdroje docs/znalosti/PCO-HZS-POSTUP.md a PCO-HZS-SABLONY.md. Recepce ho vybere podle slov PCO, HZS, ZDP, DPPC.
+- Úklid: mrtvý starý Můj den v osobni.js odstraněn (přepisoval ho pripady.js), nepoužité funkce v rano.js pryč; Návod (Ranní kontrola, Znalosti, Katalog) a Průvodce (slide 1) aktualizovány; ?v=87.
+
 ## 0.64.1 (2026-11-24) – Doladění po ověření 0.64.0 na ostrém webu
 - Úlohy: pryč duplicitní rychlé zadání nad filtry (zadání je jen jedno, plný formulář s panelem Co agent ví; rychlé zadání zůstává v Můj den, blok Čeká na vás).
 - Menu: počty u zavřených skupin odpovídají tomu, co skupina po odebrání připnutých položek obsahuje; skupina, jejíž položky jsou všechny připnuté, se nezobrazí.
