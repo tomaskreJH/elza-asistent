@@ -1,3 +1,7 @@
+## 0.68.1 (2026-11-24) – oprava mostu
+- ElzaMost: platná odpověď na úvodní dotaz prohlížeče (dřív „Zjišťuji…“ donekonečna), vypnutý QuickEdit (klik do okna most nezastaví).
+- Aplikace: časový limit 10 s na kontrolu mostu. ?v=95.
+
 ## 0.68.0 (2026-11-24) – Claude CLI v aplikaci přes lokální most
 - Nové nástroje Elzáčků „Claude (předplatné)“ a „Lokální (Ollama)“: běží přes ElzaMost na 127.0.0.1 (tools/elza-most.ps1, instalace elza-most-instalace.cmd, bez správce, bez API klíče).
 - AI nastavení: Lokální most (párování, kontrola stavu) a Předplatné jednotlivých AI (plán, obnova 5 h okna a týdne).

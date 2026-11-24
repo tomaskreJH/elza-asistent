@@ -4,6 +4,8 @@
 # každé volání musí nést párovací kód. Claude běží bez nástrojů (jen text), nic na disku nemění.
 # Spuštění: powershell -ExecutionPolicy Bypass -File elza-most.ps1   (bez správce)
 $ErrorActionPreference = 'Stop'
+# Vypnout QuickEdit (klik do okna by most pozastavil)
+try { Add-Type -Name K -Namespace W -MemberDefinition '[DllImport("kernel32.dll")] public static extern IntPtr GetStdHandle(int h); [DllImport("kernel32.dll")] public static extern bool GetConsoleMode(IntPtr h, out int m); [DllImport("kernel32.dll")] public static extern bool SetConsoleMode(IntPtr h, int m);'; $h=[W.K]::GetStdHandle(-10); $m=0; [void][W.K]::GetConsoleMode($h,[ref]$m); [void][W.K]::SetConsoleMode($h, ($m -band -bnot 0x40) -bor 0x80) } catch {}
 $Port = 47321
 $Povolene = @('https://tomaskrejh.github.io')
 $Slozka = Join-Path $env:LOCALAPPDATA 'ElzaMost'
@@ -36,7 +38,7 @@ function Odpoved($ctx, $code, $obj){
   }
   $r.StatusCode = $code; $r.ContentType = 'application/json; charset=utf-8'
   $b = [Text.Encoding]::UTF8.GetBytes(($obj | ConvertTo-Json -Depth 6 -Compress))
-  $r.OutputStream.Write($b, 0, $b.Length); $r.Close()
+  $r.ContentLength64 = $b.Length; $r.OutputStream.Write($b, 0, $b.Length); $r.OutputStream.Close(); $r.Close()
 }
 $Cl = (Get-Command claude -ErrorAction SilentlyContinue).Source
 if (-not $Cl) { $x = Join-Path $env:USERPROFILE '.local\bin\claude.exe'; if (Test-Path $x) { $Cl = $x } }
@@ -48,7 +50,7 @@ while ($L.IsListening) {
   try {
     $o = $q.Headers['Origin']
     if ($o -and -not ($Povolene -contains $o)) { Odpoved $ctx 403 @{chyba='Cizí stránka'}; Zapis "odmítnuto $o"; continue }
-    if ($q.HttpMethod -eq 'OPTIONS') { Odpoved $ctx 204 @{}; continue }
+    if ($q.HttpMethod -eq 'OPTIONS') { Odpoved $ctx 200 @{ok=1}; continue }
     if ($q.Headers['x-elza-kod'] -ne $Kod) { Odpoved $ctx 401 @{chyba='Špatný párovací kód'}; continue }
     $cesta = $q.Url.AbsolutePath
     if ($cesta -eq '/stav') {
