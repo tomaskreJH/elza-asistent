@@ -1,3 +1,6 @@
+## 0.69.5 (2026-11-24) – čitelnost ukazatelů limitů
+- Mini ukazatel v menu měl červený nečitelný text (kolize třídy .e s chybovým stylem); třídy přejmenovány, text světlý. Ověřeno na ostrém webu: Claude 5 h 9 %, 7 dní 64 % (most spárován). ?v=104.
+
 ## 0.69.4 (2026-11-24) – limity Claude na první pohled
 - Můj den: dvě dlaždice s využitím Claude za 5 h a 7 dní přímo v záhlaví (barva podle prahů 80 a 95 %), v menu pod názvem aplikace mini ukazatel na každé obrazovce; klepnutí otevře AI nastavení. Bez spárovaného mostu ukáže „nedostupné“, ne nulu. Obnova každých 60 s. ?v=103.
 
