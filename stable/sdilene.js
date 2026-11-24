@@ -27,7 +27,12 @@ async function files(path){okAbs(path);if(demo())return[{name:"TZ_Dodatek k PBŘ
 async function copy(src,base,rel){if(demo())throw new Error("V ukázkovém režimu se nic nekopíruje.");okAbs(src);okCesta(base);okCesta(rel);var d=rel.split("/");d.pop();await folder(base,d.join("/"));var H=jh(await tkn("AllSites.Write"));
  var r=await fetch(SP+ZS+"/_api/SP.MoveCopyUtil.CopyFileByPath()",{method:"POST",headers:H,body:JSON.stringify({srcPath:{DecodedUrl:SP+src},destPath:{DecodedUrl:SP+ZS+"/"+base.replace(/^\/+|\/+$/g,"")+"/"+rel},options:{KeepBoth:false,ResetAuthorAndCreatedOnCopy:false,ShouldBypassSharedLocks:false}})});
  if(!r.ok)throw new Error(r.status==409||r.status==400?"cíl už existuje nebo nejde zkopírovat (HTTP "+r.status+")":"kopie selhala, HTTP "+r.status)}
+/* nahrání jednoho souboru (fotka z obhlídky) do složky nové struktury; existující soubor se nepřepíše, složky se zakládají, velikost max 20 MB */
+async function upload(base,rel,name,blob){if(demo())throw new Error("V ukázkovém režimu se nic nenahrává.");okCesta(base);okCesta(rel);if(!/^[A-Za-z0-9_\-.]+$/.test(String(name)))throw new Error("Neplatný název souboru: "+name);if(!blob||blob.size>20971520)throw new Error("Soubor je prázdný nebo větší než 20 MB: "+name);
+ var dir=await folder(base,rel),H=jh(await tkn("AllSites.Write"));H["Content-Type"]="application/octet-stream";
+ var r=await fetch(SP+ZS+"/_api/web/GetFolderByServerRelativeUrl('"+q(dir)+"')/Files/add(url='"+q(name)+"',overwrite=false)",{method:"POST",headers:H,body:blob});
+ if(!r.ok)throw new Error(r.status==409||r.status==400?"soubor už existuje nebo nejde nahrát (HTTP "+r.status+")":"nahrání selhalo, HTTP "+r.status);return dir+"/"+name}
 /* ověří, že cílová knihovna a složka existuje (jen čtení) */
 async function exists(base){okCesta(base);if(demo())return true;await token(false);var r=await fetch(SP+ZS+"/_api/web/GetFolderByServerRelativeUrl('"+q(ZS+"/"+base.replace(/^\/+|\/+$/g,""))+"')?$select=Exists",{headers:{Authorization:"Bearer "+tok,Accept:"application/json;odata=nometadata"}});if(r.status==404)return false;if(!r.ok)throw new Error("Ověření knihovny selhalo, HTTP "+r.status);return !!(await r.json()).Exists}
-W.SDL={files:files,copy:copy,exists:exists,def:def,read:read,write:write,create:create,folder:folder,demo:demo,ZS:ZS};
+W.SDL={files:files,copy:copy,upload:upload,exists:exists,def:def,read:read,write:write,create:create,folder:folder,demo:demo,ZS:ZS};
 })();

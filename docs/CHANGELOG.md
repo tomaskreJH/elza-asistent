@@ -1,3 +1,8 @@
+## 0.71.0 (2026-11-24) – Fotky do složky zakázky, Proces nabídky, audit
+- Na obhlídce: výběr případu z Případů, kód OBJ a PR, fotky se po klepnutí ukládají do OBJ/PR/pracovní/fotodokumentace z obhlídky (SDL.upload, bez přepsání existujících, max 20 MB), zápis do časové osy případu.
+- Nový modul Proces nabídky (proces.js, seznam ProcesStav): kroky se závislostmi, čekání nezastaví nezávislé kroky, nabídka PBŘ a DZP od nás, koncept první nabídky (krátký, strojově čitelný blok pro AI zákazníka, cenu doplní obchod), předání obchodu jako úkol, zápis hovoru, návrh technika podle kalendáře (ponechat / jiný / posunout), koncept odpovědi podle role. Model: docs/PROCES-NABIDEK.md.
+- tools/audit.js a plán auditu docs/AUDIT-PLAN.md. Testy: test/proces.test.js, rozšířen test/teren.test.js.
+
 ## 0.70.1 (2026-11-24) – Průběh komunikace od první zprávy (nález ze simulace MAKRO)
 - Nález na ostrých datech: případ MAKRO ukazoval 1 zprávu a vznik 24. 11., ale konverzace má 7 zpráv od 11. 9. (společná schránka elzy@ → ředitel → obchod → vedoucí techniků → zákazník). Interní stav PCO navíc označil Obhlídku ✅, i když je teprve naplánovaná na 25. 11.
 - Nový vlakno.js a blok „Průběh komunikace“ v detailu případu: všechny zprávy konverzací případu chronologicky, u každé role odesílatele (zákazník, ředitel, obchod, technik, společná schránka = recepce ELZY, kolega), příjemci, kopie, příloha, text; jen čtení. test/vlakno.test.js.
