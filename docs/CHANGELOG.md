@@ -1,3 +1,7 @@
+## 0.73.3 (2026-11-25) – Zařazení pošty jen v Poště, s vlastním popisem
+- Zrušen souhrn „Pošta k zařazení“ v Můj den i seznam poptávek se zařazením v Ranní kontrole (jedno místo místo tří). Zařazení se dělá v Poště přímo u každého vlákna: Návrh ELZY (předvybraný případ), textové pole „Jak to vidíte“ (co e-mail znamená, kam patří a proč) a tlačítko Uložit popis.
+- Popis se ukládá podle odesílatele spolu s rozhodnutím (místně i do ZnalostElza, Druh trideni) a příští návrh ho zobrazí; podklad pro učení postupů zařazení. Popis jde uložit i bez zařazení.
+
 ## 0.73.2 (2026-11-24) – Schránka elzy@ se nečte
 - Rozhodnutí Tomáše: přístup do elzy@elzy.cz zatím nebude, dokud se nevyladí funkčnost; elzy@ nikdy nezakládá případ automaticky. Čtení společné schránky v Ranní kontrole vypnuto přepínačem CTI_SDILENOU (rano.js), právo Mail.Read.Shared se nevyžaduje a nehlásí se chyba. Návrhy zařazení fungují nad vlastní poštou.
 
