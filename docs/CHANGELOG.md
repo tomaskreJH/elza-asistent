@@ -1,3 +1,6 @@
+## 0.69.2 (2026-11-24) – výběr Elzáčka v Nočních bězích
+- Noční běhy: výběr Elzáčka byl prázdný (filtroval jen vlastní Elzáčky); nově nabízí všechny. ?v=101.
+
 ## 0.69.1 (2026-11-24) – oprava mostu
 - ElzaMost 2: chyba syntaxe PowerShellu (volání funkce NactiFrontu se závorkami) bránila startu mostu; opraveno, test hlídá volání funkcí se závorkami. Nový soubor tools/spustit-most.cmd (ruční start s viditelnou chybou). ?v=100.
 
