@@ -1,3 +1,8 @@
+## 0.70.1 (2026-11-24) – Průběh komunikace od první zprávy (nález ze simulace MAKRO)
+- Nález na ostrých datech: případ MAKRO ukazoval 1 zprávu a vznik 24. 11., ale konverzace má 7 zpráv od 11. 9. (společná schránka elzy@ → ředitel → obchod → vedoucí techniků → zákazník). Interní stav PCO navíc označil Obhlídku ✅, i když je teprve naplánovaná na 25. 11.
+- Nový vlakno.js a blok „Průběh komunikace“ v detailu případu: všechny zprávy konverzací případu chronologicky, u každé role odesílatele (zákazník, ředitel, obchod, technik, společná schránka = recepce ELZY, kolega), příjemci, kopie, příloha, text; jen čtení. test/vlakno.test.js.
+- Interní stav PCO: Obhlídka s „pojede, termín, vyhovuje, potvrzení“ je ⏳ (naplánovaná), ne ✅.
+
 ## 0.70.0 (2026-11-24) – Na obhlídce (Terénní režim) a ELZA místo Recepce
 - Nový modul teren.js, menu Moje práce → Na obhlídce: kontrolní seznam obhlídky EPS/PCO, počítadlo fotek, koncept zprávy zákazníkovi (s žádostí o chybějící dokumentaci, kontakty, přenos) a úkol pro obchod „Nabídka z obhlídky“. Nic se neodesílá. test/teren.test.js.
 - „Recepce“ (převzato ze Syniru) přejmenována v textech na ELZU: ELZA je hlavní asistentka, řídí Elzáčky a vybírá, kdo úlohu vezme (interní názvy funkcí beze změny).
