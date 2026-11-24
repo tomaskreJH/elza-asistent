@@ -1,5 +1,5 @@
 # Stav ELZA asistenta
-Verze 0.62.0 (root i stable), 2026-11-24. Novinka: rychlá odpověď bez nástrojů ve frontě Úloh, eskalace [[tools]], poznatek po běhu a statistiky D25 (CHANGELOG). Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
+Verze 0.63.0 (root i stable), 2026-11-24. Novinka: přehlednější vzhled bez plovoucích oken a lišt, přihlášení hned vidět, Elzáček s úsilím a „co smí“ (CHANGELOG). Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
 
 ## Cíl (měřítko každé změny)
 Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vyřídí poštu a případy, plánuje zakázky a lidi a nic nemusí kopírovat jinam. Technici mají být co nejvíc u zákazníka, zákazník v portálu „může klidně spát“. Bezpečnost má přednost před pohodlím, pohodlí před funkcemi navíc. Nic placeného navíc, CRM a stará dokumentace jen čtení.
@@ -18,6 +18,8 @@ Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vy�
 - Profil firmy, Znalosti s oprávněním a Náhled před odesláním (0.61.0): ověřeno testem (test/kontext.test.js) a v ukázkovém režimu, na ostrých datech ne (seznam ZnalostElza se zakládá ve Správa → Seznamy).
 
 - Rychlá odpověď, eskalace, poznatek po běhu a statistiky D25 (0.62.0): ověřeno testem (test/rychle.test.js); fronta Úloh na ostrých datech zatím běží beze změny schématu, poznatky se ukládají do ZnalostElza (seznam se zakládá ve Správa → Seznamy).
+
+- Vzhled bez plovoucích prvků a Úsilí/Co smí u Elzáčka (0.63.0): ověřeno testy a v ukázkovém režimu; na ostrém webu ve vestavěném prohlížeči Clauda zatím neověřeno (první úkol dalšího vlákna).
 
 ## Hotovo v kódu, čeká na ostré ověření nebo klepnutí Tomáše
 - Všech 16 seznamů založeno a sloupce ověřeny (0.53.0); přehled a zakládání ve Správa → Seznamy (seznamy.js = jeden zdroj schémat). Moduly načtou ostrá data bez chyb (0.53.1). Základní data se naplní klepnutím: Lidé a školení → Naplnit základní data, Plán fází → Uložit výchozí normy (0.54.0); členy týmů doplnit podle e-mailu.

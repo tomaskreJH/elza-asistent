@@ -1,3 +1,10 @@
+## 0.63.0 (2026-11-24) – Přehlednější vzhled bez plovoucích prvků, Elzáček s úsilím a „co smí“
+- Přihlášení: před přihlášením je uprostřed jedna dlaždice s tlačítkem Přihlásit firemním účtem (bez scrollování), menu skryté.
+- Zrušena plovoucí okna a lišty: spodní plovoucí lišta a pravé rychlé nástroje na počítači pryč; upozornění na strop AI je pevně nahoře ve stránce; bezpečnostní upozornění a varování Strážce jsou pruh nahoře; štítek 🛡 a tlačítko ? jsou dole v menu (Návod a AI nápověda). Zůstává jen schvalovací Náhled před odesláním a okna na vyžádání.
+- Menu: nahoře max. 7 připnutých položek (Můj den, Případy, Pošta, Kalendář, Úlohy + vlastní), skupiny níže; na mobilu beze změny (spodní lišta).
+- Elzáček: Úsilí (nízký, střední, vysoký) a Co smí (čte data, navrhuje, zapisuje do Úloh po schválení) při vytvoření i v tabulce Moji Elzáčci; promítá se do pokynu agenta, tvrdá hranice zůstává režim schvalování a ochrana. Bez změny schématu (uloženo v JSON ElzacekDef).
+- Návod (Můj den, AI nastavení) a Průvodce aktualizovány; ?v=84.
+
 ## 0.62.0 (2026-11-24) – Rychlá odpověď bez nástrojů, poznatek po běhu a statistiky D25
 - Úlohy pro agenty: každé zadání dostane hlavičku s režimem. Výchozí je Rychle bez nástrojů (agent odpoví jen z kontextu, nástroje až po značce [[tools]]); Vývoj, Video a Příspěvky jedou rovnou s nástroji. Volba Režim při zadání; stejná hlavička je v krocích Postupů.
 - Eskalace: výsledek se značkou [[tools]] dostane štítek ⚡→🔧 a tlačítko Pustit s nástroji (stejná úloha znovu s nástroji, původní se zamítne, jde vrátit přes 🛡). U kroků Postupu řeší eskalaci agent sám.

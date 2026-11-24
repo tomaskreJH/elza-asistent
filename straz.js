@@ -33,7 +33,7 @@ async function check(again){var cur=await hashAll(),mf=await manifest(),res={t:D
  if(res.state=='alarm'&&!check.rep){check.rep=1;var hits=[res.note].concat(res.d.slice(0,5));if(window.OCHRANA)OCHRANA.alertMe('KÓD APLIKACE SE ZMĚNIL. AI a odesílání jsou zablokované do ověření.',hits,'')}
  if(res.state=='nova'&&!check.nrep){check.nrep=1;if(window.OCHRANA)OCHRANA.alertMe('Nová verze aplikace čeká na schválení (štítek 🛡). Schvalte, jen pokud jste ji právě nasazovali.',[res.note],'')}
  top();return res}
-function top(){var el=document.getElementById('straz-t');if(!S.lock){if(el)el.remove();return}if(!el){el=document.createElement('div');el.id='straz-t';el.style.cssText='position:fixed;left:0;right:0;top:0;z-index:99997;background:#c0392b;color:#fff;padding:8px 12px;font:14px Segoe UI,Arial,sans-serif;text-align:center';document.body.appendChild(el)}el.textContent='⚠ Kód aplikace se změnil bez schválení. AI je zablokovaná. Neodesílejte nic a kontaktujte vlastníka (štítek 🛡).'}
+function top(){var el=document.getElementById('straz-t');if(!S.lock){if(el)el.remove();return}if(!el){el=document.createElement('div');el.id='straz-t';el.style.cssText='flex:0 0 100%;order:-2;background:#c0392b;color:#fff;padding:8px 12px;font:14px Segoe UI,Arial,sans-serif;text-align:center';document.body.insertBefore(el,document.body.firstChild)}el.textContent='⚠ Kód aplikace se změnil bez schválení. AI je zablokovaná. Neodesílejte nic a kontaktujte vlastníka (štítek 🛡).'}
 /* veřejné API pro ochrana.js */
 function vzory(){return S.compiled}
 function blok(){return S.blok}
