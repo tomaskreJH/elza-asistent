@@ -1,3 +1,7 @@
+## 0.69.12 – dodatek (2026-11-24, jen tools/)
+- Ověřeno na ostrém webu: Zkusit zapisuje do AI záznamu (sonnet · 900/126 tok · lehky, tedy hluboko pod 20 000 vstupních tokenů). Noční fronta nf5 nestartovala, protože na PC běžel starý proces mostu (nový ps1 byl jen nakopírován, restart nikdo neprovedl; most.log bez „noc: spouštím“).
+- Most se nově sám obnoví: při změně vlastního skriptu (instalátor jej přepíše) se skryté spuštění zopakuje a starý proces skončí; ruční restart už nebude potřeba. Poprvé je restart nutný ještě jednou (běžící proces je starý).
+
 ## 0.69.12 (2026-11-24) – noční fronta a AI záznam
 - Most (tools/elza-most.ps1): fronta se kontroluje každé 3 s nezávisle na příchozích dotazech (dřív jen při 3 s ticha) a do most.log se zapisuje „noc: spouštím nfX“. Nutná nová instalace/restart mostu.
 - AI nastavení: Zkusit se zapisuje do AIZaznam (model, tokeny, režim) a ukáže tokeny u odpovědi; tabulka Poslední volání má sloupec Model · tokeny · režim.

@@ -132,7 +132,11 @@ function Nocni(){
 }
 
 $Cekani = $L.GetContextAsync()
+$script:PsCas = (Get-Item $PSCommandPath).LastWriteTime
+$script:VbsCesta = Join-Path $PSScriptRoot 'elza-most-skryty.vbs'
 while ($L.IsListening) {
+  # samoobnova: když instalátor přepíše tento skript, most se sám znovu spustí (bez ručního restartu)
+  try { if ((Get-Item $PSCommandPath).LastWriteTime -ne $script:PsCas -and (Test-Path $script:VbsCesta)) { Zapis 'obnova: skript se změnil, spouštím znovu'; $L.Stop(); Start-Process wscript.exe -ArgumentList ('"' + $script:VbsCesta + '"'); exit } } catch {}
   # fronta se kontroluje každé 3 s bez ohledu na to, zda přicházejí dotazy (0.69.12; dřív jen při 3 s ticha)
   if (((Get-Date) - $script:NocCas).TotalSeconds -ge 3) { $script:NocCas = Get-Date; try { Nocni } catch { $script:NocChyba = $_.Exception.Message; Zapis ('noc: ' + $_.Exception.Message) } }
   if (-not $Cekani.Wait(1000)) { continue }
