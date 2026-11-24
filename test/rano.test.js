@@ -18,3 +18,10 @@ t(R.navrhShoda({adresa:'a@gmail.com',cid:'x'},[{id:'W',nazev:'g',klice:'@gmail.c
 t(R.navrhShoda({adresa:'a@nova.cz',cid:'x'},seznam,{},{}).ok==0,'bez shody je k ověření, nic se nedomýšlí');
 t(R.navrhShoda({adresa:'a@firma.cz',cid:'x'},seznam.concat([{id:'WORK-3',nazev:'dvojí',klice:'@firma.cz'}]),{},{}).druh=='vice','více shod vyžaduje výběr');
 t(/vyžádat/.test(R.doporuceni(k)),'doporučení uvádí chybějící');console.log('rano návrhy OK ('+n+')')})();
+// 0.73.1: nastavení ranní analýzy
+;(function(){var R=require('../rano.js');function t(c,m){if(!c){console.log('CHYBA',m);process.exit(1)}}
+var o={model:'claude',hotovo:'07:30',doba:{claude:240}},r=R.rnStart(o,'claude',new Date(2026,10,24,20,0));
+t(r.hotovo.getDate()==25&&r.hotovo.getHours()==7&&r.hotovo.getMinutes()==30,'hotovo je příští ráno');t(r.start<r.hotovo&&(r.hotovo-r.start)==960000,'start = 1,5× doba + 10 min před koncem');
+t(R.rnStart(o,'claude',new Date(2026,10,25,6,0)).hotovo.getDate()==25,'před 7:30 platí dnešek');
+t(R.rnZmer({doba:{claude:240}},'claude',480).doba.claude==320,'doba se průměruje');
+t(R.rnModel({model:'auto'},{claude:1})=='claude'&&R.rnModel({model:'auto'},{lokalni:1})=='lokalni'&&R.rnModel({model:'auto'},{})=='pravidla'&&R.rnModel({model:'lokalni'},{})=='lokalni','výběr modelu');console.log('rano nastavení OK')})();

@@ -1,3 +1,9 @@
+## 0.73.1 (2026-11-24) – Schválení verze jedním klepnutím, důvod nedostupných limitů Claude, nastavení ranní analýzy
+- Strážce kódu: schválení verze je jedno klepnutí (zrušeno „Klepněte znovu“); po schválení hned zmizí položka „Čeká na vás“ a limity Claude se načtou znovu.
+- Limity Claude (ElzaMost): příčinou „nedostupné“ byl vypršelý krátkodobý přístupový token Claude CLI (obnovuje ho jen použití CLI). Most ho nově při chybě 401/403 obnoví drobným voláním (Haiku, „ok“), zopakuje dotaz a po každém běhu Claude limity znovu načte. Neúspěch se drží jen 15 s a aplikace ukáže důvod (dlaždice, menu). Vyžaduje spustit znovu elza-most-instalace.cmd (nová verze mostu, párovací kód zůstane).
+- Ranní analýza: nastavení nezávislé na modelu (automaticky, pravidlová, Claude, lokální Ollama), čas „hotovo do“ (výchozí 7:30), výpočet nejpozdějšího startu z naměřené doby běhu modelu (1,5× doba + 10 min rezerva). Ukládá se jen v prohlížeči a jde kdykoli změnit zpět. Samotný běh AI analýzy čeká na lokální model a Copilot (docs/RANO-ANALYZA-NAVRH.md).
+- Zásada: každá akce musí jít vrátit (docs/ZPET-ZASADA.md).
+
 ## 0.73.0 (2026-11-24) – Návrhy místo automatických případů, učení, Zpět
 - Společná schránka elzy@ už nezakládá případy sama (nahrazuje automatiku z 0.72.0): ne každý e-mail je případ. Ranní kontrola ke každé poptávce připraví Návrh ELZY (shoda se stávajícím případem podle odesílatele/kódu zakázky, naučené rozhodnutí, nebo nový případ; nejisté je označeno „k ověření“) a Doporučení; člověk potvrdí, přiřadí jinam, založí nový případ nebo označí „Není případ“.
 - Učení: každé rozhodnutí (potvrzení, ruční přiřazení, nový případ, ne-případ) se ukládá podle odesílatele (localStorage + ZnalostElza Druh trideni, sdíleně; v seznamu Znalostí se nezobrazuje) a příští návrh ho použije jako první.

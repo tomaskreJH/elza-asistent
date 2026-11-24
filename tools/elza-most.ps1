@@ -73,6 +73,7 @@ function ZavolejClaude($model, $system, $prompt){
   $r = $x.r; $out = $x.out
   $s = [int]((Get-Date)-$t0).TotalSeconds
   Zapis ("claude $model $rezim $s s")
+  $script:LimCas = [datetime]::MinValue
   if ($r -and -not $r.is_error) {
     $ti = 0; $to = 0; $usd = 0
     try { $ti = [int]$r.usage.input_tokens + [int]$r.usage.cache_read_input_tokens + [int]$r.usage.cache_creation_input_tokens; $to = [int]$r.usage.output_tokens } catch {}
@@ -90,18 +91,30 @@ function ZavolejOllamu($model, $system, $prompt){
 
 # --- skutečné limity předplatného Claude (stejný zdroj jako /usage v Claude CLI; neoficiální, při změně vrátí ok=false) ---
 $script:LimCas = [datetime]::MinValue; $script:LimVal = @{ok=$false}
+function LimityZavolej(){
+  $f = Join-Path $env:USERPROFILE '.claude\.credentials.json'
+  if (-not (Test-Path $f)) { return @{ok=$false; duvod='soubor s přihlášením Claude nenalezen (v okně Claude napište /login).'} }
+  $o = (Get-Content $f -Raw | ConvertFrom-Json).claudeAiOauth
+  $tok = [string]$o.accessToken
+  $u = Invoke-RestMethod -TimeoutSec 8 -Uri 'https://api.anthropic.com/api/oauth/usage' -Headers @{Authorization=("Bearer $tok"); 'anthropic-beta'='oauth-2025-04-20'}
+  $tok = $null
+  return @{ok=$true; pet=@{pct=[double]$u.five_hour.utilization; konec=[string]$u.five_hour.resets_at}; tyden=@{pct=[double]$u.seven_day.utilization; konec=[string]$u.seven_day.resets_at}}
+}
 function Limity(){
-  if (((Get-Date) - $script:LimCas).TotalSeconds -lt 60) { return $script:LimVal }
-  $script:LimCas = Get-Date; $script:LimVal = @{ok=$false}
-  try {
-    $f = Join-Path $env:USERPROFILE '.claude\.credentials.json'
-    if (Test-Path $f) {
-      $tok = ((Get-Content $f -Raw | ConvertFrom-Json).claudeAiOauth.accessToken)
-      $u = Invoke-RestMethod -TimeoutSec 8 -Uri 'https://api.anthropic.com/api/oauth/usage' -Headers @{Authorization=("Bearer $tok"); 'anthropic-beta'='oauth-2025-04-20'}
-      $tok = $null
-      $script:LimVal = @{ok=$true; pet=@{pct=[double]$u.five_hour.utilization; konec=[string]$u.five_hour.resets_at}; tyden=@{pct=[double]$u.seven_day.utilization; konec=[string]$u.seven_day.resets_at}}
-    }
-  } catch { Zapis ('limity nedostupné: ' + $_.Exception.Message) }
+  $ttl = if ($script:LimVal.ok) { 60 } else { 15 }
+  if (((Get-Date) - $script:LimCas).TotalSeconds -lt $ttl) { return $script:LimVal }
+  $script:LimCas = Get-Date; $script:LimVal = @{ok=$false; duvod='neznámá chyba'}
+  try { $script:LimVal = LimityZavolej }
+  catch {
+    $m = $_.Exception.Message
+    # platnost přístupového tokenu je krátká a obnovuje ji jen Claude CLI při použití: jedno nejlevnější volání ji obnoví a pokus se zopakuje
+    if ((MaClaude) -and ($m -match '401|403|nauthor|xpired')) {
+      Zapis ('limity: token vypršel, obnovuji drobným voláním Claude (' + $m + ')')
+      try { $null = SpustClaude @('-p','--output-format','json','--max-turns','1','--tools','""','--no-session-persistence','--model','haiku') 'ok'; $script:LimVal = LimityZavolej }
+      catch { $script:LimVal = @{ok=$false; duvod=('přihlášení Claude vypršelo a obnovení se nepodařilo: ' + $_.Exception.Message + ' (v okně Claude napište /login).')} }
+    } else { $script:LimVal = @{ok=$false; duvod=('Claude neodpovídá na dotaz o limitech: ' + $m)} }
+    Zapis ('limity nedostupné: ' + $script:LimVal.duvod)
+  }
   return $script:LimVal
 }
 
