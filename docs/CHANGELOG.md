@@ -1,3 +1,6 @@
+## 0.68.4 (2026-11-24) – most snese varování Claude CLI
+- ElzaMost: varování Claude CLI na chybovém výstupu už v PowerShellu 5.1 nezastaví běh. ?v=98.
+
 ## 0.68.3 (2026-11-24) – most bez MCP služeb
 - ElzaMost: Claude CLI běží s --strict-mcp-config (nenačítá připojené služby, rychlejší a bezpečnější), varování jdou do claude-chyba.txt, ne do odpovědi. ?v=97.
 

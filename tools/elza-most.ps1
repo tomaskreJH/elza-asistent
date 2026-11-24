@@ -67,7 +67,9 @@ while ($L.IsListening) {
       if ($j.system) { $a += @('--append-system-prompt', [string]$j.system) }
       $t0 = Get-Date
       $ef = Join-Path $Slozka 'claude-chyba.txt'
+      $ErrorActionPreference = 'Continue'
       $out = ([string]$j.prompt) | & $Cl @a 2>$ef | Out-String
+      $ErrorActionPreference = 'Stop'
       if (-not $out.Trim() -and (Test-Path $ef)) { $out = Get-Content $ef -Raw }
       $r = $null; try { $r = $out | ConvertFrom-Json } catch {}
       Zapis ("claude " + [int]((Get-Date)-$t0).TotalSeconds + ' s')
