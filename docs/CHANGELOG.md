@@ -1,3 +1,6 @@
+## 0.65.2 (2026-11-24) – Start vždy s úplným Můj den
+- Ověřeno na ostrém webu: při startu se mohl vykreslit pohled zachycený před načtením vzhled.js (bez bloků Čeká na vás a Ranní kontrola). Aplikace teď vybírá pohled až těsně před vykreslením; ?v=89.
+
 ## 0.65.1 (2026-11-24) – Můj den se nezdrží načítáním pošty
 - Ověřeno na ostrém webu: Můj den čekal na načtení pošty pro Ranní kontrolu a při startu se ukázal jen starý rychlý náhled. Sekce Ranní kontrola se teď zobrazí hned (Načítám…) a poptávky se doplní samy; ?v=88.
 
