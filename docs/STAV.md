@@ -1,5 +1,5 @@
 # Stav ELZA asistenta
-Verze 0.68.1 (root i stable), 2026-11-24. Novinka 0.68.0: Claude CLI v aplikaci přes lokální most (ElzaMost, předplatné, bez API klíče a bez správce), Ollama, přehled předplatného v AI nastavení; testy prošly, na ostrém webu nasazeno, ověření UI čeká na přihlášení. Předchozí 0.67.1: Interní stav PCO hodnotí poštu po větách (✅ ⏳ ❌ ☐), Založit případ z Ranní kontroly, přísnější filtr reklam (CHANGELOG). Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
+Verze 0.68.1 (root i stable), 2026-11-24. Novinka 0.68.0: Claude CLI v aplikaci přes lokální most (ElzaMost, předplatné, bez API klíče a bez správce), Ollama, přehled předplatného v AI nastavení; most ověřen na PC ST-TKREJCI (Claude CLI 2.1.331, Ollama qwen3.5:2b a 4b), zbývá Test Elzáčka a NB. Předchozí 0.67.1: Interní stav PCO hodnotí poštu po větách (✅ ⏳ ❌ ☐), Založit případ z Ranní kontroly, přísnější filtr reklam (CHANGELOG). Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
 
 ## Cíl (měřítko každé změny)
 Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vyřídí poštu a případy, plánuje zakázky a lidi a nic nemusí kopírovat jinam. Technici mají být co nejvíc u zákazníka, zákazník v portálu „může klidně spát“. Bezpečnost má přednost před pohodlím, pohodlí před funkcemi navíc. Nic placeného navíc, CRM a stará dokumentace jen čtení.
