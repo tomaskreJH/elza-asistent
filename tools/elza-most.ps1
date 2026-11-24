@@ -1,4 +1,4 @@
-﻿# ELZA most – lokální pomocník pro ELZA asistenta (verze most 2)
+﻿# ELZA most – lokální pomocník pro ELZA asistenta (verze most 2, 0.69.12)
 # Spouští oficiální Claude CLI (předplatné, bez API klíče) a volitelně Ollamu.
 # Bezpečnost: poslouchá jen na 127.0.0.1, přijme jen stránku ELZA asistenta (Origin),
 # každé volání musí nést párovací kód. Claude běží bez nástrojů (jen text), nic na disku nemění.
@@ -113,13 +113,13 @@ function NactiFrontu(){ if (Test-Path $FrontaSoubor) { try { return @(Rozbal (Ge
 function UlozFrontu($a){ ConvertTo-Json -InputObject @($a) -Depth 6 | Set-Content -Encoding UTF8 $FrontaSoubor }
 function NactiNast(){ $n = @{od=22; do=6; zapnuto=$true}; if (Test-Path $NastSoubor) { try { $x = Get-Content $NastSoubor -Raw | ConvertFrom-Json; $n = @{od=[int]$x.od; do=[int]$x.do; zapnuto=[bool]$x.zapnuto} } catch {} }; return $n }
 function VNoci(){ $n = NactiNast; if (-not $n.zapnuto) { return $false }; $h = (Get-Date).Hour; if ($n.od -gt $n.do) { return ($h -ge $n.od -or $h -lt $n.do) } else { return ($h -ge $n.od -and $h -lt $n.do) } }
-$script:Ted = $false; $script:NocChyba = ''
+$script:Ted = $false; $script:NocChyba = ''; $script:NocCas = [datetime]::MinValue
 function Nocni(){
   if (-not ($script:Ted -or (VNoci))) { return }
   $f = NactiFrontu; $i = -1
   for ($k = 0; $k -lt $f.Count; $k++) { if ($f[$k].stav -eq 'ceka') { $i = $k; break } }
   if ($i -lt 0) { $script:Ted = $false; return }
-  $u = $f[$i]; $u.stav = 'bezi'; UlozFrontu $f
+  $u = $f[$i]; $u.stav = 'bezi'; UlozFrontu $f; Zapis ('noc: spouštím ' + $u.id + ' ' + $u.tool + ' ' + $u.model)
   try {
     if ($u.tool -eq 'ollama') { $r = ZavolejOllamu $u.model $u.system $u.prompt } else { $r = ZavolejClaude $u.model $u.system $u.prompt }
   } catch { $r = @{ok=$false; chyba=$_.Exception.Message} }
@@ -133,7 +133,9 @@ function Nocni(){
 
 $Cekani = $L.GetContextAsync()
 while ($L.IsListening) {
-  if (-not $Cekani.Wait(3000)) { try { Nocni } catch { $script:NocChyba = $_.Exception.Message; Zapis ('noc: ' + $_.Exception.Message) }; continue }
+  # fronta se kontroluje každé 3 s bez ohledu na to, zda přicházejí dotazy (0.69.12; dřív jen při 3 s ticha)
+  if (((Get-Date) - $script:NocCas).TotalSeconds -ge 3) { $script:NocCas = Get-Date; try { Nocni } catch { $script:NocChyba = $_.Exception.Message; Zapis ('noc: ' + $_.Exception.Message) } }
+  if (-not $Cekani.Wait(1000)) { continue }
   $ctx = $Cekani.Result; $Cekani = $L.GetContextAsync(); $q = $ctx.Request
   try {
     $o = $q.Headers['Origin']

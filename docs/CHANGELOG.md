@@ -1,3 +1,7 @@
+## 0.69.12 (2026-11-24) – noční fronta a AI záznam
+- Most (tools/elza-most.ps1): fronta se kontroluje každé 3 s nezávisle na příchozích dotazech (dřív jen při 3 s ticha) a do most.log se zapisuje „noc: spouštím nfX“. Nutná nová instalace/restart mostu.
+- AI nastavení: Zkusit se zapisuje do AIZaznam (model, tokeny, režim) a ukáže tokeny u odpovědi; tabulka Poslední volání má sloupec Model · tokeny · režim.
+
 ## 0.69.11 (2026-11-24) – kontrola konzistence
 - Opraven mrtvý odkaz v analyza.js (test/analyza.test.js neexistuje, testy jsou ve test/struktura.test.js); VER sjednocen s CHANGELOG (0.69.10 měnil jen tools/, kód zůstal 0.69.9); stable/app.js a boot.js srovnány s kořenem; ?v=109. Všechny testy (node test/*.test.js, 8 python testů) projdou, integrity.json sedí.
 
