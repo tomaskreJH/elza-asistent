@@ -8,4 +8,5 @@ require('../katalog.js');require('../kontext.js');require('../ai.js');var A=wind
  t(!/Copilot/.test((await A.cfg('AG-VYVOJ')).tool),'vývoj není na Copilotu ani na placeném API');
  var h=A.limityHtml({ok:true,pet:{pct:82,konec:''},tyden:{pct:10,konec:''}});t(/82%/.test(h)&&/10%/.test(h)&&/Claude 5 h/.test(h),'kruhy ukazují procenta');
  t(/nejsou dostupné/.test(A.limityHtml({ok:false}))&&!/>0%</.test(A.limityHtml({ok:false})),'nedostupné limity se neukáží jako nula');
+ global.OCHRANA=window.OCHRANA={guardPrompt:function(x){return 'PRAVIDLO\n\n'+x}};var ap=await A.priprav('AG-ELZA',{task:'Co je EPS?',data:'text'});t(/Co je EPS\?/.test(ap.prompt)&&!/undefined/.test(ap.prompt)&&/PRAVIDLO/.test(ap.prompt)&&/<data>text<\/data>/.test(ap.prompt),'zadání se při přípravě neztratí a je obaleno ochranou');
  console.log(bad?'SELHALO':'model OK');process.exit(bad?1:0)})();

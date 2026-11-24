@@ -1,3 +1,6 @@
+## 0.69.3 (2026-11-24) – oprava ztraceného zadání u AI
+- Oprava vážné chyby: ochrana vložených pokynů vrací text a ai.js ho přiřazoval místo objektu zadání, takže Elzáčkům (běžné volání i Noční běhy) se ztrácelo zadání (model dostal „undefined“). Nově funkce zaruc: zadání se obalí ochranným pravidlem, data se jen zkontrolují. Test test/model.test.js hlídá.
+
 ## 0.69.2 (2026-11-24) – výběr Elzáčka v Nočních bězích
 - Noční běhy: výběr Elzáčka byl prázdný (filtroval jen vlastní Elzáčky); nově nabízí všechny. ?v=101.
 
