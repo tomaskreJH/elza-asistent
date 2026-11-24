@@ -1,5 +1,5 @@
 # Stav ELZA asistenta
-Verze 0.66.1 (root i stable), 2026-11-24. Novinka: schválení vždy nahoře bez rolování (Strážce, Můj den, Úlohy), Ranní kontrola bez reklam, Elzáček PCO podle skutečných případů a pohled Interní stav PCO v Případech (CHANGELOG). Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
+Verze 0.67.0 (root i stable), 2026-11-24. Novinka: Interní stav PCO hodnotí poštu po větách (✅ ⏳ ❌ ☐), Založit případ z Ranní kontroly, přísnější filtr reklam (CHANGELOG). Historie stavů: docs/STAV-HISTORIE.md, změny: docs/CHANGELOG.md.
 
 ## Cíl (měřítko každé změny)
 Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vyřídí poštu a případy, plánuje zakázky a lidi a nic nemusí kopírovat jinam. Technici mají být co nejvíc u zákazníka, zákazník v portálu „může klidně spát“. Bezpečnost má přednost před pohodlím, pohodlí před funkcemi navíc. Nic placeného navíc, CRM a stará dokumentace jen čtení.
@@ -24,12 +24,12 @@ Jedna přehledná aplikace, ve které pracovník ELZY začne den (Můj den), vy�
 - Nastavení jako dlaždice a panel Co agent ví u Úloh (0.64.0): ověřeno na ostrém webu (0.64.1, počítač i mobil).
 - Ranní kontrola v Můj den (0.66.1): ověřeno na ostrém webu; reklamy vyřazeny.
 - Schvalování nahoře (0.66.0): ověřeno na ostrém webu (pruh Strážce, rámeček v 🛡).
-- Elzáček Připojení EPS na PCO HZS: znalosti porovnány se skutečnou poštou (0.66.1); běh samotného Elzáčka čeká na schválení otisků. Pohled Interní stav PCO v Případech na ostrých datech neověřen.
+- Elzáček Připojení EPS na PCO HZS: přidán z Galerie na ostrém webu (0.67.0); Interní stav PCO ověřen na skutečné poště MAKRO a ÚZSVM a opraven. Elzáček zatím nemá nástroj (Copilot čeká na souhlas správce, Claude API bez klíče); poběží přes Claude na předplatném po zapojení Claude CLI (viz DALSI-KROKY bod 0d).
 
 ## Hotovo v kódu, čeká na ostré ověření nebo klepnutí Tomáše
 - Všech 16 seznamů založeno a sloupce ověřeny (0.53.0); přehled a zakládání ve Správa → Seznamy (seznamy.js = jeden zdroj schémat). Moduly načtou ostrá data bez chyb (0.53.1). Základní data se naplní klepnutím: Lidé a školení → Naplnit základní data, Plán fází → Uložit výchozí normy (0.54.0); členy týmů doplnit podle e-mailu.
 - Ranní kontrola na ostrých datech běží (0.53.1); po týdnu souběhu vypnout dvě ranní úlohy v Copilotu (nahrazuje ranní úlohy Copilotu; ty zůstávají jako záloha do ověření).
-- Strážce: po nasazení 0.66.1 schválit nové otisky ve štítku 🛡 (do té doby je AI zablokovaná; poplach před 0.64.0 vznikl změnou kódu beze změny verze).
+- Strážce: po nasazení 0.67.0 schválit nové otisky ve štítku 🛡 (do té doby je AI zablokovaná; poplach před 0.64.0 vznikl změnou kódu beze změny verze).
 - Portál zákazníka: přihlášení skutečného zákazníka neověřeno.
 - Plán fází ověřen na ostrých datech (0.54.1): funguje, ale pilot nemá plán ani měření; postup v docs/OVERENI-FAZI-2026-11-23.md.
 - Složky zakázky (0.55.0): ověření a založení cílové knihovny a přenos starých souborů po dávkách se schválením; neověřeno na ostrém webu (první dávku pustí Tomáš).
@@ -40,7 +40,7 @@ CSP na všech stránkách (object-src none, base-uri self, od 0.52.0 i referrer 
 
 ## Čeká mimo aplikaci
 Pravidla AI: vlastník otevře Pravidla AI → Nová verze (doplněk C18–C22 je předvyplněn), uloží a schválí; pak všem vyskočí okno s potvrzením.
-Souhlas správce pro Copilot (docs/ZADOST-COPILOT.md); žádost pro Claude Desktop na PC odpadá (rozhodnutí 2026-11-24: zápis jde přes aplikaci a frontu Úloh), rozšíření T12 na odpovědné osoby (po výslovném ano), test na skutečném telefonu.
+Souhlas správce pro Copilot (docs/ZADOST-COPILOT.md); Claude Desktop a Claude CLI na PC a NB: instalace pro uživatele bez správce je v pořádku (rozhodnutí Tomáše 2026-11-24, nahrazuje dřívější „odpadá“), rozšíření T12 na odpovědné osoby (po výslovném ano), test na skutečném telefonu.
 
 ## Kontrola 2026-11-23 (0.52.0)
 Viz docs/KONTROLA-2026-11-23.md.

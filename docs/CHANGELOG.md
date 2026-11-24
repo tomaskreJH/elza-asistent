@@ -1,3 +1,10 @@
+## 0.67.0 (2026-11-24) – Interní stav PCO podle skutečnosti, Založit případ z Ranní kontroly
+- Ověřeno na ostrém webu: Elzáček Připojení EPS na PCO HZS přidán z Galerie; pošta MAKRO (10 lokalit) a ÚZSVM O. Nedbala porovnána se šablonou 15.
+- Oprava Interního stavu PCO: dřív stačila zmínka slova, takže „nemají KTP“ nebo „nezeptal jsem se na typ ústředny“ vyšlo jako splněno a otázka „Jak to vypadá s generálním klíčem?“ jako hotovo. Nově se hodnotí po větách: ✅ zmínka, ⏳ otázka nebo žádost, ❌ výslovně chybí, ☐ nezmíněno. Doplněny zkratky KTP a OPO, Technická zpráva, plánek; „změna přenosové trasy“ už neznamená dvě přenosové cesty. Další krok má přednost u čekajících a chybějících položek (ÚZSVM: stanovisko HZS, MAKRO: typ ústředny). Test test/pco.test.js.
+- Ranní kontrola: tlačítko Založit případ (případ vznikne a celá konverzace se připojí); bez něj PCO poptávka v Případech chyběla a pohled Interní stav PCO neměl kde běžet.
+- Oprava filtru reklam: newsletter (např. „Integrujte JABLOTRON do C4“) prošel jako poptávka s jistotou vysoká; vyřazuje se i „zobrazit v prohlížeči“ a obvyklé rozesílací služby.
+- Návod (Ranní kontrola, Případy) aktualizován; ?v=92.
+
 ## 0.66.1 (2026-11-24) – Ověření na ostrém webu, Elzáček PCO podle skutečnosti
 - Ověřeno na ostrém webu: Ranní kontrola v Můj den funguje; žlutý pruh Strážce i rámeček Čeká na vás v 🛡 jsou nahoře bez rolování.
 - Oprava: Můj den se vykreslil dřív než kontrola Strážce, schválení nové verze se teď do bloku Čeká na vás doplní samo.
