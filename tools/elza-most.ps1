@@ -47,24 +47,37 @@ function MaClaude(){ [bool]$Cl }
 function MaOllamu(){ try { Invoke-RestMethod -TimeoutSec 2 'http://127.0.0.1:11434/api/tags' | Out-Null; $true } catch { $false } }
 
 # --- volání modelů (společné pro okamžité volání i noční frontu) ---
-function ZavolejClaude($model, $system, $prompt){
-  if (-not (MaClaude)) { return @{ok=$false; chyba='Claude CLI není nainstalován (krok 1 v Návodu).'} }
-  $a = @('-p','--output-format','json','--max-turns','1','--strict-mcp-config','--disallowedTools','Bash,Edit,Write,WebFetch,WebSearch,NotebookEdit')
-  if ($model) { $a += @('--model', [string]$model) }
-  if ($system) { $a += @('--append-system-prompt', [string]$system) }
-  $t0 = Get-Date; $ef = Join-Path $Slozka 'claude-chyba.txt'
+function SpustClaude($a, $prompt){
+  $ef = Join-Path $Slozka 'claude-chyba.txt'
+  $pr = Join-Path $env:TEMP 'elza-most-prazdno'; if (-not (Test-Path $pr)) { New-Item -ItemType Directory -Path $pr | Out-Null }
   $ErrorActionPreference = 'Continue'
-  $out = ([string]$prompt) | & $Cl @a 2>$ef | Out-String
+  Push-Location $pr
+  try { $out = ([string]$prompt) | & $Cl @a 2>$ef | Out-String } finally { Pop-Location }
   $ErrorActionPreference = 'Stop'
   if (-not $out.Trim() -and (Test-Path $ef)) { $out = Get-Content $ef -Raw }
   $r = $null; try { $r = $out | ConvertFrom-Json } catch {}
+  return @{r=$r; out=$out}
+}
+function ZavolejClaude($model, $system, $prompt){
+  if (-not (MaClaude)) { return @{ok=$false; chyba='Claude CLI není nainstalován (krok 1 v Návodu).'} }
+  $t0 = Get-Date
+  # lehký režim (0.69.8): bez nástrojů, bez nastavení a CLAUDE.md, prázdná složka, vlastní krátký systémový prompt = méně vstupních tokenů; selže-li, použije se dřívější úplný režim
+  $zaklad = @('-p','--output-format','json','--max-turns','1','--strict-mcp-config')
+  $lehky = $zaklad + @('--tools','""','--disable-slash-commands','--no-session-persistence','--setting-sources','user','--system-prompt',$(if ($system) { [string]$system } else { 'Jsi asistent firmy ELZY. Odpovídej česky, stručně a věcně.' }))
+  $plny = $zaklad + @('--disallowedTools','Bash,Edit,Write,WebFetch,WebSearch,NotebookEdit')
+  if ($system) { $plny += @('--append-system-prompt', [string]$system) }
+  if ($model) { $lehky += @('--model', [string]$model); $plny += @('--model', [string]$model) }
+  $rezim = 'lehky'
+  $x = SpustClaude $lehky $prompt
+  if (-not ($x.r -and -not $x.r.is_error)) { $rezim = 'plny'; Zapis ('lehký režim selhal, jedu úplně: ' + $x.out.Substring(0,[Math]::Min(120,$x.out.Length))); $x = SpustClaude $plny $prompt }
+  $r = $x.r; $out = $x.out
   $s = [int]((Get-Date)-$t0).TotalSeconds
-  Zapis ("claude $model $s s")
+  Zapis ("claude $model $rezim $s s")
   if ($r -and -not $r.is_error) {
     $ti = 0; $to = 0; $usd = 0
     try { $ti = [int]$r.usage.input_tokens + [int]$r.usage.cache_read_input_tokens + [int]$r.usage.cache_creation_input_tokens; $to = [int]$r.usage.output_tokens } catch {}
     try { $usd = [double]$r.total_cost_usd } catch {}
-    return @{ok=$true; text=[string]$r.result; s=$s; usage=@{vstup=$ti; vystup=$to; usd=$usd}}
+    return @{ok=$true; text=[string]$r.result; s=$s; usage=@{vstup=$ti; vystup=$to; usd=$usd; rezim=$rezim}}
   }
   return @{ok=$false; chyba=('Claude CLI: ' + $out.Substring(0,[Math]::Min(300,$out.Length)))}
 }

@@ -1,3 +1,8 @@
+## 0.69.8 (2026-11-24) – lehký režim Claude CLI, texty e-mailů v Interním stavu PCO, prahy podle týdne
+- ElzaMost: volání Claude CLI nově jede v lehkém režimu (--tools "", --disable-slash-commands, --no-session-persistence, --setting-sources user, vlastní krátký --system-prompt místo celého výchozího, prázdná pracovní složka bez CLAUDE.md); selže-li, automaticky se zopakuje dřívějším úplným režimem. Odpověď nese usage.rezim (lehky/plny), AI záznam ho ukáže u modelu. Úspora se změří při prvním volání (dřív ~20 000 vstupních tokenů).
+- Případy: automatické připojení pošty nově připojí FW/RE e-maily s jiným conversationId podle shodného předmětu (bez RE:/FW:/Odp:); Interní stav PCO čte po otevření detailu i text e-mailů celých konverzací případu (jen čtení) a přepočítá se.
+- Prahy přepnutí: 5 h okno 80 % Haiku / 95 % Ollama; týden 85 % / 97 %, a Haiku už od 60 %, když spotřeba předbíhá uplynulý čas týdne o 30 b. (test/model.test.js). ?v=107.
+
 ## 0.69.7 (2026-11-24) – instalace mostu: PATH a přihlášení
 - elza-most-instalace.cmd: nově přidá %USERPROFILE%\.local\bin do PATH uživatele (bez správce), takže příkaz claude funguje i po restartu; instalátor Claude se nespouští znovu, když už je nainstalovaný; přihlašovací okno se otevírá v domovské složce (ne ve složce tools). ?v=106.
 

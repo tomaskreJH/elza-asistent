@@ -9,4 +9,5 @@ require('../katalog.js');require('../kontext.js');require('../ai.js');var A=wind
  var h=A.limityHtml({ok:true,pet:{pct:82,konec:''},tyden:{pct:10,konec:''}});t(/82%/.test(h)&&/10%/.test(h)&&/Claude 5 h/.test(h),'kruhy ukazují procenta');
  t(/nejsou dostupné/.test(A.limityHtml({ok:false}))&&!/>0%</.test(A.limityHtml({ok:false})),'nedostupné limity se neukáží jako nula');
  global.OCHRANA=window.OCHRANA={guardPrompt:function(x){return 'PRAVIDLO\n\n'+x}};var ap=await A.priprav('AG-ELZA',{task:'Co je EPS?',data:'text'});t(/Co je EPS\?/.test(ap.prompt)&&!/undefined/.test(ap.prompt)&&/PRAVIDLO/.test(ap.prompt)&&/<data>text<\/data>/.test(ap.prompt),'zadání se při přípravě neztratí a je obaleno ochranou');
+ var za=function(d){return new Date(Date.now()+d*864e5).toISOString()};t(A.prah({pet:{pct:9},tyden:{pct:64,konec:za(5)}})==80,'týden 64 % po 2 dnech předbíhá čas = Haiku');t(A.prah({pet:{pct:9},tyden:{pct:64,konec:za(2)}})==0,'týden 64 % po 5 dnech je v normě');t(A.prah({pet:{pct:96},tyden:{pct:5,konec:za(3)}})==95&&A.prah({pet:{pct:1},tyden:{pct:98,konec:za(1)}})==97,'tvrdé prahy 5 h a týdne');
  console.log(bad?'SELHALO':'model OK');process.exit(bad?1:0)})();
