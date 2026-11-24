@@ -12,5 +12,7 @@ Zdroj: zadání Tomáše 2026-11-24. Kód: proces.js, test/proces.test.js, sezna
 První nabídka → upřesnění po výběru → termín obhlídky (kalendář, technik) → obhlídka → dokumentace zdolávání, PBŘ, KTPO/OPPO, kontakty, ústředna, dvě přenosové cesty → žádost úřadu (po PBŘ) → DZP (po dokumentaci a žádosti) → konečná nabídka → montáž → připojení na PCO (až po DZP, montáži a přenosech).
 ## Kalendář a přidělení technika (kroky 6 a 4 simulace MAKRO)
 navrhTechnika: výchozí technik volný → ponechat; obsazen → jiný technik skupiny (EPS) s nejmenším vytížením dne, vlastní akci není nutné posouvat; nikdo volný → tři náhradní termíny. Obsazenost čte Graph getSchedule (právo Calendars.Read.Shared); bez práva se kolegové berou jako volní a aplikace to řekne. Do kalendáře se nezapisuje.
+## Hotovo 0.72.0
+Zápis obhlídky do kalendáře (po potvrzení termínu zákazníkem, zkušebně jen do vlastního kalendáře, transactionId proti duplicitě, kalendář technika přes Calendars.ReadWrite.Shared, jinak pozvánka po potvrzení); Elzáček Nabídka (AG-NABIDKA, úloha do fronty, chybějící cena nebo odkaz = úkol obchodu, vedoucí Radim); automatické založení případu ze schránky elzy@ (Ranní kontrola).
 ## Zbývá
-Zápis do kalendáře Kostky po potvrzení zákazníkem; automatické založení případu ze společné schránky; odeslání zprávy po Náhledu před odesláním; nabídka z obhlídky v portálu; napojení kroků na Gantt a Elzáčky (kdo krok převezme); ověření na ostrých datech.
+Odeslání zprávy po Náhledu před odesláním; nabídka z obhlídky v portálu; napojení kroků na Gantt a Elzáčky (kdo krok převezme); sloučení překrývajících se nabídkových modulů (docs/KONTROLA-2026-11-24.md); ověření na ostrých datech.

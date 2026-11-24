@@ -1,3 +1,9 @@
+## 0.72.0 (2026-11-24) – Data z jakékoli činnosti, kalendář, elzy@, Elzáček Nabídka
+- Nový zaznam.js a seznam Zaznam (zásada docs/DATOVY-KAPITAL.md): modul Na místě (dříve Na obhlídce) ukládá fotky a strojově čitelný záznam ke KAŽDÉ činnosti (obhlídka, montáž, servis, kontrola, revize, školení, hovor, fotka od zákazníka) do trvalých Podkladů objektu, navrhne příležitosti (kamery, BOZP, PO, modernizace…) a předá je obchodu; Přehled uložených záznamů pro analýzu.
+- Proces nabídky: zápis obhlídky do kalendáře po potvrzení termínu zákazníkem (zkušebně jen do vlastního kalendáře bez účastníků; transactionId proti duplicitě; do kalendáře technika, jinak po potvrzení pozvánkou); tlačítko Elzáček Nabídka (agent AG-NABIDKA v katalogu a v Úlohách): koncept nabídky, chybějící cena nebo odkaz jde jako úkol obchodu (vedoucí Radim).
+- Ranní kontrola čte společnou schránku elzy@ (Mail.Read.Shared) a poptávky bez případu zakládá automaticky (max. 5 za běh, vypínač synchronizovaný přes nastavení, zdroj „auto elzy@“, zápis do časové osy).
+- Audit: docs/KONTROLA-2026-11-24.md, DALSI-KROKY přepsán, opravena chybějící definice seznamu Zaznam. Testy: test/zaznam.test.js, rozšířené proces a rano.
+
 ## 0.71.0 (2026-11-24) – Fotky do složky zakázky, Proces nabídky, audit
 - Na obhlídce: výběr případu z Případů, kód OBJ a PR, fotky se po klepnutí ukládají do OBJ/PR/pracovní/fotodokumentace z obhlídky (SDL.upload, bez přepsání existujících, max 20 MB), zápis do časové osy případu.
 - Nový modul Proces nabídky (proces.js, seznam ProcesStav): kroky se závislostmi, čekání nezastaví nezávislé kroky, nabídka PBŘ a DZP od nás, koncept první nabídky (krátký, strojově čitelný blok pro AI zákazníka, cenu doplní obchod), předání obchodu jako úkol, zápis hovoru, návrh technika podle kalendáře (ponechat / jiný / posunout), koncept odpovědi podle role. Model: docs/PROCES-NABIDEK.md.

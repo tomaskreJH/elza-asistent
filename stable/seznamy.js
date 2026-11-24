@@ -12,6 +12,7 @@ var D=[
  [Z,"PostupZaznam","zpětná vazba k postupům",[["Postup",2,1],["Verze",9],["Krok",2],["Akce",2],["Text",3],["Kdo",2],["Kdy",2],["Stav",2]]],
  [Z,"NabidkaEvid","evidence odeslaných nabídek",[["Zakazka",2,1],["Zakaznik",2],["Odeslano",2],["Odpoved",2],["Stav",2,1],["Odpovedny",2,1],["Pripomenuto",9],["Poznamka",3]]],
  [Z,"ProcesStav","Proces nabídky, stav kroků případu",[["WorkId",2,1],["Fakta",3],["Stav",2]]],
+ [Z,"Zaznam","záznamy činností u objektů (fotky, podklady, čas, příležitosti)",[["WorkId",2,1],["Obj",2,1],["Pr",2],["Druh",2,1],["Zdroj",2],["Kdo",2],["Kdy",2],["Technologie",2],["Popis",3],["Fotek",9],["Cesta",2],["Prilezitosti",3],["Minuty",9],["Stav",2]]],
  [Z,"Ukol","úkoly",[["KodZakazky",2],["Resitel",2],["Od",4],["Do",4],["Hotovo",9],["Poznamka",3]]],
  [Z,"Osoba","Plán fází, osoby",[["Jmeno",2],["Email",2,1],["Stav",2]]],
  [Z,"Kvalifikace","Plán fází, kvalifikace",[["Email",2,1],["Typ",2,1],["Platnost",4],["Stav",2]]],

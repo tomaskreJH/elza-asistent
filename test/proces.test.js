@@ -25,3 +25,14 @@ var zam={od:'2026-11-25T08:00:00Z',do:'2026-11-25T12:00:00Z'};var rp=P.navrhTech
 a.ok(/Cenu a podmínky určuješ ty/.test(P.konceptOdpovedi('obchod',{})));a.ok(/kroků hotovo/.test(P.konceptOdpovedi('ředitel',{fakta:{}})));a.ok(/ELZY, spol/.test(P.konceptOdpovedi('zákazník / externí',{})));
 a.ok(/Hovor/.test(P.hovorZaznam({vysledek:'v'}).popis)&&P.hovorZaznam({}).fakta.hovor);
 console.log('proces OK');
+// 0.72.0: Elzáček Nabídka a zápis obhlídky do kalendáře
+;(function(){var a=require('assert'),P=require('../proces.js');
+var k=P.nabidkaTok({zak:'W1',zakaznik:'MAKRO',kdo:'t@elzy.cz'},{poptavka:1});a.equal(k.uloha.Agent,'AG-NABIDKA');a.equal(k.uloha.Stav,'Nová');a.ok(/NEDOPLŇUJ/.test(k.uloha.Zadani)&&/Radim/.test(k.uloha.Zadani));
+a.ok(k.ukol&&/cena/.test(k.ukol.Poznamka)&&/Radim/.test(k.ukol.Poznamka)&&k.ukol.Hotovo===0,'bez ceny padne úkol obchodu');
+var k2=P.nabidkaTok({zak:'W1',cena:'dle obchodu',odkaz:'https://x.cz'},{poptavka:1});a.equal(k2.ukol,null,'s cenou a odkazem se neeskaluje');
+var ev=P.terminUdalost({zak:'W1',zakaznik:'MAKRO',od:'2026-11-25T08:00:00Z',min:90,technik:'Kostka',email:'k@elzy.cz',zkusebne:true,pozvat:true});a.ok(/^\[ZKOUŠKA\]/.test(ev.subject));a.ok(!ev.attendees,'zkušebně nikomu nic neodejde');a.equal(ev.end.dateTime,'2026-11-25T09:30:00');
+var ev2=P.terminUdalost({zak:'W1',od:'2026-11-25T08:00:00Z',technik:'Kostka',email:'k@elzy.cz',pozvat:true});a.equal(ev2.attendees.length,1);a.equal(ev2.transactionId,P.terminUdalost({zak:'W1',od:'2026-11-25T08:00:00Z'}).transactionId,'stejný případ a termín = jedna událost');
+a.throws(function(){P.terminUdalost({od:'x'})},/začátek/);
+a.equal(P.smiZapsat({},{od:'2026-11-25T08:00:00Z',technik:'K'}).ok,false,'bez potvrzení zákazníkem se nezapíše');
+a.equal(P.smiZapsat({obhlidkaPlan:true},{od:'2026-11-25T08:00:00Z',technik:'K'}).ok,true);a.equal(P.smiZapsat({},{od:'2026-11-25T08:00:00Z',zkusebne:true}).ok,true);a.equal(P.smiZapsat({obhlidkaPlan:true},{od:'2026-11-25T08:00:00Z'}).ok,false,'bez technika ne');
+console.log('proces 0.72 OK')})();

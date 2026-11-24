@@ -5,3 +5,6 @@ Cíl: méně oprav, víc posunu. Audit jede automaticky a levně, nic nemění a
 3. **Vazby dat:** případ → zakázka → složky → fáze → Gantt → portál; ověřit klíče (WorkId, kód zakázky, OBJ, PR) a že každý seznam z seznamy.js má čtenáře i zapisovatele.
 4. **Aktuálnost:** texty Návodu a Průvodce vs. verze; zastaralé body v docs/DALSI-KROKY.md (body 00–000 jsou staré) smazat.
 5. Výstup: docs/KONTROLA-RRRR-MM-DD.md; opravy jen kritické, ostatní do backlogu, ať nestojí tokeny.
+
+## Stav 0.72.0
+Bod 1 hotov a běží, body 2–5 provedeny jednou (docs/KONTROLA-2026-11-24.md); sloučení nabídkových modulů čeká na ostrá data.

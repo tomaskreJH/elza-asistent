@@ -1,7 +1,7 @@
 /* ELZA Asistent: Úlohy pro agenty (fronta). Zadání v aplikaci se uloží do seznamu Ulohy; úlohy Vývoj, Video a Příspěvky provádí relace Claude (předplatné, bez API) a výsledek vrátí do seznamu. Člověk výsledek schválí nebo zamítne. Schválení není publikace: nic se samo neodešle ani nezveřejní. */
 (function(){
 var SEL='Id,Title,Agent,Zadani,Vysledek,Stav,Zadal,Schvalil,WorkId,Kdy';
-var AG=[['AG-VYVOJ','Vývoj aplikací'],['AG-VIDEO','Střih videa a reels'],['AG-SOCIAL','Příspěvky a publikace (FB, IG)'],['AG-POSTA','Analýza pošty a dokumentů'],['AG-PRIPADY','Případy a klíčová slova']];
+var AG=[['AG-VYVOJ','Vývoj aplikací'],['AG-VIDEO','Střih videa a reels'],['AG-SOCIAL','Příspěvky a publikace (FB, IG)'],['AG-POSTA','Analýza pošty a dokumentů'],['AG-PRIPADY','Případy a klíčová slova'],['AG-NABIDKA','Nabídka a postup (pro obchod)']];
 var RZ=[['','Režim: podle agenta'],['rychle','Rychle bez nástrojů'],['nastroje','Rovnou s nástroji']];var ALL=false,OPEN=null;var REP=[['','Jednorázově'],['denne','Opakovat denně'],['tydne','Opakovat týdně'],['mesicne','Opakovat měsíčně']],PER={denne:1,tydne:7,mesicne:30};
 function repOf(z){var r=/^\[OPAKOVAT:(denne|tydne|mesicne)\]/.exec(String(z||''));return r?r[1]:''}
 function me(){return String(acc&&acc.username||'').toLowerCase()}
