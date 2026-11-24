@@ -1,6 +1,6 @@
 const CID="7822640e-2537-46eb-8db1-830d38fff665",TEN="35c5f53c-ce94-445a-b877-54965e3be6d3",HOME="https://tomaskrejh.github.io/elza-asistent/",SP="https://elzycz.sharepoint.com",SITE="/sites/ELZA-asistent",SC=[SP+"/AllSites.Read"];
 if(localStorage.getItem("elzaPortal")&&/[#&]code=/.test(location.hash)){location.replace("portal.html"+location.hash)}
-const VER="0.67.0";const $=s=>document.querySelector(s);
+const VER="0.67.1";const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const surl=u=>{u=String(u==null?"":u).trim();return /^(https?:|mailto:|tel:)/i.test(u)?u:"#"};window.surl=surl; const POP=window.opener&&/[#?&](code|error|state)=/.test(location.hash+location.search);
 let OPEN={};try{OPEN=JSON.parse(localStorage.getItem("elzaMenu")||"{}")}catch(e){}

@@ -1,3 +1,8 @@
+## 0.67.1 (2026-11-24) – Interní stav PCO opravdu v detailu případu
+- Ověřeno na ostrém webu: případ MAKRO WORK-20261124-0001 založen tlačítkem Založit případ z Ranní kontroly.
+- Oprava (pozůstatek 0.66.1): funkce pohledu Interní stav PCO existovala, ale detail případu ji nevolal; teď je pod tlačítky AI.
+- Po Založit případ se seznam případů hned obnoví (dřív až po obnovení stránky). ?v=93.
+
 ## 0.67.0 (2026-11-24) – Interní stav PCO podle skutečnosti, Založit případ z Ranní kontroly
 - Ověřeno na ostrém webu: Elzáček Připojení EPS na PCO HZS přidán z Galerie; pošta MAKRO (10 lokalit) a ÚZSVM O. Nedbala porovnána se šablonou 15.
 - Oprava Interního stavu PCO: dřív stačila zmínka slova, takže „nemají KTP“ nebo „nezeptal jsem se na typ ústředny“ vyšlo jako splněno a otázka „Jak to vypadá s generálním klíčem?“ jako hotovo. Nově se hodnotí po větách: ✅ zmínka, ⏳ otázka nebo žádost, ❌ výslovně chybí, ☐ nezmíněno. Doplněny zkratky KTP a OPO, Technická zpráva, plánek; „změna přenosové trasy“ už neznamená dvě přenosové cesty. Další krok má přednost u čekajících a chybějících položek (ÚZSVM: stanovisko HZS, MAKRO: typ ústředny). Test test/pco.test.js.
