@@ -1,3 +1,8 @@
+## 0.70.0 (2026-11-24) – Na obhlídce (Terénní režim) a ELZA místo Recepce
+- Nový modul teren.js, menu Moje práce → Na obhlídce: kontrolní seznam obhlídky EPS/PCO, počítadlo fotek, koncept zprávy zákazníkovi (s žádostí o chybějící dokumentaci, kontakty, přenos) a úkol pro obchod „Nabídka z obhlídky“. Nic se neodesílá. test/teren.test.js.
+- „Recepce“ (převzato ze Syniru) přejmenována v textech na ELZU: ELZA je hlavní asistentka, řídí Elzáčky a vybírá, kdo úlohu vezme (interní názvy funkcí beze změny).
+- Zatím chybí: uložení fotek do složky zakázky, automatické načtení zakázky z Případů, odeslání zprávy a nabídky po souhlasu technika, zákaznický portál hned po obhlídce (viz DALSI-KROKY).
+
 ## 0.69.13 (2026-11-24, jen tools/) – noční fronta ověřena
 - Příčina CHYBY 1: NactiFrontu u jediné úlohy vrátila objekt místo pole, Nocni() ji proto nikdy nenašla. Opraveno @(NactiFrontu). Na ostrém PC ověřeno: nf5 hotovo (sonnet, lehký režim, 1 482 vstupních tokenů, 0,007 USD ekvivalent). Instalátor navíc ukončí starý proces, přidá HKCU Run a ověří běh.
 
