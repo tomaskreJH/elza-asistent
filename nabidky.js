@@ -7,15 +7,18 @@ function den(s){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(s||""));return m?Da
 function iso(d){return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
 function dnu(od,dnes){var a=den(od),b=den(dnes);return isNaN(a)||isNaN(b)?NaN:Math.floor((b-a)/864e5)}
 var TXT={5:"Připomenout zákazníkovi (první připomínka).",14:"Druhá připomínka, zvažte telefonát.",30:"Bez odpovědi 30 dní: navrhuji uzavřít případ jako neúspěšný (důvod: bez odpovědi)."};
+/* následná komunikace (0.75.0): nečekat, až se zákazník ozve; v každém stupni se ověřuje jiná věc */
+var KROK={5:{co:"přečtení",ot:"Dorazila Vám naše nabídka a podařilo se Vám ji otevřít?"},14:{co:"srozumitelnost",ot:"Je v nabídce vše srozumitelné? Rádi ji projdeme společně po telefonu."},30:{co:"chybějící informace",ot:"Chybí Vám k rozhodnutí nějaká informace nebo podklad, který bychom mohli doplnit?"}};
+function koncept(n,stupen,osloveni){var k=KROK[stupen];if(!n||!k)return "";return (osloveni||"Dobrý den")+",\n\nnavazuji na naši nabídku "+(n.Title||"")+(n.Zakazka?" ("+n.Zakazka+")":"")+". "+k.ot+"\n\nStačí krátká odpověď, zbytek si rádi doladíme.\n\nS pozdravem"}
 /* co je u nabídky teď potřeba: jen odeslané bez odpovědi; vrací nejvyšší dosažený a ještě nepřipomenutý stupeň */
-function hlidej(n,dnes){if(!n||n.Stav!="odeslana")return null;var d=dnu(n.Odeslano,dnes);if(isNaN(d))return null;var pr=+n.Pripomenuto||0,due=PRAH.filter(function(p){return d>=p&&p>pr});if(!due.length)return null;var s=due[due.length-1];return{stupen:s,dnu:d,text:TXT[s],uzavrit:s==30}}
+function hlidej(n,dnes){if(!n||n.Stav!="odeslana")return null;var d=dnu(n.Odeslano,dnes);if(isNaN(d))return null;var pr=+n.Pripomenuto||0,due=PRAH.filter(function(p){return d>=p&&p>pr});if(!due.length)return null;var s=due[due.length-1];return{stupen:s,dnu:d,text:TXT[s]+" Ověřit: "+KROK[s].co+".",kontrola:KROK[s].co,otazka:KROK[s].ot,uzavrit:s==30}}
 /* fronta: všechny nabídky, které čekají na rozhodnutí; nejdřív osoba, pak nejstarší */
 function fronta(arr,dnes,kdo){var k=String(kdo||"").toLowerCase();return (arr||[]).map(function(n){var h=hlidej(n,dnes);return h?{n:n,h:h,moje:!!k&&String(n.Odpovedny||"").toLowerCase()==k}:null}).filter(Boolean).sort(function(a,b){return (b.moje-a.moje)||(b.h.dnu-a.h.dnu)})}
 /* změny po akci uživatele */
 function pripomenuto(n,h){return{Pripomenuto:h.stupen}}
 function odpoved(dnes){return{Stav:"odpoved",Odpoved:dnes}}
 function bezOdpovedi(dnes){return{Stav:"bez_odpovedi",Odpoved:dnes,Pripomenuto:30}}
-W.NABIDKY={PRAH:PRAH,dnu:dnu,hlidej:hlidej,fronta:fronta,pripomenuto:pripomenuto,odpoved:odpoved,bezOdpovedi:bezOdpovedi};
+W.NABIDKY={PRAH:PRAH,KROK:KROK,koncept:koncept,dnu:dnu,hlidej:hlidej,fronta:fronta,pripomenuto:pripomenuto,odpoved:odpoved,bezOdpovedi:bezOdpovedi};
 if(typeof module!="undefined")module.exports=W.NABIDKY;
 if(typeof window=="undefined"||!window.document)return;
 function es(s){return typeof esc=="function"?esc(s):String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
@@ -40,7 +43,7 @@ function draw(){if(!EL)return;var dn=dnesIso(),F=fronta(DB,dn,me()),ost=DB.filte
  var sv=EL.querySelector("#nbs");if(sv)sv.onclick=function(){var t=EL.querySelector("#nbt").value.trim();if(!t){ST.msg="Vyplňte číslo nabídky.";draw();return}run(async function(){if(ST.miss)throw new Error("Nejdřív založte seznam.");await SDL.write(L,0,{Title:t,Zakazka:EL.querySelector("#nbz").value.trim(),Zakaznik:EL.querySelector("#nbk").value.trim(),Odeslano:EL.querySelector("#nbd").value,Stav:"odeslana",Odpovedny:EL.querySelector("#nbo").value.trim(),Pripomenuto:0})},"Nabídka zapsána.")};
  EL.querySelectorAll("button[data-a]").forEach(function(b){b.onclick=function(){var n=DB.filter(function(x){return x.Id==b.dataset.i})[0],a=b.dataset.a;if(!n)return;
   run(async function(){var d=dnesIso(),hh=hlidej(n,d);
-   if(a=="pr"){await SDL.write("Ukol",0,{Title:"Připomenout nabídku "+n.Title+" ("+(n.Zakaznik||"")+")",KodZakazky:n.Zakazka||"",Resitel:n.Odpovedny||"",Od:d,Do:d,Hotovo:0,Poznamka:(hh?hh.text:"")});await SDL.write(L,n.Id,pripomenuto(n,hh))}
+   if(a=="pr"){await SDL.write("Ukol",0,{Title:"Připomenout nabídku "+n.Title+" ("+(n.Zakaznik||"")+")",KodZakazky:n.Zakazka||"",Resitel:n.Odpovedny||"",Od:d,Do:d,Hotovo:0,Poznamka:(hh?hh.text+" Koncept zprávy (neodesílá se): "+koncept(n,hh.stupen):"")});await SDL.write(L,n.Id,pripomenuto(n,hh))}
    else if(a=="od")await SDL.write(L,n.Id,odpoved(d));
    else await SDL.write(L,n.Id,bezOdpovedi(d))},a=="pr"?"Úkol založen a připomínka zaznamenána.":a=="od"?"Odpověď zaznamenána.":"Nabídka uzavřena jako bez odpovědi. Důvod doplňte u případu.")}})}
 function html(){return '<div id=nbx></div>'}

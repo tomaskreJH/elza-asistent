@@ -1,3 +1,8 @@
+## 0.75.0 (2026-11-25) – Otevřené otázky zákazníka a následná komunikace po nabídce
+- Nový otazky.js (test/otazky.test.js): z e-mailu zákazníka se vybírají dotazy (věty s otazníkem, body seznamu s požadavkem; citace a podpis ne, duplicity se slučují). Každý dotaz je otevřená položka případu (ZnalostElza, Druh otazka), dokud není zapsána odpověď s tím, kdo, kdy a jakým kanálem (telefon, e-mail, osobně). Otevřená starší než 2 pracovní dny je v Můj den nahoře (rámeček Otázky zákazníků bez zapsané odpovědi, pole a tlačítko Zapsat odpověď). Ze zodpovězených vzniká koncept písemného shrnutí pro zákazníka (neodesílá se).
+- Hlídání nabídek (nabidky.js): stupně 5/14/30 dní ověřují přečtení, srozumitelnost a chybějící informace; úkol obsahuje koncept zprávy (neodesílá se).
+- Ověřeno: všechny node a python testy (e2e, vzhled, průvodce), audit bez nálezů, integrity.json. Neověřeno: ostrý web (zápis do ZnalostElza, rámeček v Můj den na skutečných datech), napojení extrakce otázek na čtení e-mailu v Poště a tlačítko Zapsat hovor po telefonátu (zatím jen logika pripomenoutHovor).
+
 ## 0.74.0 (2026-11-25) – Volič nástroje a modelu
 - AI nastavení: u každého Elzáčka Nástroj a Model ze seznamu (Automaticky / platné modely / Vlastní model jako pokročilá položka, vždy označená, že přebíjí automatiku). Tři předvolby Lepší / Vyvážený / Levnější s odhadem tokenů a orientačním poměrem spotřeby limitu (Haiku 1, Sonnet 3, Opus 15); Levnější u Elzáčků třídění pošty a případů použije lokální Ollamu, je-li most spárovaný.
 - Priorita (test/model.test.js): vlastní text > model ze seznamu > dočasné levnější přepnutí (limit) > předvolba > automatika. U řádku se ukazuje zdroj (výchozí kód / sdílená volba / osobní / vlastní text) a tlačítko Zrušit vlastní text.

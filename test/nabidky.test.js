@@ -15,3 +15,9 @@ var f=N.fronta([{Title:'a',Stav:'odeslana',Odeslano:'2026-10-01',Odpovedny:'x@el
 a.deepEqual(f.map(function(x){return x.n.Title}),['c','b','a']);
 a.deepEqual(N.pripomenuto(n,N.hlidej(n,'2026-11-06')),{Pripomenuto:5});a.equal(N.bezOdpovedi('2026-12-01').Stav,'bez_odpovedi');
 console.log('nabidky OK');
+// následná komunikace (0.75.0): v každém stupni se ověřuje jiná věc a vzniká koncept, nic se neodesílá
+var h5=N.hlidej(n,'2026-11-06'),h14=N.hlidej(n,'2026-11-15'),h30=N.hlidej(n,'2026-12-05');
+a.equal(h5.kontrola,'přečtení');a.equal(h14.kontrola,'srozumitelnost');a.equal(h30.kontrola,'chybějící informace');
+a.ok(/Ověřit: přečtení/.test(h5.text)&&/uzavřít/.test(h30.text));
+var k=N.koncept({Title:'N1',Zakazka:'Z-1'},14,'Dobrý den, pane Nováku');a.ok(/N1 \(Z-1\)/.test(k)&&/srozumitelné/.test(k)&&/^Dobrý den, pane Nováku/.test(k));a.equal(N.koncept(n,7),'');
+console.log('nabidky následná komunikace OK');
