@@ -1,3 +1,6 @@
+## 0.73.8 (2026-11-25) – Ukončení staré verze mostu (oprava 0.73.7)
+- Port mostu drží http.sys (PID 4), takže hledání podle portu nefungovalo. Instalátor nyní ukončí jen powershell.exe s přesnou cestou %LOCALAPPDATA%\ElzaMost\elza-most.ps1 v příkazové řádce.
+
 ## 0.73.7 (2026-11-25) – Instalátor ukončí starou verzi mostu
 - Stará verze nepsala PID soubor, takže dál běžela a odmítala nový token (401 „Špatný párovací kód“). Instalátor ji nyní najde podle procesu, který drží port 47321, ověří, že jde o %LOCALAPPDATA%\ElzaMost\elza-most.ps1, a ukončí ji.
 

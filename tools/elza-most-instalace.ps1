@@ -54,16 +54,16 @@ function BeziMost(){
   if ($pr -and $pr.Name -eq 'powershell.exe' -and $pr.CommandLine -like ('*' + $Ps + '*')) { return $id }
   return $null
 }
-# migrace: stará verze nepsala PID soubor -> najít proces, který drží port 47321, a ověřit, že je to elza-most.ps1
+# migrace: stará verze nepsala PID soubor. Port drží http.sys (PID 4), proto hledáme powershell.exe
+# s přesnou cestou k instalovanému skriptu (ne obecný filtr) a ukončíme jen ty.
 function StaryMost(){
-  foreach ($c in @(Get-NetTCPConnection -LocalPort 47321 -State Listen -ErrorAction SilentlyContinue)) {
-    $pr = Get-CimInstance Win32_Process -Filter "ProcessId=$($c.OwningProcess)" -ErrorAction SilentlyContinue
-    if ($pr -and $pr.Name -eq 'powershell.exe' -and $pr.CommandLine -like '*\ElzaMost\elza-most.ps1*') { return [int]$pr.ProcessId }
-  }
-  return $null
+  $cesta = $Ps.ToLower()
+  @(Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" -ErrorAction SilentlyContinue |
+    Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -and $_.CommandLine.ToLower().Contains($cesta) } |
+    ForEach-Object { [int]$_.ProcessId })
 }
 $id = BeziMost
-if (-not $id) { $st = StaryMost; if ($st) { Stop-Process -Id $st; Start-Sleep 2; $Zmeny += 'ukončena stará verze mostu' } }
+if (-not $id) { $st = @(StaryMost); if ($st.Count) { Stop-Process -Id $st; Start-Sleep 2; $Zmeny += ('ukončena stará verze mostu (PID ' + ($st -join ', ') + ')') } }
 if ($id -and $zmenaSkriptu) { Stop-Process -Id $id; Start-Sleep 1; $id = $null; $Zmeny += 'ukončena stará instance' }
 if (-not $id) {
   Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @('-NoProfile','-ExecutionPolicy','RemoteSigned','-WindowStyle','Hidden','-File',('"' + $Ps + '"'))
