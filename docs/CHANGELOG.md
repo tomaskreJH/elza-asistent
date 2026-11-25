@@ -1,3 +1,12 @@
+## 0.74.0 (2026-11-25) – Volič nástroje a modelu
+- AI nastavení: u každého Elzáčka Nástroj a Model ze seznamu (Automaticky / platné modely / Vlastní model jako pokročilá položka, vždy označená, že přebíjí automatiku). Tři předvolby Lepší / Vyvážený / Levnější s odhadem tokenů a orientačním poměrem spotřeby limitu (Haiku 1, Sonnet 3, Opus 15); Levnější u Elzáčků třídění pošty a případů použije lokální Ollamu, je-li most spárovaný.
+- Priorita (test/model.test.js): vlastní text > model ze seznamu > dočasné levnější přepnutí (limit) > předvolba > automatika. U řádku se ukazuje zdroj (výchozí kód / sdílená volba / osobní / vlastní text) a tlačítko Zrušit vlastní text.
+- Nic se nepřepíná potichu: při limitu Claude 5 h nebo týden nad 80 % ELZA doporučí levnější tok (Haiku), přepnutí je jedno klepnutí a Zpět; každá změna volby má Zpět poslední změnu (docs/ZPET-ZASADA.md).
+- Přehled Co stálo nejvíc a čím to jde zlevnit (AI nastavení a AI záznam, 30 dní, z AI záznamu). Limity se čtou jen z mezipaměti mostu.
+- Ověřeno: všechny testy, audit, ostrý web 0.74.0 přihlášen firemním účtem, tabulka voličů se zobrazila. Neověřeno: Test Elzáčka přes Claude (most vrátil 401 Neplatný token, párovací kód v tomto prohlížeči je neplatný; Tomáš ho musí znovu vložit).
+
+## 0.74.1 – Návod k voliči modelu (centrum.js)
+
 ## 0.73.11 (2026-11-25) – Limity Claude: dotaz jednou za 10 minut
 - Ověření na NB TOM-TABLET: 429 při prvním dotazu (PC předtím prošlo), Defender i na NB bez detekce (poplachy tedy způsobovaly staré verze mostu). Služba limitů je neoficiální a dotazy ze stanic jednoho účtu se zřejmě sčítají. Most nově drží úspěšný údaj 10 minut (+ náhodných 0-60 s), neúspěch 60 s; aplikace čte jen z mezipaměti mostu. Ověřovací skript při 429 hlásí CEKA místo chyby a nezkouší znovu v pauze.
 
