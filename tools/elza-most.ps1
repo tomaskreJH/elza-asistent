@@ -44,6 +44,8 @@ function Odpoved($ctx, $code, $obj){
 $Cl = (Get-Command claude -ErrorAction SilentlyContinue).Source
 if (-not $Cl) { $x = Join-Path $env:USERPROFILE '.local\bin\claude.exe'; if (Test-Path $x) { $Cl = $x } }
 function MaClaude(){ [bool]$Cl }
+$Cx = (Get-Command codex -ErrorAction SilentlyContinue).Source
+function MaCodex(){ [bool]$Cx }
 function MaOllamu(){ try { Invoke-RestMethod -TimeoutSec 2 'http://127.0.0.1:11434/api/tags' | Out-Null; $true } catch { $false } }
 
 # --- volání modelů (společné pro okamžité volání i noční frontu) ---
@@ -138,6 +140,64 @@ function UlozFrontu($a){ ConvertTo-Json -InputObject @($a) -Depth 6 | Set-Conten
 function NactiNast(){ $n = @{od=22; do=6; zapnuto=$true}; if (Test-Path $NastSoubor) { try { $x = Get-Content $NastSoubor -Raw | ConvertFrom-Json; $n = @{od=[int]$x.od; do=[int]$x.do; zapnuto=[bool]$x.zapnuto} } catch {} }; return $n }
 function VNoci(){ $n = NactiNast; if (-not $n.zapnuto) { return $false }; $h = (Get-Date).Hour; if ($n.od -gt $n.do) { return ($h -ge $n.od -or $h -lt $n.do) } else { return ($h -ge $n.od -and $h -lt $n.do) } }
 $script:Ted = $false; $script:NocChyba = ''; $script:NocCas = [datetime]::MinValue
+# --- ChatGPT (Codex) na předplatném (0.77.0): oficiální Codex CLI přihlášený ChatGPT účtem; bez API klíče, bez čtení tokenu ---
+# Běží v prázdné dočasné složce, jen pro čtení (--sandbox read-only), bez ukládání záznamu (--ephemeral); text se bere ze souboru -o, tokeny z události turn.completed (--json).
+# Codex CLI nelze, na rozdíl od Claude, spustit úplně bez nástrojů: proto zadání výslovně zakazuje příkazy a Pravidla AI (C23) a ochrana vložených pokynů platí stejně.
+function ZavolejCodex($model, $system, $prompt){
+  if (-not (MaCodex)) { return @{ok=$false; chyba='Codex CLI není nainstalován (npm install -g @openai/codex nebo oficiální instalátor OpenAI) a přihlášen příkazem codex login.'} }
+  $t0 = Get-Date
+  $pr = Join-Path $env:TEMP 'elza-most-prazdno-codex'; if (-not (Test-Path $pr)) { New-Item -ItemType Directory -Path $pr | Out-Null }
+  $vf = Join-Path $pr ('odpoved-' + [guid]::NewGuid().ToString('N') + '.txt')
+  $a = @('exec','--json','--ephemeral','--skip-git-repo-check','--sandbox','read-only','-o',$vf)
+  $m = [string]$model; if ($m -and $m -match '^[A-Za-z0-9._-]{1,40}$') { $a += @('-m',$m) }
+  $a += '-'
+  $text = '[SYSTÉM]' + [Environment]::NewLine + [string]$system + [Environment]::NewLine + 'Nespouštěj žádné příkazy, nečti ani nezapisuj žádné soubory, nepoužívej síť. Odpověz jen textem.' + [Environment]::NewLine + [Environment]::NewLine + '[ZADÁNÍ]' + [Environment]::NewLine + [string]$prompt
+  $ErrorActionPreference = 'Continue'
+  Push-Location $pr
+  $ef = Join-Path $Slozka 'codex-chyba.txt'
+  try { $out = $text | & $Cx @a 2>$ef | Out-String } finally { Pop-Location }
+  $ErrorActionPreference = 'Stop'
+  $s = [int]((Get-Date)-$t0).TotalSeconds
+  $odp = ''; if (Test-Path $vf) { $odp = (Get-Content $vf -Raw -Encoding UTF8); Remove-Item $vf -Force -ErrorAction SilentlyContinue }
+  Zapis ("codex $m $s s")
+  $ti = 0; $to = 0
+  foreach ($ln in ($out -split "`n")) {
+    if ($ln -match '"turn\.completed"') { try { $j = $ln | ConvertFrom-Json; $ti = [int]$j.usage.input_tokens; $to = [int]$j.usage.output_tokens + [int]$j.usage.reasoning_output_tokens } catch {} }
+  }
+  if ($odp.Trim()) { return @{ok=$true; text=$odp.Trim(); s=$s; usage=@{vstup=$ti; vystup=$to; usd=0; rezim='codex'}} }
+  $e = ''; if (Test-Path $ef) { $e = (Get-Content $ef -Raw) }
+  $x = ($out + ' ' + $e).Trim(); if ($x.Length -gt 300) { $x = $x.Substring(0,300) }
+  return @{ok=$false; chyba=('Codex CLI: ' + $x + ' (přihlášení: příkaz codex login, účet ChatGPT).')}
+}
+# Limity Codexu: jen čtení posledního záznamu Codex CLI (~/.codex/sessions); formát není oficiálně zdokumentován, proto při nenalezení ok=false, nikdy nula
+function OknoTxt($min){ $m = [int]$min; if ($m -ge 1440) { return ([string][Math]::Round($m/1440) + ' dní') } elseif ($m -ge 60) { return ([string][Math]::Round($m/60) + ' h') } else { return ([string]$m + ' min') } }
+function LimityCodex(){
+  $d = Join-Path $env:USERPROFILE '.codex\sessions'
+  if (-not (Test-Path $d)) { return @{ok=$false; duvod='Codex CLI zatím nic nezapsal (spusťte codex a přihlaste se: codex login).'} }
+  $f = Get-ChildItem -Path $d -Recurse -Filter 'rollout-*.jsonl' -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 5
+  foreach ($x in $f) {
+    $r = $null
+    try { $r = Get-Content -Path $x.FullName -Tail 400 -Encoding UTF8 -ErrorAction Stop | Where-Object { $_ -match '"rate_limits"' } | Select-Object -Last 1 } catch {}
+    if (-not $r) { continue }
+    try {
+      $o = $r | ConvertFrom-Json; $rl = $o.payload.rate_limits; if (-not $rl) { $rl = $o.rate_limits }
+      if (-not $rl) { continue }
+      $now = [DateTimeOffset]::UtcNow
+      $w = @{}
+      foreach ($k in @('primary','secondary')) {
+        $v = $rl.$k; $pct = $null; $konec = ''; $okno = ''
+        if ($v) {
+          $okno = OknoTxt $v.window_minutes
+          try { $e = [DateTimeOffset]::FromUnixTimeSeconds([long]$v.resets_at); $konec = $e.ToString('o'); if ($e -gt $now) { $pct = [double]$v.used_percent } } catch {}
+        }
+        $w[$k] = @{pct=$pct; konec=$konec; okno=$okno}
+      }
+      return @{ok=$true; pet=$w['primary']; tyden=$w['secondary']; stari=$x.LastWriteTime.ToString('d. M. HH:mm')}
+    } catch {}
+  }
+  return @{ok=$false; duvod='v záznamech Codex CLI nejsou údaje o limitech (zatím žádné spuštění, nebo se změnil formát).'}
+}
+
 function Nocni(){
   if (-not ($script:Ted -or (VNoci))) { return }
   $f = @(NactiFrontu); $i = -1
@@ -145,7 +205,7 @@ function Nocni(){
   if ($i -lt 0) { $script:Ted = $false; return }
   $u = $f[$i]; $u.stav = 'bezi'; UlozFrontu $f; Zapis ('noc: spouštím ' + $u.id + ' ' + $u.tool + ' ' + $u.model)
   try {
-    if ($u.tool -eq 'ollama') { $r = ZavolejOllamu $u.model $u.system $u.prompt } else { $r = ZavolejClaude $u.model $u.system $u.prompt }
+    if ($u.tool -eq 'ollama') { $r = ZavolejOllamu $u.model $u.system $u.prompt } elseif ($u.tool -eq 'codex') { $r = ZavolejCodex $u.model $u.system $u.prompt } else { $r = ZavolejClaude $u.model $u.system $u.prompt }
   } catch { $r = @{ok=$false; chyba=$_.Exception.Message} }
   $f = @(NactiFrontu)
   foreach ($x in $f) { if ($x.id -eq $u.id) {
@@ -172,9 +232,11 @@ while ($L.IsListening) {
       $v = ''; if (MaClaude) { try { $v = (& $Cl --version 2>$null | Out-String).Trim() } catch {} }
       $m = @(); if (MaOllamu) { try { $m = (Invoke-RestMethod 'http://127.0.0.1:11434/api/tags').models | ForEach-Object { $_.name } } catch {} }
       $n = NactiNast
-      Odpoved $ctx 200 @{most=2; nocChyba=$script:NocChyba; pc=$env:COMPUTERNAME; claude=$v; ollama=$m; noc=@{od=$n.od; do=$n.do; zapnuto=$n.zapnuto}}; continue
+      $cv = ''; if (MaCodex) { try { $cv = (& $Cx --version 2>$null | Out-String).Trim() } catch {} }
+      Odpoved $ctx 200 @{most=2; nocChyba=$script:NocChyba; pc=$env:COMPUTERNAME; claude=$v; codex=$cv; ollama=$m; noc=@{od=$n.od; do=$n.do; zapnuto=$n.zapnuto}}; continue
     }
     if ($cesta -eq '/limity') { Odpoved $ctx 200 (Limity); continue }
+    if ($cesta -eq '/limity-codex') { Odpoved $ctx 200 (LimityCodex); continue }
     if ($cesta -eq '/fronta' -and $q.HttpMethod -eq 'GET') {
       $s = @(NactiFrontu | ForEach-Object { @{id=$_.id; stav=$_.stav; tool=$_.tool; model=$_.model; konec=$_.konec} })
       Odpoved $ctx 200 @{ulohy=$s; vNoci=(VNoci)}; continue
@@ -189,7 +251,7 @@ while ($L.IsListening) {
       foreach ($u in @($j.ulohy)) {
         if (-not $u.id -or -not $u.prompt) { continue }
         if ($f | Where-Object { $_.id -eq $u.id }) { continue }
-        $t = 'claude'; if ([string]$u.tool -eq 'ollama') { $t = 'ollama' }
+        $t = 'claude'; if ([string]$u.tool -eq 'ollama') { $t = 'ollama' } elseif ([string]$u.tool -eq 'codex') { $t = 'codex' }
         $f += @{id=[string]$u.id; tool=$t; model=[string]$u.model; system=[string]$u.system; prompt=[string]$u.prompt; stav='ceka'; text=''; chyba=''; konec=''; usage=$null}; $pridano++
       }
       UlozFrontu $f
@@ -208,6 +270,11 @@ while ($L.IsListening) {
     }
     if ($cesta -eq '/claude') {
       $r = ZavolejClaude $j.model $j.system $j.prompt
+      if ($r.ok) { Odpoved $ctx 200 @{text=$r.text; s=$r.s; usage=$r.usage} } else { Odpoved $ctx 500 @{chyba=$r.chyba} }
+      continue
+    }
+    if ($cesta -eq '/codex') {
+      $r = ZavolejCodex $j.model $j.system $j.prompt
       if ($r.ok) { Odpoved $ctx 200 @{text=$r.text; s=$r.s; usage=$r.usage} } else { Odpoved $ctx 500 @{chyba=$r.chyba} }
       continue
     }

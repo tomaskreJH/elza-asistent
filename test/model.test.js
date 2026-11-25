@@ -27,6 +27,13 @@ require('../katalog.js');require('../kontext.js');require('../ai.js');var A=wind
  global.__R=[rw({Upn:'*',Poznamka:'predvolba=L'}),rw({Id:2,Poznamka:'predvolba=U'})];t((await A.cfg('AG-VYVOJ')).model=='haiku','osobní volba má přednost před sdílenou');
  global.__R=[rw({Agent:'AG-POSTA',Poznamka:'predvolba=U'})];t((await A.cfg('AG-POSTA')).tool=='Claude (předplatné)','Levnější bez mostu zůstává u Haiku');
  localStorage.setItem('elzaMostKod','0123456789abcdef0123');var c6=await A.cfg('AG-POSTA');t(c6.tool=='Lokální (Ollama)'&&/předvolba Levnější/.test(c6.src),'Levnější u Elzáčka s ol: lokální Ollama, je-li most spárovaný');t((await A.cfg('AG-VYVOJ')).tool=='Claude (předplatné)','Levnější u vývoje (bez ol) Ollamu nepoužije');localStorage.removeItem('elzaMostKod');
+ /* 0.77.0 ChatGPT (Codex) */
+ global.__R=[rw({Nastroj:'ChatGPT (Codex)',Model:'auto',Poznamka:'predvolba=L'})];var cx=await A.cfg('AG-VYVOJ');t(cx.tool=='ChatGPT (Codex)'&&cx.model=='výchozí Codexu','Codex: předvolba nemění model, bere se výchozí z Codexu');
+ global.__R=[rw({Nastroj:'ChatGPT (Codex)',Model:'gpt-5-codex'})];var cx2=await A.cfg('AG-VYVOJ');t(cx2.model=='gpt-5-codex'&&cx2.vlastni,'Codex: vlastní model se předá a je označen');
+ t(A.MODELY('ChatGPT (Codex)').join()=='výchozí Codexu'&&A.CX=='ChatGPT (Codex)','Codex: seznam modelů a název nástroje');
+ t(/nejsou dostupné/.test(A.limityCxHtml({ok:false,duvod:'x'}))&&!/>0%</.test(A.limityCxHtml({ok:false})),'Codex: nedostupné limity nejsou nula');
+ var hx=A.limityCxHtml({ok:true,pet:{pct:85,konec:'',okno:'5 h'},tyden:{pct:null,konec:'',okno:'7 dní'},stari:'25. 11. 20:00'});t(/85%/.test(hx)&&/nad 80 %/.test(hx)&&/nic se nepřepíná samo/.test(hx)&&/–/.test(hx),'Codex: nad 80 % jen doporučení, prošlé okno je pomlčka');
+ global.__R=[];
  t(A.vaha('Claude (předplatné)','opus')==15&&A.vaha('Claude (předplatné)','haiku')==1&&A.vaha('Lokální (Ollama)','x')==0,'váhy spotřeby');
  t(A.MODELY('Claude (předplatné)').join()=='haiku,sonnet,opus'&&A.MODELY('ChatGPT').length==2,'seznam platných modelů pro nástroj');
  global.__R=[];t(A.PV.L=='Lepší'&&A.PV.V=='Vyvážený'&&A.PV.U=='Levnější','tři předvolby');
