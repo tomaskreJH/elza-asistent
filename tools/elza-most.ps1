@@ -44,7 +44,20 @@ function Odpoved($ctx, $code, $obj){
 $Cl = (Get-Command claude -ErrorAction SilentlyContinue).Source
 if (-not $Cl) { $x = Join-Path $env:USERPROFILE '.local\bin\claude.exe'; if (Test-Path $x) { $Cl = $x } }
 function MaClaude(){ [bool]$Cl }
-$Cx = (Get-Command codex -ErrorAction SilentlyContinue).Source
+# Codex CLI: 1) na PATH, 2) cesta zapsaná v %LOCALAPPDATA%\ElzaMost\codex-cesta.txt, 3) běžná místa (npm, .local\bin), 4) balíček aplikace Codex (jen hledání souboru codex.exe, nic se nespouští ani nestahuje)
+function NajdiCodex(){
+  $c = (Get-Command codex -ErrorAction SilentlyContinue).Source; if ($c) { return $c }
+  $cf = Join-Path $Slozka 'codex-cesta.txt'
+  if (Test-Path $cf) { $p = (Get-Content $cf -Raw).Trim().Trim('"'); if ($p -and (Test-Path $p)) { return $p } }
+  foreach ($p in @((Join-Path $env:APPDATA 'npm\codex.cmd'), (Join-Path $env:USERPROFILE '.local\bin\codex.exe'), (Join-Path $env:USERPROFILE '.codex\bin\codex.exe'))) { if (Test-Path $p) { return $p } }
+  try {
+    foreach ($pk in @(Get-AppxPackage -Name '*Codex*' -ErrorAction SilentlyContinue)) {
+      if ($pk.InstallLocation) { $f = Get-ChildItem -Path $pk.InstallLocation -Recurse -Filter 'codex.exe' -Depth 5 -ErrorAction SilentlyContinue | Select-Object -First 1; if ($f) { return $f.FullName } }
+    }
+  } catch {}
+  return $null
+}
+$Cx = NajdiCodex
 function MaCodex(){ [bool]$Cx }
 function MaOllamu(){ try { Invoke-RestMethod -TimeoutSec 2 'http://127.0.0.1:11434/api/tags' | Out-Null; $true } catch { $false } }
 
@@ -144,7 +157,7 @@ $script:Ted = $false; $script:NocChyba = ''; $script:NocCas = [datetime]::MinVal
 # Běží v prázdné dočasné složce, jen pro čtení (--sandbox read-only), bez ukládání záznamu (--ephemeral); text se bere ze souboru -o, tokeny z události turn.completed (--json).
 # Codex CLI nelze, na rozdíl od Claude, spustit úplně bez nástrojů: proto zadání výslovně zakazuje příkazy a Pravidla AI (C23) a ochrana vložených pokynů platí stejně.
 function ZavolejCodex($model, $system, $prompt){
-  if (-not (MaCodex)) { return @{ok=$false; chyba='Codex CLI není nainstalován (npm install -g @openai/codex nebo oficiální instalátor OpenAI) a přihlášen příkazem codex login.'} }
+  if (-not (MaCodex)) { return @{ok=$false; chyba='Most nenašel program codex. Je-li Codex nainstalován (aplikace Codex), zapište úplnou cestu k codex.exe do souboru %LOCALAPPDATA%\ElzaMost\codex-cesta.txt a restartujte most; jinak ho nainstalujte (Návod) a přihlaste příkazem codex login.'} }
   $t0 = Get-Date
   $pr = Join-Path $env:TEMP 'elza-most-prazdno-codex'; if (-not (Test-Path $pr)) { New-Item -ItemType Directory -Path $pr | Out-Null }
   $vf = Join-Path $pr ('odpoved-' + [guid]::NewGuid().ToString('N') + '.txt')

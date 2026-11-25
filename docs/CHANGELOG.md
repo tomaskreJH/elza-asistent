@@ -1,3 +1,7 @@
+## 0.77.2 (2026-11-25) – Codex: hledání programu a limity
+- Ostrý test na tom-tablet: most 0.77.0 běží, limity Codexu se čtou (2 % ze 7 dní, údaj z 25. 11. 18:45), ale volání vrátilo „Codex CLI není nainstalován“: na tomto PC je Codex jako aplikace (složka .codex), program codex není na PATH. Most nově hledá codex: PATH, soubor %LOCALAPPDATA%\ElzaMost\codex-cesta.txt, npm a .local\bin, balíček aplikace Codex (jen hledání souboru, nic se nestahuje ani nespouští). Opraveno i zobrazení limitů: prázdné okno se nezobrazuje jako „–“.
+- Nové: stažení nového elza-most.ps1 a restart mostu (instalátor se nemění). Neověřeno: skutečné volání Codexu, dokud most program nenajde.
+
 ## 0.77.1 (2026-11-25) – Postup Servisní intervaly EPS, LDP a PBZ pro ELZU
 - Nový Elzáček „Servisní intervaly EPS, LDP a PBZ“ (skupina Technika, katalog.js) a postup docs/znalosti/EPS-LDP-PBZ-INTERVALY.md (text od Tomáše z případu „Návrh servisní smlouvy EPS“, 25. 11.; stav v záhlaví zůstává NÁVRH K REVIZI, není to schválená instrukce, před ostrým použitím ho musí odborně posoudit Tomáš jako garant). Zásada: nenahrazovat roční kontrolu PBZ dvouletou, přenos poplachu u LDP a obsluhu EPS jen „ověříme podle PBŘ a projektu“.
 - Návod (Claude CLI a Codex): doplněno, co dělat, když Windows napíše „npm není rozpoznán“ (chybí Node.js).
