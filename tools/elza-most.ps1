@@ -1,4 +1,4 @@
-﻿# ELZA most – lokální pomocník pro ELZA asistenta (verze most 2, 0.73.9)
+﻿# ELZA most – lokální pomocník pro ELZA asistenta (verze most 2, 0.73.10)
 # Spouští oficiální Claude CLI (předplatné, bez API klíče) a volitelně Ollamu.
 # Bezpečnost: poslouchá jen na 127.0.0.1, přijme jen stránku ELZA asistenta (Origin),
 # každé volání musí nést párovací kód. Claude běží bez nástrojů (jen text), nic na disku nemění.
@@ -90,7 +90,7 @@ function ZavolejOllamu($model, $system, $prompt){
 }
 
 # --- skutečné limity předplatného Claude (stejný zdroj jako /usage v Claude CLI; neoficiální, při změně vrátí ok=false) ---
-$script:LimCas = [datetime]::MinValue; $script:LimVal = @{ok=$false}
+$script:LimCas = [datetime]::MinValue; $script:LimVal = @{ok=$false}; $script:LimDo = [datetime]::MinValue; $script:LimPosl = @{ok=$false}
 function LimityZavolej(){
   $f = Join-Path $env:USERPROFILE '.claude\.credentials.json'
   if (-not (Test-Path $f)) { return @{ok=$false; duvod='soubor s přihlášením Claude nenalezen (v okně Claude napište /login).'} }
@@ -101,12 +101,22 @@ function LimityZavolej(){
   return @{ok=$true; pet=@{pct=[double]$u.five_hour.utilization; konec=[string]$u.five_hour.resets_at}; tyden=@{pct=[double]$u.seven_day.utilization; konec=[string]$u.seven_day.resets_at}}
 }
 function Limity(){
-  $ttl = if ($script:LimVal.ok) { 60 } else { 15 }
+  # 429 = služba limitů si žádá klid: po dobu Retry-After (výchozí 5 min) se na ni neptáme a vracíme poslední známé hodnoty
+  if ((Get-Date) -lt $script:LimDo) { return $script:LimVal }
+  $ttl = if ($script:LimVal.ok) { 120 } else { 15 }
   if (((Get-Date) - $script:LimCas).TotalSeconds -lt $ttl) { return $script:LimVal }
   $script:LimCas = Get-Date; $script:LimVal = @{ok=$false; duvod='neznámá chyba'}
-  try { $script:LimVal = LimityZavolej }
+  try { $script:LimVal = LimityZavolej; $script:LimPosl = $script:LimVal }
   catch {
     $m = $_.Exception.Message
+    if ($m -match '429') {
+      $ra = 300; try { $v = [int]$_.Exception.Response.Headers['Retry-After']; if ($v -gt 0) { $ra = [Math]::Min(900, $v) } } catch {}
+      $script:LimDo = (Get-Date).AddSeconds($ra)
+      if ($script:LimPosl.ok) { $script:LimVal = @{ok=$true; zastarale=$true; pet=$script:LimPosl.pet; tyden=$script:LimPosl.tyden} }
+      else { $script:LimVal = @{ok=$false; duvod=('Služba limitů Claude žádá klid (429), další pokus za ' + $ra + ' s.')} }
+      Zapis ('limity: 429, pauza ' + $ra + ' s')
+      return $script:LimVal
+    }
     # platnost přístupového tokenu je krátká a obnovuje ji jen Claude CLI při použití: jedno nejlevnější volání ji obnoví a pokus se zopakuje
     if ((MaClaude) -and ($m -match '401|403|nauthor|xpired')) {
       Zapis ('limity: token vypršel, obnovuji drobným voláním Claude (' + $m + ')')

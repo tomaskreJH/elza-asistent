@@ -1,3 +1,7 @@
+## 0.73.10 (2026-11-25) – Limity Claude: pauza při 429, ověřovací skript
+- Ověření na PC st-tkrejci (výstup tools/elza-most-overeni.cmd): vše prošlo (BOM, jediný Run klíč, jeden proces, 401 bez tokenu, 403 z cizí stránky, Defender 24 h bez detekce) kromě /limity: služba limitů vrátila 429. Most se na 429 dotazoval znovu po 15 s a tím omezení prodlužoval. Nově: pauza podle Retry-After (výchozí 5 min), v pauze se vrací poslední známé hodnoty (zastarale=true), úspěšný dotaz se drží 120 s místo 60 s. Ověřovací skript zkusí limity až 3x po 30 s.
+- Nový tools/elza-most-overeni.cmd/.ps1 (jen čte, výsledek do overeni.txt), pro každou stanici stejný.
+
 ## 0.73.9 (2026-11-25) – Kontrola celé aplikace, most bez spouštěčů Defenderu, Pošta jako klient
 - Kontrola: docs/KONTROLA-2026-11-25.md.
 - Most: elza-most.ps1 měl dvojitý BOM (pravděpodobná příčina nefunkční 0.73.6–0.73.8), opraveno; odstraněno Add-Type s DllImport (QuickEdit). Instalátor: bez `irm | iex`, skripty se kopírují do %LOCALAPPDATA%\ElzaMost\instalace a spouští odtud (nic přímo z OneDrive), RemoteSigned místo Bypass, ACL tokenu podle SID.
