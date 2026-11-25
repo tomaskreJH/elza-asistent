@@ -1,0 +1,8 @@
+var a=require('assert'),Z=require('../zakaznik.js');
+a.ok(Z.shoda('MAKRO Cash & Carry ČR a.s.','makro cash carry čr'));a.ok(!Z.shoda('ELZY','MAKRO'));a.ok(!Z.shoda('','x'));
+var info=[{Zakaznik:'MAKRO Cash & Carry ČR a.s.',Typ:'sleva',Text:'Trvalá sleva 8 %',Zdroj:'rucne'},{Zakaznik:'MAKRO Cash & Carry ČR a.s.',Typ:'osoba',Text:'Ředitel je kamarád majitele',Zdroj:'rucne'},{Zakaznik:'MAKRO Cash & Carry ČR a.s.',Typ:'xx',Text:'cokoliv'},{Zakaznik:'MAKRO Cash & Carry ČR a.s.',Typ:'riziko',Text:'staré',Stav:'vyrazeno'},{Zakaznik:'Jiný',Typ:'sleva',Text:'x'}];
+var k=Z.karta('MAKRO Cash & Carry',info,[{Title:'N1',Zakaznik:'MAKRO Cash & Carry ČR a.s.'},{Title:'N2',Zakaznik:'Jiný'}]);
+a.equal(k.celkem,3);a.equal(k.skupiny.sleva.length,1);a.equal(k.skupiny.poznamka.length,1,'neznámý typ = poznámka');a.equal(k.skupiny.riziko.length,0,'vyřazené se nečte');a.equal(k.nabidky.length,1);a.ok(k.znamy);a.equal(k.chybi.length,0);
+var n=Z.karta('Nový s.r.o.',info,[]);a.ok(!n.znamy&&n.chybi.length==1);
+var r=Z.novy({Zakaznik:' MAKRO ',Typ:'sleva',Text:'8 %',Zdroj:'espo'});a.equal(r.Zdroj,'espo');a.equal(r.Zakaznik,'MAKRO');a.equal(Z.novy({Zakaznik:'A',Text:'t',Zdroj:'?'}).Zdroj,'rucne');a.throws(function(){Z.novy({Zakaznik:'A'})},/text/);
+console.log('zakaznik OK');

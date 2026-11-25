@@ -1,3 +1,8 @@
+## 0.76.0 (2026-11-25) – Kdo je zákazník (krok 0)
+- Rozhodnutí Tomáše: interní informace o zákazníkovi (slevy, dohody, historie, kroky, poznámky) se vedou v ELZA systému, v seznamu ZakaznikInfo na webu Zakázky ELZA; zapisují se ručně a hned, zatím lze doplnit vyčtením z Espa (jen čtení, Zdroj espo). Účetnictví se nečte.
+- Nový zakaznik.js (menu Moje práce → Kdo je zákazník, test/zakaznik.test.js): karta podle jména (shoda bez ohledu na s.r.o./a.s.), skupiny podle typu, nabídky zákazníka z NabidkaEvid, zápis informace. Seznam ZakaznikInfo je v seznamy.js (Správa → Seznamy ho založí, nebo tlačítko v modulu).
+- Ověřeno: testy, audit, e2e, vzhled, průvodce. Neověřeno: ostrý web, zápis do SharePointu. Veřejné informace o firmě a automatické vyčtení z Espa nejsou (Espo se čte ručně v přihlášeném prohlížeči).
+
 ## 0.75.0 (2026-11-25) – Otevřené otázky zákazníka a následná komunikace po nabídce
 - Nový otazky.js (test/otazky.test.js): z e-mailu zákazníka se vybírají dotazy (věty s otazníkem, body seznamu s požadavkem; citace a podpis ne, duplicity se slučují). Každý dotaz je otevřená položka případu (ZnalostElza, Druh otazka), dokud není zapsána odpověď s tím, kdo, kdy a jakým kanálem (telefon, e-mail, osobně). Otevřená starší než 2 pracovní dny je v Můj den nahoře (rámeček Otázky zákazníků bez zapsané odpovědi, pole a tlačítko Zapsat odpověď). Ze zodpovězených vzniká koncept písemného shrnutí pro zákazníka (neodesílá se).
 - Hlídání nabídek (nabidky.js): stupně 5/14/30 dní ověřují přečtení, srozumitelnost a chybějící informace; úkol obsahuje koncept zprávy (neodesílá se).
