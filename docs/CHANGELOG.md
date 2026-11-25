@@ -1,3 +1,6 @@
+## 0.73.7 (2026-11-25) – Instalátor ukončí starou verzi mostu
+- Stará verze nepsala PID soubor, takže dál běžela a odmítala nový token (401 „Špatný párovací kód“). Instalátor ji nyní najde podle procesu, který drží port 47321, ověří, že jde o %LOCALAPPDATA%\ElzaMost\elza-most.ps1, a ukončí ji.
+
 ## 0.73.6 (2026-11-25) – Oprava instalátoru mostu
 - Skripty mostu uloženy jako UTF-8 s BOM: Windows PowerShell 5.1 bez BOM četl české znaky (→) jako uvozovku a instalátor padal na chybě syntaxe.
 
