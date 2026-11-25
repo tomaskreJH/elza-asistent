@@ -1,3 +1,6 @@
+## 0.73.11 (2026-11-25) – Limity Claude: dotaz jednou za 10 minut
+- Ověření na NB TOM-TABLET: 429 při prvním dotazu (PC předtím prošlo), Defender i na NB bez detekce (poplachy tedy způsobovaly staré verze mostu). Služba limitů je neoficiální a dotazy ze stanic jednoho účtu se zřejmě sčítají. Most nově drží úspěšný údaj 10 minut (+ náhodných 0-60 s), neúspěch 60 s; aplikace čte jen z mezipaměti mostu. Ověřovací skript při 429 hlásí CEKA místo chyby a nezkouší znovu v pauze.
+
 ## 0.73.10 (2026-11-25) – Limity Claude: pauza při 429, ověřovací skript
 - Ověření na PC st-tkrejci (výstup tools/elza-most-overeni.cmd): vše prošlo (BOM, jediný Run klíč, jeden proces, 401 bez tokenu, 403 z cizí stránky, Defender 24 h bez detekce) kromě /limity: služba limitů vrátila 429. Most se na 429 dotazoval znovu po 15 s a tím omezení prodlužoval. Nově: pauza podle Retry-After (výchozí 5 min), v pauze se vrací poslední známé hodnoty (zastarale=true), úspěšný dotaz se drží 120 s místo 60 s. Ověřovací skript zkusí limity až 3x po 30 s.
 - Nový tools/elza-most-overeni.cmd/.ps1 (jen čte, výsledek do overeni.txt), pro každou stanici stejný.

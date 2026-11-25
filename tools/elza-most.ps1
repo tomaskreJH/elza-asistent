@@ -1,4 +1,4 @@
-﻿# ELZA most – lokální pomocník pro ELZA asistenta (verze most 2, 0.73.10)
+﻿# ELZA most – lokální pomocník pro ELZA asistenta (verze most 2, 0.73.11)
 # Spouští oficiální Claude CLI (předplatné, bez API klíče) a volitelně Ollamu.
 # Bezpečnost: poslouchá jen na 127.0.0.1, přijme jen stránku ELZA asistenta (Origin),
 # každé volání musí nést párovací kód. Claude běží bez nástrojů (jen text), nic na disku nemění.
@@ -103,7 +103,8 @@ function LimityZavolej(){
 function Limity(){
   # 429 = služba limitů si žádá klid: po dobu Retry-After (výchozí 5 min) se na ni neptáme a vracíme poslední známé hodnoty
   if ((Get-Date) -lt $script:LimDo) { return $script:LimVal }
-  $ttl = if ($script:LimVal.ok) { 120 } else { 15 }
+  # limity se mění pomalu: úspěch se drží 10 min (+ náhodných 0-60 s, aby se stanice na jednom účtu nesešly), neúspěch 60 s
+  $ttl = if ($script:LimVal.ok) { 600 + (Get-Random -Maximum 60) } else { 60 }
   if (((Get-Date) - $script:LimCas).TotalSeconds -lt $ttl) { return $script:LimVal }
   $script:LimCas = Get-Date; $script:LimVal = @{ok=$false; duvod='neznámá chyba'}
   try { $script:LimVal = LimityZavolej; $script:LimPosl = $script:LimVal }

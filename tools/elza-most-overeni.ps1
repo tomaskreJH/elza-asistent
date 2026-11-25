@@ -24,7 +24,11 @@ $tok = (Get-Content (Join-Path $D 'token') -Raw).Trim()
 $r = Kod @{c='/stav'; h=$O}; Krok 'bez tokenu = 401' ($r[0] -eq 401) $r[0]
 $h = $O.Clone(); $h['x-elza-kod'] = $tok
 $r = Kod @{c='/stav'; h=$h}; Krok 'stav s tokenem = 200' ($r[0] -eq 200) ([string]$r[1]).Substring(0,[Math]::Min(200,([string]$r[1]).Length))
-$r = Kod @{c='/limity'; h=$h}; for ($i = 0; $i -lt 3 -and -not ([string]$r[1] -match '"ok":true'); $i++) { Start-Sleep 30; $r = Kod @{c='/limity'; h=$h} }; Krok 'limity' ($r[0] -eq 200 -and [string]$r[1] -match '"ok":true') ([string]$r[1]).Substring(0,[Math]::Min(250,([string]$r[1]).Length))
+$r = Kod @{c='/limity'; h=$h}
+$lim = [string]$r[1]; $lim = $lim.Substring(0,[Math]::Min(250,$lim.Length))
+if ($r[0] -eq 200 -and $lim -match '"ok":true') { Krok 'limity' $true $lim }
+elseif ($lim -match '429') { $script:out += ('CEKA  limity: sluzba limitu zada klid (429), neni to chyba mostu. Zopakujte overeni za 10 minut. ' + $lim) }
+else { Krok 'limity' $false $lim }
 $cizi = @{Origin='https://example.com'; 'x-elza-kod'=$tok}
 $r = Kod @{c='/stav'; h=$cizi}; Krok 'cizi stranka = 403' ($r[0] -eq 403) $r[0]
 # 5) Defender: detekce za posledních 24 h (čtení, nic se nemění)
