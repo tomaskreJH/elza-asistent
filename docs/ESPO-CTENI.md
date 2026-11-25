@@ -14,3 +14,6 @@ API klíč by byl v prohlížeči každého uživatele a ESPO by muselo povolit 
 
 ## Co je potřeba od Tomáše
 Adresu ESPO a rozhodnutí, kdo jako správce ESPO založí čtecího API uživatele. Bez toho se dál nepokračuje.
+
+## Zjištěno 2026-11-25 (čtení v přihlášeném prohlížeči, nic nezapsáno)
+Espo (crm.elzy.biz) má entity: Poptávka (CPoptavka), Obhlídka (CObhlidka), Projekce (CProjekce), Příprava (CPriprava), Realizace (CRealizace), Servisní požadavek (CServisniPozadavek); jedna zakázka = případ (kód PR, např. PR001401) s objektem (OBJ, např. OBJ02666), zákazníkem, kontakty, týmy, fázemi (Poptávka, Obhlídka, Nabídka, Projekce, Příprava na realizaci) a záložkou Dokumenty; Kód zakázky MoneyS4 je zatím prázdný, dokud nevznikne zakázka. Stream případu nese poznámky techniků; zmínka @uživatel chodí e-mailem. Do ELZA případu se přepisuje jen EspoId (PR); API pro automatické čtení stále chybí (viz výše).
