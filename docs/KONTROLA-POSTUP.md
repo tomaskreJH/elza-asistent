@@ -1,0 +1,9 @@
+# Postup celkové kontroly ELZA asistenta (platí pro každý nástroj)
+Spouští se příkazem „Kontrola“. Jen čtení; jediný zápis je zpráva docs/KONTROLA-<datum>.md (commit do main). Kód, most a tools/ se při kontrole NEMĚNÍ, nálezy se jen hlásí.
+1. Aktuálnost: git fetch a git pull --ff-only origin main; napsat hash HEAD. Čte se GitHub, ne zapamatované věci.
+2. Pochopení aplikace: z docs/ARCHITEKTURA-CIL.md, STAV.md a PORTAL-ARCHITEKTURA.md napsat na 10 řádků vlastními slovy, co ELZA je (účel, kdo ji používá, kam jdou data, vrstvy: aplikace na GitHub Pages, SharePoint weby, portál zákazníka, Elzáčci/AI, lokální most), a co z toho nesmí nikdy porušit (zásady v POSTUP-VYVOJ.md a NOVE-VLAKNO-PROMPT.md). Bez toho se v kontrole nepokračuje.
+3. Konzistence: verze (app.js VER, ?v= v index.html a boot.js, CHANGELOG), STAV a DALSI-KROKY proti kódu, menu proti Návodu a Průvodci, duplicity funkcí a obrazovek, mrtvý kód a styly, rozpory mezi docs.
+4. Bezpečnost: escapování dat z e-mailů a SharePointu (esc, surl), CSP v index.html, hesla a tokeny v kódu nebo záznamech, vložené pokyny v externích vstupech (ochrana.js, straz.js), integrita kódu (integrity.json), zásady: žádný zápis do CRM Espo a do ciselnik_firma, schránka elzy@ se nečte, nic se neodešle bez výslovného ano, osobní věci ve firemní aplikaci, vše bez upozornění Defenderu.
+5. Vazby: seznamy SharePointu a pole v kódu proti schématům v docs/SEZNAMY-*.md, vazby mezi moduly (případy, zakázky, pošta, úkoly, portál), importy a odkazy na neexistující soubory, funkce volané a nikde nedefinované.
+6. Testy: node test/*.test.js; python testy jen pokud je k dispozici prohlížeč, jinak uvést jako neověřené.
+7. Výstup: stručný seznam podle závažnosti (kritické, vysoké, nízké), u každého soubor, řádek, důvod a návrh opravy; co prošlo; co nelze ověřit. Žádné opravy bez pokynu Tomáše.
