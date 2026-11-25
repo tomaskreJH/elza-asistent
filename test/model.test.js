@@ -6,8 +6,8 @@ require('../katalog.js');require('../kontext.js');require('../ai.js');var A=wind
  t(A.modelPodle({e:'n'})=='haiku'&&A.modelPodle({e:'s'})=='sonnet'&&A.modelPodle({e:'v'})=='opus'&&A.modelPodle({})=='sonnet','Úsilí nízké/střední/vysoké = Haiku/Sonnet/Opus');
  var c=await A.cfg('AG-POSTA');t(c.tool=='Claude (předplatné)'&&c.model=='sonnet','výchozí Elzáčci jedou přes Claude (předplatné), model podle Úsilí');
  t(!/Copilot/.test((await A.cfg('AG-VYVOJ')).tool),'vývoj není na Copilotu ani na placeném API');
- var h=A.limityHtml({ok:true,pet:{pct:82,konec:''},tyden:{pct:10,konec:''}});t(/82%/.test(h)&&/10%/.test(h)&&/Claude 5 h/.test(h),'kruhy ukazují procenta');
- t(/nejsou dostupné/.test(A.limityHtml({ok:false}))&&!/>0%</.test(A.limityHtml({ok:false})),'nedostupné limity se neukáží jako nula');
+ var h=A.limityHtml({ok:true,pet:{pct:82,konec:''},tyden:{pct:10,konec:''}});t(/82 %/.test(h)&&/10 %/.test(h)&&/Claude 5 h/.test(h),'měřáky ukazují procenta');
+ t(/nejsou dostupné/.test(A.limityHtml({ok:false}))&&!/>0 %</.test(A.limityHtml({ok:false})),'nedostupné limity se neukáží jako nula');
  global.OCHRANA=window.OCHRANA={guardPrompt:function(x){return 'PRAVIDLO\n\n'+x}};var ap=await A.priprav('AG-ELZA',{task:'Co je EPS?',data:'text'});t(/Co je EPS\?/.test(ap.prompt)&&!/undefined/.test(ap.prompt)&&/PRAVIDLO/.test(ap.prompt)&&/<data>text<\/data>/.test(ap.prompt),'zadání se při přípravě neztratí a je obaleno ochranou');
  var za=function(d){return new Date(Date.now()+d*864e5).toISOString()};t(A.prah({pet:{pct:9},tyden:{pct:64,konec:za(5)}})==80,'týden 64 % po 2 dnech předbíhá čas = Haiku');t(A.prah({pet:{pct:9},tyden:{pct:64,konec:za(2)}})==0,'týden 64 % po 5 dnech je v normě');t(A.prah({pet:{pct:96},tyden:{pct:5,konec:za(3)}})==95&&A.prah({pet:{pct:1},tyden:{pct:98,konec:za(1)}})==97,'tvrdé prahy 5 h a týdne');
  /* 0.74.0 priorita voleb: vlastní text > model ze seznamu > dočasně levnější (limit) > předvolba > automatika */
@@ -31,9 +31,13 @@ require('../katalog.js');require('../kontext.js');require('../ai.js');var A=wind
  global.__R=[rw({Nastroj:'ChatGPT (Codex)',Model:'auto',Poznamka:'predvolba=L'})];var cx=await A.cfg('AG-VYVOJ');t(cx.tool=='ChatGPT (Codex)'&&cx.model=='výchozí Codexu','Codex: předvolba nemění model, bere se výchozí z Codexu');
  global.__R=[rw({Nastroj:'ChatGPT (Codex)',Model:'gpt-5-codex'})];var cx2=await A.cfg('AG-VYVOJ');t(cx2.model=='gpt-5-codex'&&cx2.vlastni,'Codex: vlastní model se předá a je označen');
  t(A.MODELY('ChatGPT (Codex)').join()=='výchozí Codexu'&&A.CX=='ChatGPT (Codex)','Codex: seznam modelů a název nástroje');
- t(/nejsou dostupné/.test(A.limityCxHtml({ok:false,duvod:'x'}))&&!/>0%</.test(A.limityCxHtml({ok:false})),'Codex: nedostupné limity nejsou nula');
- var hx=A.limityCxHtml({ok:true,pet:{pct:85,konec:'',okno:'5 h'},tyden:{pct:null,konec:'',okno:'7 dní'},stari:'25. 11. 20:00'});t(/85%/.test(hx)&&/nad 80 %/.test(hx)&&/nic se nepřepíná samo/.test(hx)&&/–/.test(hx),'Codex: nad 80 % jen doporučení, prošlé okno je pomlčka');
+ t(/nejsou dostupné/.test(A.limityCxHtml({ok:false,duvod:'x'}))&&!/>0 %</.test(A.limityCxHtml({ok:false})),'Codex: nedostupné limity nejsou nula');
+ var hx=A.limityCxHtml({ok:true,pet:{pct:85,konec:'',okno:'5 h'},tyden:{pct:null,konec:'',okno:'7 dní'},stari:'25. 11. 20:00'});t(/85 %/.test(hx)&&/nad 80 %/.test(hx)&&/nic se nepřepíná samo/.test(hx)&&/–/.test(hx),'Codex: nad 80 % jen doporučení, prošlé okno je pomlčka');
  global.__R=[];
+ /* 0.78.0 jednotné měřáky */
+ global.document=global.document||{getElementById:function(){return null},createElement:function(){return {}},head:{appendChild:function(){}}};
+ var mh=A.mericeHtml([{n:'Claude 5 h',p:14,k:''},{n:'Claude 7 dní',p:86,k:''},{n:'Codex 7 dní',p:null,d:'x'}]);t((mh.match(/class="mr/g)||[]).length==3&&/mr w/.test(mh)&&/mr n/.test(mh)&&!/>0 %</.test(mh)&&/data-vz=lim/.test(mh),'jednotný měřák: všechny napojené AI, 80 % oranžová, nedostupné bez nuly, klepnutí otevře nastavení');
+ t(/mr e/.test(A.mericeHtml([{n:'x',p:96}])),'měřák nad 95 % červený');
  t(A.vaha('Claude (předplatné)','opus')==15&&A.vaha('Claude (předplatné)','haiku')==1&&A.vaha('Lokální (Ollama)','x')==0,'váhy spotřeby');
  t(A.MODELY('Claude (předplatné)').join()=='haiku,sonnet,opus'&&A.MODELY('ChatGPT').length==2,'seznam platných modelů pro nástroj');
  global.__R=[];t(A.PV.L=='Lepší'&&A.PV.V=='Vyvážený'&&A.PV.U=='Levnější','tři předvolby');
