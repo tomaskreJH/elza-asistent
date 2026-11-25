@@ -1,5 +1,7 @@
 Tomáši, pokračuj na ELZA asistentovi (repozitář tomaskreJH/elza-asistent, verze 0.78.0). Řiď se docs/POSTUP-VYVOJ.md (hlavně body 11 až 14: spořivost, žádné stahování gitu Tomášem, dodání tools/ do sdílené složky, předání mezi Claude a Codexem), načti docs/STAV.md, docs/DALSI-KROKY.md (část Další vlákno), docs/SIMULACE-MAKRO.md (komentáře Tomáše 2026-11-25), docs/PROCES-NABIDEK.md (doplnění 2026-11-25), docs/ESPO-CTENI.md a docs/CHANGELOG.md (0.74.0 až 0.74.2). ELZA je ženského rodu (hlavní asistentka, řídí Elzáčky); Tomáše oslovuj jménem, ne „Elzo“. Odpovídej stručně, jedna jasná volba a jeden další krok. Nic nedělej Tomášovi ručně: zapisuj a nastavuj sám, ruční krok jen když jinak nejde. Každou změnu ověř skutečně a napiš, co ověřeno bylo a co ne. Do prohlížeče se přihlašuje Tomáš sám (vestavěný prohlížeč Claude je přihlášen firemním účtem M365; do CRM Espo se přihlásí Tomáš, heslo nikdy nezadávej). Espo čti jen, nic do něj nezapisuj. Testovací e-maily jen na tomaskre@gmail.com, schránka elzy@ se nečte, nic se neodesílá bez výslovného „ano“.
 
+Most ani tools/ neupravovat bez výslovného pokynu „uprav most“. Cacheované vstupní tokeny Codexu čekají na tento pokyn; pokračovat dalším úkolem.
+
 TRVALÁ ZÁSADA 3: schránka elzy@ se NIKDY nečte a ELZA k ní nemá a mít nebude přístup (Tomáš to řekl opakovaně); nenavrhovat to, nezmiňovat jako chybějící ani jako „zatím“.
 
 TRVALÁ ZÁSADA 2: před každou funkcí zkontroluj duplicity a zasaď ji do stávající obrazovky, ne do nové položky menu (Tomáš: vše je rozházené).
