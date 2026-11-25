@@ -13,7 +13,7 @@ var LISTS=null,ITEMS={},NEXT=1,LOG=[];window.LOG=LOG;window.ITEMS=ITEMS;window.L
 window.fetch=async function(u,o){o=o||{};var url=String(u),mm;LOG.push((o.method||"GET")+" "+url.replace("https://sp.test/sites/ZakazkyELZA/_api/web/",""));
  function js(x,st){return{ok:(st||200)<400,status:st||200,json:async function(){return x}}}
  if(/\\/web\\/lists$/.test(url)&&o.method=="POST"){var t=JSON.parse(o.body).Title;LISTS[t]=1;ITEMS[t]=ITEMS[t]||[];return js({})}
- if(/\\/fields/.test(url))return js({});
+ var fieldResponse=mockFields(url,o,LISTS);if(fieldResponse)return fieldResponse;
  if(mm=/getbytitle\\('([^']+)'\\)\\/items(?:\\((\\d+)\\))?(\\?.*)?$/.exec(url)){var l=mm[1];if(!LISTS[l])return js({},404);
   if(o.method=="POST"){var b=JSON.parse(o.body);if(mm[2]){var it=ITEMS[l].filter(function(x){return x.Id==+mm[2]})[0];Object.assign(it,b)}else{ITEMS[l].push(Object.assign({Id:NEXT++},b))}return js({})}
   var q=decodeURIComponent(mm[3]||""),last=+((/Id gt (\\d+)/.exec(q)||[])[1]||0),tm=/Title eq '([^']*)'/.exec(q),pm=/Plan eq '([^']*)'/.exec(q);
@@ -21,6 +21,7 @@ window.fetch=async function(u,o){o=o||{};var url=String(u),mm;LOG.push((o.method
  return js({},404)};
 LISTS.Obsazeni=1;ITEMS.Obsazeni=[{Id:900,Title:"ZK1",Stav:"aktivni",Email:"stary@elzy.cz"}];
 </script>"""
+HTML=HTML.replace("<script>", "<script>"+open(os.path.join(ROOT,"test","fixtures","sharepoint-fields.js"),encoding="utf-8").read()+"\nconst mockFields=schemaFixture();\n")
 bad=[]
 with sync_playwright() as p:
     b=p.chromium.launch(executable_path="/usr/bin/google-chrome" if os.path.exists("/usr/bin/google-chrome") else None)

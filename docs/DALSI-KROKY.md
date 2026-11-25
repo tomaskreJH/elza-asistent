@@ -1,6 +1,6 @@
-# Další kroky (po 0.76.1)
+# Další kroky (po 0.78.1)
 **ČEKÁ NA POKYN „uprav most“:** doplnit cached_input_tokens Codexu do mostu a AI záznamu; následně ověřit na stanici. Do té doby most ani tools/ neměnit.
-**Nové na další vlákno:** připojit ChatGPT (Codex) na předplatném jako nástroj AI (viz NOVE-VLAKNO-PROMPT bod 0), protože limit Claude dochází.
+**Ostré ověření 0.78.1:** ve Správa → Seznamy ověřit Ukol, zejména ZavisiNa a Milnik. Pokud jsou sloupce dostupné, otevřít Gantt nad existujícími úkoly.
 **DEFINITIVNĚ (Tomáš 2026-11-25): přístup do společné schránky elzy@ ELZA nemá a mít nebude; nenavrhovat, neuvádět jako chybějící ani jako čekající na souhlas.**
 **Zásada úklidu (Tomáš 2026-11-25):** před každou novou funkcí zkontrolovat, zda neduplikuje existující; nové věci zasazovat do stávajících obrazovek, ne nové položky menu. Zbývá: napojit Zapsat hovor a extrakci otázek z Pošty; sloučit Analýzu vstupu do Případů a Sledování (Přehled, Roadmapa, Procesy, Stav).
 **Hotovo 0.76.0:** bod 3 (Kdo je zákazník, ZakaznikInfo na Zakázky ELZA, ruční zápis, Espo čtením). Zbývá: napojit kartu do detailu případu a před koncept nabídky, naplnit z Espa u MAKRO (čtení v přihlášeném prohlížeči).

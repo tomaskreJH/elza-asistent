@@ -11,7 +11,7 @@ var ITEMS={Ukol:[]},LISTS={Ukol:1},NEXT=1,FOLD=[],LOG=[];window.ITEMS=ITEMS;wind
 window.fetch=async function(u,o){o=o||{};var url=String(u);LOG.push((o.method||"GET")+" "+url);function js(x,st){return{ok:(st||200)<400,status:st||200,json:async function(){return x}}}
  if(/\\/web\\/folders$/.test(url)&&o.method=="POST"){FOLD.push(JSON.parse(o.body).ServerRelativeUrl);return js({})}
  if(/\\/web\\/lists$/.test(url)&&o.method=="POST"){var t=JSON.parse(o.body).Title;LISTS[t]=1;ITEMS[t]=ITEMS[t]||[];return js({})}
- if(/\\/fields/.test(url))return js({});
+ var fieldResponse=mockFields(url,o,LISTS);if(fieldResponse)return fieldResponse;
  var mm=/getbytitle\\('([^']+)'\\)\\/items(?:\\((\\d+)\\))?(\\?.*)?$/.exec(url);
  if(mm){var l=mm[1];if(!LISTS[l])return js({},404);
   if(o.method=="POST"){var b=JSON.parse(o.body);if(mm[2]){Object.assign(ITEMS[l].filter(function(x){return x.Id==+mm[2]})[0],b)}else{ITEMS[l].push(Object.assign({Id:NEXT++},b))}return js({})}
@@ -19,6 +19,7 @@ window.fetch=async function(u,o){o=o||{};var url=String(u);LOG.push((o.method||"
   return js({value:ITEMS[l].filter(function(x){return x.Id>last&&(!tm||x.Title==tm[1])&&(!pm||x.Postup==pm[1])})})}
  return js({},404)};
 </script>"""
+HTML=HTML.replace("<script>", "<script>"+open(os.path.join(ROOT,"test","fixtures","sharepoint-fields.js"),encoding="utf-8").read()+"\nconst mockFields=schemaFixture();\n")
 bad=[]
 def chk(c,msg):
     if not c: bad.append(msg)
