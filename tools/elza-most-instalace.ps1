@@ -1,4 +1,4 @@
-# ELZA most – instalace pro uživatele, bez správce (volá ji elza-most-instalace.cmd)
+﻿# ELZA most – instalace pro uživatele, bez správce (volá ji elza-most-instalace.cmd)
 # Jediný autostart: HKCU Run "ElzaMost" -> powershell -WindowStyle Hidden -File (bez skriptovacích obálek).
 # Idempotentní: nic nepřepisuje, pokud je vše aktuální. Defender se nenastavuje.
 $ErrorActionPreference = 'Stop'

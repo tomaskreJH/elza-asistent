@@ -1,4 +1,4 @@
-﻿# ELZA most – lokální pomocník pro ELZA asistenta (verze most 2, 0.69.13)
+﻿﻿# ELZA most – lokální pomocník pro ELZA asistenta (verze most 2, 0.69.13)
 # Spouští oficiální Claude CLI (předplatné, bez API klíče) a volitelně Ollamu.
 # Bezpečnost: poslouchá jen na 127.0.0.1, přijme jen stránku ELZA asistenta (Origin),
 # každé volání musí nést párovací kód. Claude běží bez nástrojů (jen text), nic na disku nemění.
