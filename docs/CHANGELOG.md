@@ -1,3 +1,7 @@
+## 0.73.5 (2026-11-25) – Most bez upozornění Defenderu (incident 3)
+- Instalátor mostu přepsán (tools/elza-most-instalace.cmd + .ps1): jediný autostart HKCU Run „ElzaMost“ = powershell -WindowStyle Hidden -File, bez VBS a bez složky Startup. Migrace smaže staré ElzaMost.vbs a elza-most-skryty.vbs. Idempotentní (registr i kopie skriptu jen při změně hashe), stará instance se ukončí jen podle PID souboru s ověřením příkazové řádky.
+- Most: token 32 bajtů v %LOCALAPPDATA%\ElzaMost\token (jen pro uživatele) místo párovacího kódu – po instalaci je token ve schránce a v aplikaci se vloží jednou znovu. Kontrola Host i Origin, jediná instance (mutex), log elza-most.log, odstraněna skrytá samoobnova.
+
 ## 0.73.4 (2026-11-25) – Pošta jako jeden seznam karet
 - Záložka Pošta: zrušeny nadpisy „Pošta k případům“, „Nepřiřazená“ a „Přiřazená“ i odstavec o automatickém přiřazování. Jeden seznam posledních 30 vláken od nejnovějšího, každé vlákno je karta (předmět, ● nepřečtené, značka příloh, odesílatel, datum).
 - Nepřiřazené vlákno: na kartě Návrh ELZY, pole „Jak to vidíte“ (předvyplněné uloženým popisem), výběr případu a tlačítka Přiřadit, Založit případ, Zbytečná poptávka, Uložit popis. Akce čtou popis z pole u téhož vlákna; logika (link, newCase, učení) beze změny.

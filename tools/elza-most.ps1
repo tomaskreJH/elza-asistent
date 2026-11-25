@@ -2,7 +2,7 @@
 # Spouští oficiální Claude CLI (předplatné, bez API klíče) a volitelně Ollamu.
 # Bezpečnost: poslouchá jen na 127.0.0.1, přijme jen stránku ELZA asistenta (Origin),
 # každé volání musí nést párovací kód. Claude běží bez nástrojů (jen text), nic na disku nemění.
-# Spuštění: powershell -ExecutionPolicy Bypass -File elza-most.ps1   (bez správce)
+# Instalace: tools/elza-most-instalace.cmd (autostart jen HKCU Run, bez VBS). Token: %LOCALAPPDATA%\ElzaMost\token
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false); $OutputEncoding = [Text.UTF8Encoding]::new($false)
 # Vypnout QuickEdit (klik do okna by most pozastavil)
@@ -11,21 +11,23 @@ $Port = 47321
 $Povolene = @('https://tomaskrejh.github.io')
 $Slozka = Join-Path $env:LOCALAPPDATA 'ElzaMost'
 New-Item -ItemType Directory -Force -Path $Slozka | Out-Null
-$KodSoubor = Join-Path $Slozka 'parovaci-kod.txt'
-if (-not (Test-Path $KodSoubor)) {
-  $b = New-Object byte[] 12; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b)
-  ([BitConverter]::ToString($b) -replace '-','').ToLower() | Set-Content -Encoding ascii $KodSoubor
-}
-$Kod = (Get-Content $KodSoubor -Raw).Trim()
-$Log = Join-Path $Slozka 'most.log'
+$TokenSoubor = Join-Path $Slozka 'token'
+$Log = Join-Path $Slozka 'elza-most.log'
 function Zapis($t){ Add-Content -Path $Log -Value ((Get-Date -Format s) + ' ' + $t) }
+if (-not (Test-Path $TokenSoubor)) { Zapis 'CHYBA: chybí token, spusťte elza-most-instalace.cmd'; exit 1 }
+$Kod = (Get-Content $TokenSoubor -Raw).Trim()
+if ($Kod.Length -lt 43) { Zapis 'CHYBA: token je kratší než 32 bajtů, spusťte elza-most-instalace.cmd'; exit 1 }
+# jediná instance (named mutex) + PID soubor pro instalátor
+$Mutex = New-Object Threading.Mutex($false, 'Local\ElzaMost')
+if (-not $Mutex.WaitOne(0)) { Zapis 'už běží jiná instance, končím'; exit 0 }
+Set-Content -Encoding ascii -Path (Join-Path $Slozka 'elza-most.pid') -Value $PID
+$PovoleneHost = @("127.0.0.1:$Port", "localhost:$Port")
 
 $L = New-Object Net.HttpListener
-$L.Prefixes.Add("http://127.0.0.1:$Port/")
+$L.Prefixes.Add("http://127.0.0.1:$Port/")   # jen loopback, nikdy + / * / 0.0.0.0
 $L.Start()
 Write-Host "ELZA most běží na http://127.0.0.1:$Port"
-Write-Host "Párovací kód (vložte jednou do ELZA asistenta → AI nastavení → Lokální most):"
-Write-Host "  $Kod" -ForegroundColor Yellow
+Write-Host "Token pro aplikaci je v $TokenSoubor"
 Zapis 'start'
 
 function Odpoved($ctx, $code, $obj){
@@ -145,20 +147,17 @@ function Nocni(){
 }
 
 $Cekani = $L.GetContextAsync()
-$script:PsCas = (Get-Item $PSCommandPath).LastWriteTime
-$script:VbsCesta = Join-Path $PSScriptRoot 'elza-most-skryty.vbs'
 while ($L.IsListening) {
-  # samoobnova: když instalátor přepíše tento skript, most se sám znovu spustí (bez ručního restartu)
-  try { if ((Get-Item $PSCommandPath).LastWriteTime -ne $script:PsCas -and (Test-Path $script:VbsCesta)) { Zapis 'obnova: skript se změnil, spouštím znovu'; $L.Stop(); Start-Process wscript.exe -ArgumentList ('"' + $script:VbsCesta + '"'); exit } } catch {}
   # fronta se kontroluje každé 3 s bez ohledu na to, zda přicházejí dotazy (0.69.12; dřív jen při 3 s ticha)
   if (((Get-Date) - $script:NocCas).TotalSeconds -ge 3) { $script:NocCas = Get-Date; try { Nocni } catch { $script:NocChyba = $_.Exception.Message; Zapis ('noc: ' + $_.Exception.Message) } }
   if (-not $Cekani.Wait(1000)) { continue }
   $ctx = $Cekani.Result; $Cekani = $L.GetContextAsync(); $q = $ctx.Request
   try {
     $o = $q.Headers['Origin']
+    if (-not ($PovoleneHost -contains [string]$q.Headers['Host'])) { Odpoved $ctx 403 @{chyba='Neplatný Host'}; Zapis ('odmítnut Host ' + $q.Headers['Host']); continue }
     if ($o -and -not ($Povolene -contains $o)) { Odpoved $ctx 403 @{chyba='Cizí stránka'}; Zapis "odmítnuto $o"; continue }
     if ($q.HttpMethod -eq 'OPTIONS') { Odpoved $ctx 200 @{ok=1}; continue }
-    if ($q.Headers['x-elza-kod'] -ne $Kod) { Odpoved $ctx 401 @{chyba='Špatný párovací kód'}; continue }
+    if ($q.Headers['x-elza-kod'] -cne $Kod) { Odpoved $ctx 401 @{chyba='Neplatný token'}; Zapis 'odmítnuto: neplatný token'; continue }
     $cesta = $q.Url.AbsolutePath
     if ($cesta -eq '/stav') {
       $v = ''; if (MaClaude) { try { $v = (& $Cl --version 2>$null | Out-String).Trim() } catch {} }

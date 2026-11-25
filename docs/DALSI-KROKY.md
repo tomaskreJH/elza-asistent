@@ -1,4 +1,5 @@
-# Další kroky (po 0.73.4)
+# Další kroky (po 0.73.5)
+**Hotovo 0.73.5:** oprava instalátoru mostu po Defender incidentu 3 (viz CHANGELOG). Tomáš na tom-tabletu znovu spustí tools/elza-most-instalace.cmd, vloží token ze schránky do AI nastavení → Lokální most; ověřit, že Defender nehlásí vysokou severity ASEP alert.
 **Hotovo 0.73.4:** Pošta jako jeden seznam karet (bez „Nepřiřazená/Přiřazená“), zařazení vlákna přímo na kartě s polem „Jak to vidíte“, úklid starého řešení v kódu a v Návodu a Průvodci. Ověřit na ostrém webu na telefonu 390 px.
 **Otevřeno (nalezeno při 0.73.4, nezměněno, mimo zadání):** test/vzhled.py padá už na 0.73.3 s „msal is not defined“. Soubor msal-browser.min.js má sha384 jiný než atribut integrity v index.html (SRI blokuje načtení). Příčina není v Poště: je potřeba rozhodnout, která verze msal je správná, a sjednat hash (index.html) nebo soubor. Dokud se neopraví, přihlášení firemním účtem může být rozbité; ověřit na ostrém webu.
 **Hotovo 0.73.1:** schválení verze jedním klepnutím, příčina „limity nedostupné“ (vypršelý token, most ho obnoví; spustit znovu elza-most-instalace.cmd), nastavení ranní analýzy (docs/RANO-ANALYZA-NAVRH.md), zásada Zpět (docs/ZPET-ZASADA.md). Zpět doplnit všude, kde chybí. Lokální model (Ollama, Flux na obrázky) připravit, až bude čas.
