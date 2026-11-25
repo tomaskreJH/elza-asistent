@@ -1,3 +1,8 @@
+## 0.76.1 (2026-11-25) – Úklid: nabídka na jednom místě
+- Tomáš: vše je rozházené a nepřehledné. Tři položky menu k nabídce (Proces nabídky, Kdo je zákazník, Hlídání nabídek) jsou sloučené do jedné: Moje práce → Nabídka: proces, zákazník, hlídání (pod sebou: proces, krok 0 Kdo je zákazník, hlídání po 5/14/30 dnech). Soubory modulů zůstávají samostatné, mění se jen zobrazení; menu 46 → 44. Návod odkazuje na jedno místo.
+- ZakaznikInfo na Zakázky ELZA založen mimo aplikaci (SharePoint, Tomášovo přihlášení; zápis aplikací zatím není povolen), 5 záznamů o MAKRO z Espa.
+- Další kandidáty na sloučení: Analýza vstupu + Případy; Přehled, Roadmapa, Procesy, Stav systému.
+
 ## 0.76.0 (2026-11-25) – Kdo je zákazník (krok 0)
 - Rozhodnutí Tomáše: interní informace o zákazníkovi (slevy, dohody, historie, kroky, poznámky) se vedou v ELZA systému, v seznamu ZakaznikInfo na webu Zakázky ELZA; zapisují se ručně a hned, zatím lze doplnit vyčtením z Espa (jen čtení, Zdroj espo). Účetnictví se nečte.
 - Nový zakaznik.js (menu Moje práce → Kdo je zákazník, test/zakaznik.test.js): karta podle jména (shoda bez ohledu na s.r.o./a.s.), skupiny podle typu, nabídky zákazníka z NabidkaEvid, zápis informace. Seznam ZakaznikInfo je v seznamy.js (Správa → Seznamy ho založí, nebo tlačítko v modulu).

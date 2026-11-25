@@ -132,4 +132,7 @@ async function zapisTermin(){var N=ST.nav;if(!N)throw new Error("Nejdřív navrh
 function html(){return '<div id=prx></div>'}
 function mt(){EL=document.getElementById("prx");draw();if(window.pripadySeznam)pripadySeznam().then(function(x){ST.pri=x;draw()}).catch(function(){})}
 window.MODS=window.MODS||{};window.MODS.proces=[html,mt];
+/* 0.76.1: jedno místo pro nabídku: Proces + krok 0 Kdo je zákazník + Hlídání nabídek (dřív tři položky menu). Moduly zůstávají samostatné soubory, jen se zobrazují pod sebou. */
+var P=window.MODS.proces,Z=window.MODS.zakaznik,N=window.MODS.nabidky,dem=function(f){return f?String(f()).replace(/<h1>/g,"<h2>").replace(/<\/h1>/g,"</h2>"):""};
+window.MODS.proces=[function(){return P[0]()+dem(Z&&Z[0])+dem(N&&N[0])},function(){P[1]();Z&&Z[1]();N&&N[1]()}];
 })();
