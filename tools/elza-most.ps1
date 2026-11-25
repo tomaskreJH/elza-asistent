@@ -1,12 +1,10 @@
-﻿﻿# ELZA most – lokální pomocník pro ELZA asistenta (verze most 2, 0.69.13)
+﻿# ELZA most – lokální pomocník pro ELZA asistenta (verze most 2, 0.73.9)
 # Spouští oficiální Claude CLI (předplatné, bez API klíče) a volitelně Ollamu.
 # Bezpečnost: poslouchá jen na 127.0.0.1, přijme jen stránku ELZA asistenta (Origin),
 # každé volání musí nést párovací kód. Claude běží bez nástrojů (jen text), nic na disku nemění.
 # Instalace: tools/elza-most-instalace.cmd (autostart jen HKCU Run, bez VBS). Token: %LOCALAPPDATA%\ElzaMost\token
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false); $OutputEncoding = [Text.UTF8Encoding]::new($false)
-# Vypnout QuickEdit (klik do okna by most pozastavil)
-try { Add-Type -Name K -Namespace W -MemberDefinition '[DllImport("kernel32.dll")] public static extern IntPtr GetStdHandle(int h); [DllImport("kernel32.dll")] public static extern bool GetConsoleMode(IntPtr h, out int m); [DllImport("kernel32.dll")] public static extern bool SetConsoleMode(IntPtr h, int m);'; $h=[W.K]::GetStdHandle(-10); $m=0; [void][W.K]::GetConsoleMode($h,[ref]$m); [void][W.K]::SetConsoleMode($h, ($m -band -bnot 0x40) -bor 0x80) } catch {}
 $Port = 47321
 $Povolene = @('https://tomaskrejh.github.io')
 $Slozka = Join-Path $env:LOCALAPPDATA 'ElzaMost'

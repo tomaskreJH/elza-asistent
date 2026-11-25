@@ -2,6 +2,7 @@
 # Jediný autostart: HKCU Run "ElzaMost" -> powershell -WindowStyle Hidden -File (bez skriptovacích obálek).
 # Idempotentní: nic nepřepisuje, pokud je vše aktuální. Defender se nenastavuje.
 $ErrorActionPreference = 'Stop'
+# zdroj = místní kopie, kterou připravil elza-most-instalace.cmd (nic se nespouští přímo z OneDrive/sdílené složky)
 $Zdroj = $PSScriptRoot
 $D = Join-Path $env:LOCALAPPDATA 'ElzaMost'
 $Ps = Join-Path $D 'elza-most.ps1'
@@ -33,7 +34,8 @@ Unblock-File $Ps -ErrorAction SilentlyContinue
 if (-not (Test-Path $TokenSoubor)) {
   $b = New-Object byte[] 32; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b)
   [Convert]::ToBase64String($b).TrimEnd('=').Replace('+','-').Replace('/','_') | Set-Content -Encoding ascii -NoNewline $TokenSoubor
-  & icacls $TokenSoubor /inheritance:r /grant:r "$($env:USERDOMAIN)\$($env:USERNAME):(R,W)" | Out-Null
+  $sid = [Security.Principal.WindowsIdentity]::GetCurrent().User.Value
+  & icacls $TokenSoubor /inheritance:r /grant:r "*${sid}:(R,W)" | Out-Null
   $Zmeny += 'vygenerován nový token'
 }
 $stary = Join-Path $D 'parovaci-kod.txt'; if (Test-Path $stary) { Remove-Item -Force $stary; $Zmeny += 'smazán starý párovací kód' }

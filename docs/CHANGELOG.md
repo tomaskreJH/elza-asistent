@@ -1,3 +1,9 @@
+## 0.73.9 (2026-11-25) – Kontrola celé aplikace, most bez spouštěčů Defenderu, Pošta jako klient
+- Kontrola: docs/KONTROLA-2026-11-25.md.
+- Most: elza-most.ps1 měl dvojitý BOM (pravděpodobná příčina nefunkční 0.73.6–0.73.8), opraveno; odstraněno Add-Type s DllImport (QuickEdit). Instalátor: bez `irm | iex`, skripty se kopírují do %LOCALAPPDATA%\ElzaMost\instalace a spouští odtud (nic přímo z OneDrive), RemoteSigned místo Bypass, ACL tokenu podle SID.
+- Pošta: zrušeny karty nad klientem (0.73.4). Zařazení je v hlavičce čtecího panelu otevřeného vlákna vedle AI analýzy a Řazení: výběr případu, Přiřadit, Založit případ, Zbytečná poptávka; pod tím jedna věta Návrh ELZY a pole „Jak to vidíte“ s Uložit popis. Přiřazení platí pro celou konverzaci (dosavadní i pozdější zprávy), v případu Průběh komunikace. Logika v pripady.js (window.POSTAZAR), učení beze změny.
+- Oprava: po otevření vlákna každé klepnutí v čtecím panelu odvedlo pryč (atribut data-v kolidoval s navigací); nově data-mv.
+
 ## 0.73.8 (2026-11-25) – Ukončení staré verze mostu (oprava 0.73.7)
 - Port mostu drží http.sys (PID 4), takže hledání podle portu nefungovalo. Instalátor nyní ukončí jen powershell.exe s přesnou cestou %LOCALAPPDATA%\ElzaMost\elza-most.ps1 v příkazové řádce.
 
