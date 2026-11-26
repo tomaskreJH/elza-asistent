@@ -37,9 +37,28 @@ var g0=window.go;window.go=async function(id){await g0(id);if(!tok){var mn=docum
 var n0=window.nav;window.nav=function(){var ob=document.getElementById('ochr-b');if(ob)document.body.appendChild(ob);n0();try{pinSide()}catch(e){}};
 function pinSide(){var a=document.querySelector('aside');if(!a)return;var me0=a.querySelector('.me');if(!tok){var br=a.querySelector('.brand');a.innerHTML='';if(br)a.appendChild(br);if(me0)a.appendChild(me0);return}
  if(innerWidth>800){var ps=DEF.concat(ls('elzaPin',[]).filter(function(x){return DEF.indexOf(x)<0&&LBL[x]}).slice(-(7-DEF.length))).filter(ok),h='<div class=pins>'+ps.map(function(i){return '<button class="nav'+(i==cur?' on':'')+'" data-v="'+i+'"><svg viewBox="0 0 24 24"><path d="'+(IC[i]||IC.x)+'"/></svg>'+esc(SHORT[i]||LBL[i]||i)+'</button>'}).join('')+'</div>',br2=a.querySelector('.brand');if(br2)br2.insertAdjacentHTML('afterend',h)}
- dedup((ps||[]).concat("navod"));
+ dedup((ps||[]).concat("navod",contextHidden()));
  if(me0&&!me0.querySelector('#ochr-slot')){me0.insertAdjacentHTML('afterbegin','<button class=nav data-vz=help>Návod a AI nápověda</button><div id=ochr-slot></div>');var ob=document.getElementById('ochr-b'),sl=me0.querySelector('#ochr-slot');if(ob)sl.appendChild(ob);else if(window.OCHRANA&&OCHRANA.refresh)OCHRANA.refresh()}}
-function deco(){var h=document.querySelector('#main h1');if(!h||h.querySelector('.pinb')||DEF.indexOf(cur)>=0||!LBL[cur])return;var on=ls('elzaPin',[]).indexOf(cur)>=0;h.insertAdjacentHTML('beforeend','<button class="g pinb" data-vz=pin data-id="'+esc(cur)+'">'+(on?'Odepnout z menu':'Připnout do menu')+'</button>')}
+var MORE={
+ ainast:['pravidla','aismer','aizaz'],
+ ulohy:['nocni'],
+ prehled:['procesy','mapa','roadmapa','stav','automatika'],
+ nast:['pruvodce','menu','sprava','seznamy'],
+ zakazky:['slozky','portalpub'],
+ skilly:['postupy','prompty','foto','brand','trh']
+};
+function dostupne(id){return !!LBL[id]&&!(window.hide&&window.hide(id))&&!(window.menuOff&&window.menuOff(id))}
+function contextLinks(h){
+ var parent=Object.keys(MORE||{}).find(id=>id===cur||MORE[id].includes(cur));
+ if(!parent||!dostupne(parent)||document.querySelector('.view-context'))return;
+ var links=[parent].concat(MORE[parent]).filter(id=>id!==cur&&dostupne(id));
+ if(links.length)h.insertAdjacentHTML('afterend','<nav class=view-context aria-label="Související obrazovky">'+links.map(id=>'<button class=g data-v="'+id+'">'+esc(LBL[id])+'</button>').join('')+'</nav>');
+}
+function contextHidden(){
+ return Object.keys(MORE||{}).flatMap(parent=>dostupne(parent)?MORE[parent]:[]);
+}
+window.elzaViewDecor=deco;
+function deco(){var h=document.querySelector('#main h1');if(!h)return;if(tok)contextLinks(h);if(h.querySelector('.pinb')||DEF.indexOf(cur)>=0||!LBL[cur])return;var on=ls('elzaPin',[]).indexOf(cur)>=0;h.insertAdjacentHTML('beforeend','<button class="g pinb" data-vz=pin data-id="'+esc(cur)+'">'+(on?'Odepnout z menu':'Připnout do menu')+'</button>')}
 async function sp(path,body,method){var sc=[SP+'/AllSites.Write'],t;if(typeof m=='undefined'||!m)throw new Error('V ukázkovém režimu se nezapisuje.');try{t=(await m.acquireTokenSilent({scopes:sc,account:acc})).accessToken}catch(e){t=(await m.acquireTokenPopup({scopes:sc,account:acc})).accessToken}var h={Authorization:'Bearer '+t,Accept:'application/json;odata=nometadata','Content-Type':'application/json;odata=nometadata'};if(method=='MERGE'){h['X-HTTP-Method']='MERGE';h['IF-MATCH']='*'}var r=await fetch(SP+SITE+'/_api/web/'+path,{method:'POST',headers:h,body:JSON.stringify(body)});if(!r.ok)throw new Error('SharePoint HTTP '+r.status)}
 var DONE=['Schváleno','Zamítnuto','Hotovo'];
 async function ukoly(){try{if(window.ulohyPostup)await window.ulohyPostup()}catch(e){}try{return await list('Ulohy',SEL)}catch(e){return []}}
@@ -54,7 +73,7 @@ function workLinks(){
  return links?'<section class=day-work aria-labelledby=day-work-title><h2 id=day-work-title>Co potřebujete udělat?</h2><div>'+links+'</div></section>':'';
 }
 function rcBox(){return '<div class=wait style="border-left-color:var(--b)"><h3>Otevřít chat s Elzáčkem</h3><div class=qa><input type=text id=rc_t aria-label="Zadání pro chat s Elzáčkem" placeholder="např. Přišla poptávka na EPS do školy, připrav odpověď"><button class=b data-vz=rc>Najít a otevřít v Chatu</button> <span class=note id=rc_m></span></div></div>'}
-function rcGo(){var t=document.getElementById('rc_t'),v=t&&t.value.trim(),ms=document.getElementById('rc_m');if(!v){if(ms)ms.textContent='Napište zadání.';return}var r=window.AI&&AI.recepce(v),has=r&&AI.agents.some(function(a){return a.id==r.id});try{sessionStorage.setItem('elzaChatQ',v);sessionStorage.setItem('elzaChatA',has?r.id:'auto')}catch(e){}go('chat')}
+function rcGo(){var t=document.getElementById('rc_t'),v=t&&t.value.trim(),ms=document.getElementById('rc_m');if(!v){if(ms)ms.textContent='Napište zadání.';return}var r=window.AI&&AI.recepce(v,true),has=r&&AI.agents.some(function(a){return a.id==r.id});try{sessionStorage.setItem('elzaChatQ',v);sessionStorage.setItem('elzaChatA',has?r.id:'auto')}catch(e){}go('chat')}
 
 function limFill(){window.limFill=limFill;if(!window.AI||!AI.sada)return;AI.sada(false).then(function(M){var t=document.getElementById('limt');if(t)t.innerHTML=AI.mericeHtml(M);}).catch(function(){})}
 if(typeof nav=='function'){var N0=nav;nav=function(){N0();limFill()}}

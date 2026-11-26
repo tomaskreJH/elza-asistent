@@ -10,7 +10,7 @@ async function view(){try{if(window.AI)await AI.nacti();if(window.KTX)await KTX.
  +'<div id=cvi style="flex:1 1 220px;min-width:0">'+pane()+'</div></div>'}
 function viewM(){var mn=document.getElementById('main');function msg(t){var s=document.getElementById('cs');if(s)s.textContent=t}
  async function send(){var q=document.getElementById('cq'),t=q.value.trim();if(!t)return;CUR=document.getElementById('ca').value;var id=CUR,pozn='';
-  if(CUR=='auto'){var r=window.AI&&AI.recepce(t),has=r&&AI.agents.some(function(a){return a.id==r.id});id=has?r.id:'AG-ELZA';pozn=r?(has?'ELZA předala: '+r.n:'ELZA doporučuje '+r.n+' (přidejte ho v AI nastavení → Galerie); zatím odpoví ELZA.'):'ELZA: obecný dotaz, odpovím sama.'}
+  if(CUR=='auto'){var r=window.AI&&AI.recepce(t,true);id=r?r.id:'AG-ELZA';pozn=r?'ELZA předala: '+r.n:'ELZA: obecný dotaz, odpovím sama.'}
   LAST=id;var nm=(AI.agents.filter(function(a){return a.id==id})[0]||{}).n||'Elza';H.push({r:'u',t:t});var hist=H.slice(0,-1).slice(-10).map(function(h){return (h.r=='u'?'Uživatel: ':'Elza: ')+h.t}).join('\n');msg((pozn?pozn+' · ':'')+'AI pracuje…');
   try{var o=await AI.ask(id,{task:t,data:hist||undefined,max:1200});H.push({r:'a',n:nm,t:(pozn?'('+pozn+')\n':'')+o})}catch(e){H.push({r:'a',n:nm,t:'Chyba: '+e.message})}go('chat')}
  mn.onclick=function(e){var el=e.target.closest('[data-cc],[data-cs]');if(!el)return;if(el.dataset.cc){H=[];return go('chat')}send()};

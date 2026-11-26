@@ -6,6 +6,7 @@ require('../katalog.js');require('../ai.js');var A=window.AI,bad=0;function t(c,
  await A.nacti();t(A.agents.length==6,'základní Elzáčci bez změny');
  t(A.presets.length==7+window.ELZA_KATALOG.length&&['Kancelář','Obchod','Marketing','Data','Lidé','Technika','Vývoj'].every(function(g){return A.presets.some(function(p){return p.g==g})}),'galerie: 7 vlastních rolí + katalog, 7 skupin');
  var r=A.recepce('Přišla faktura od dodavatele, zkontroluj DPH a splatnost');t(r&&r.id=='AG-UCETNI','recepce vybere Elzáčka bez AI');
+ t(A.recepce('Shrnutí e-mailového vlákna',true)?.id=='AG-POSTA','chat vybere aktivního poštovního Elzáčka');
  t(A.recepce('dobrý den')===null,'recepce bez shody nic nevybere');
  var pl=A.planTymu('x {"assignments":[{"agentId":"A","task":"a"},{"agentId":"B","task":"b"}]}',['A','B']);t(pl&&pl.length==2,'plán týmu z JSON');t(A.planTymu('{"assignments":[{"agentId":"X","task":"a"}]}',['A'])===null,'cizí pracovník v plánu = odmítnuto');
  await A.pridejPre('AG-EPS');await A.nacti(true);var e=A.agents.filter(function(a){return a.id=='AG-EPS'})[0];t(e&&e.c&&e.sk.length==2,'balíček role přidán včetně postupů');

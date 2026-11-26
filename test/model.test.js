@@ -4,7 +4,7 @@ global.acc={username:'tomas@elzy.cz'};global.cache={};global.__R=[];global.list=
 require('../katalog.js');require('../kontext.js');require('../ai.js');var A=window.AI,bad=0;function t(c,m){if(!c){bad++;console.log('CHYBA',m)}}
 (async function(){
  t(A.modelPodle({e:'n'})=='haiku'&&A.modelPodle({e:'s'})=='sonnet'&&A.modelPodle({e:'v'})=='opus'&&A.modelPodle({})=='sonnet','Úsilí nízké/střední/vysoké = Haiku/Sonnet/Opus');
- var c=await A.cfg('AG-POSTA');t(c.tool=='Claude (předplatné)'&&c.model=='sonnet','výchozí Elzáčci jedou přes Claude (předplatné), model podle Úsilí');
+ var c=await A.cfg('AG-POSTA');t(c.tool=='Claude (předplatné)'&&c.model=='haiku','rutinní pošta s Claude má úspornou automatiku');
  t(!/Copilot/.test((await A.cfg('AG-VYVOJ')).tool),'vývoj není na Copilotu ani na placeném API');
  var h=A.limityHtml({ok:true,pet:{pct:82,konec:''},tyden:{pct:10,konec:''}});t(/82 %/.test(h)&&/10 %/.test(h)&&/Claude 5 h/.test(h),'měřáky ukazují procenta');
  t(/nejsou dostupné/.test(A.limityHtml({ok:false}))&&!/>0 %</.test(A.limityHtml({ok:false})),'nedostupné limity se neukáží jako nula');
@@ -26,13 +26,18 @@ require('../katalog.js');require('../kontext.js');require('../ai.js');var A=wind
  global.__R=[rw({Upn:'*',Poznamka:'predvolba=L'})];var c5=await A.cfg('AG-VYVOJ');t(c5.model=='opus'&&c5.src.indexOf('sdílená volba')==0,'sdílená volba (*) platí pro všechny');
  global.__R=[rw({Upn:'*',Poznamka:'predvolba=L'}),rw({Id:2,Poznamka:'predvolba=U'})];t((await A.cfg('AG-VYVOJ')).model=='haiku','osobní volba má přednost před sdílenou');
  global.__R=[rw({Agent:'AG-POSTA',Poznamka:'predvolba=U'})];t((await A.cfg('AG-POSTA')).tool=='Claude (předplatné)','Levnější bez mostu zůstává u Haiku');
- localStorage.setItem('elzaMostKod','0123456789abcdef0123');var c6=await A.cfg('AG-POSTA');t(c6.tool=='Lokální (Ollama)'&&/předvolba Levnější/.test(c6.src),'Levnější u Elzáčka s ol: lokální Ollama, je-li most spárovaný');t((await A.cfg('AG-VYVOJ')).tool=='Claude (předplatné)','Levnější u vývoje (bez ol) Ollamu nepoužije');localStorage.removeItem('elzaMostKod');
+ localStorage.setItem('elzaMostKod','0123456789abcdef0123');var c6=await A.cfg('AG-POSTA');t(c6.tool=='Claude (předplatné)'&&c6.model=='haiku'&&/předvolba Levnější/.test(c6.src),'Levnější zachová vybraného poskytovatele i při spárovaném mostu');t((await A.cfg('AG-VYVOJ')).tool=='Claude (předplatné)','Levnější u vývoje (bez ol) Ollamu nepoužije');localStorage.removeItem('elzaMostKod');
  /* 0.77.0 ChatGPT (Codex) */
- global.__R=[rw({Nastroj:'ChatGPT (Codex)',Model:'auto',Poznamka:'predvolba=L'})];var cx=await A.cfg('AG-VYVOJ');t(cx.tool=='ChatGPT (Codex)'&&cx.model=='výchozí Codexu','Codex: předvolba nemění model, bere se výchozí z Codexu');
+ global.__R=[rw({Nastroj:'ChatGPT (Codex)',Model:'auto',Poznamka:'predvolba=L'})];var cx=await A.cfg('AG-VYVOJ');t(cx.tool=='ChatGPT (Codex)'&&cx.model=='gpt-6.2-astra','Codex: Lepší používá Astra');
  global.__R=[rw({Nastroj:'ChatGPT (Codex)',Model:'gpt-5-codex'})];var cx2=await A.cfg('AG-VYVOJ');t(cx2.model=='gpt-5-codex'&&cx2.vlastni,'Codex: vlastní model se předá a je označen');
- t(A.MODELY('ChatGPT (Codex)').join()=='výchozí Codexu'&&A.CX=='ChatGPT (Codex)','Codex: seznam modelů a název nástroje');
+ t(A.MODELY('ChatGPT (Codex)').join()=='gpt-6-luna,gpt-6.2-sol,gpt-6.2-astra,výchozí Codexu'&&A.CX=='ChatGPT (Codex)','Codex: seznam modelů a název nástroje');
  t(/nejsou dostupné/.test(A.limityCxHtml({ok:false,duvod:'x'}))&&!/>0 %</.test(A.limityCxHtml({ok:false})),'Codex: nedostupné limity nejsou nula');
- var hx=A.limityCxHtml({ok:true,pet:{pct:85,konec:'',okno:'5 h'},tyden:{pct:null,konec:'',okno:'7 dní'},stari:'25. 11. 20:00'});t(/85 %/.test(hx)&&/nad 80 %/.test(hx)&&/nic se nepřepíná samo/.test(hx)&&/–/.test(hx),'Codex: nad 80 % jen doporučení, prošlé okno je pomlčka');
+ var hx=A.limityCxHtml({ok:true,pet:{pct:85,konec:'',okno:'5 h'},tyden:{pct:null,konec:'',okno:'7 dní'},stari:'25. 11. 20:00'});t(/85 %/.test(hx)&&/nad 80 %/.test(hx)&&/pozastaví/.test(hx)&&/–/.test(hx),'Codex: nad 80 % jen doporučení, prošlé okno je pomlčka');
+ global.__R=[];
+ global.__R=[rw({Nastroj:'ChatGPT (Codex)'})];
+ t((await A.cfg('AG-VYVOJ')).model=='gpt-6.2-sol'&&(await A.cfg('AG-VYVOJ','n')).model=='gpt-6-luna','Codex automaticky používá Sol, u krátké práce Lunu');
+ var night=await A.priprav('AG-VYVOJ',{task:'Test',narocnost:'n'});
+ t(night.tool=='codex'&&night.model=='gpt-6-luna','Noční fronta zachová model i poskytovatele');
  global.__R=[];
  /* 0.78.0 jednotné měřáky */
  global.document=global.document||{getElementById:function(){return null},createElement:function(){return {}},head:{appendChild:function(){}}};

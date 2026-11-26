@@ -195,7 +195,7 @@ async function analyzeWithAgent(button){
   button.disabled=true;result.textContent="Připravuji náhled pro zvolený nástroj…";
   try{
     var data=parts.map(function(p){return "Předmět: "+p.subject+"\n"+p.text}).join("\n---\n");
-    var text=await AI.ask("AG-POSTA",{task:"Shrň e-mailové vlákno ve třech větách. Uveď otevřené otázky a jeden další krok. Rozliš skutečnost a domněnku.",data:data,max:700,vzdyNahled:true});
+    var text=await AI.ask("AG-POSTA",{task:"Shrň e-mailové vlákno ve třech větách. Uveď otevřené otázky a jeden další krok. Rozliš skutečnost a domněnku.",data:data,max:700,narocnost:"n",vzdyNahled:true});
     result.textContent=text;
   }catch(error){
     result.textContent="Shrnutí není dostupné. "+error.message;

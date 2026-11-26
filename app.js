@@ -1,11 +1,11 @@
 const CID="7822640e-2537-46eb-8db1-830d38fff665",TEN="35c5f53c-ce94-445a-b877-54965e3be6d3",HOME="https://tomaskrejh.github.io/elza-asistent/",SP="https://elzycz.sharepoint.com",SITE="/sites/ELZA-asistent",SC=[SP+"/AllSites.Read"];
 if(localStorage.getItem("elzaPortal")&&/[#&]code=/.test(location.hash)){location.replace("portal.html"+location.hash)}
-const VER="0.79.2";const $=s=>document.querySelector(s);
+const VER="0.80.0";const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const surl=u=>{u=String(u==null?"":u).trim();return /^(https?:|mailto:|tel:)/i.test(u)?u:"#"};window.surl=surl; const POP=window.opener&&/[#?&](code|error|state)=/.test(location.hash+location.search);
 let OPEN={};try{OPEN=JSON.parse(localStorage.getItem("elzaMenu")||"{}")}catch(e){}
 let m,acc=null,tok=null,cur="dnes";const cache={};const PERSRE=/jachti|jachta|plachetn|katamaran|plavb|kapitán|sardini|hokej|hockey|střely|sailing/i,PERSL=["Prompty","Postupy","Foto příkazy","Brand"];const PERS=(t,v)=>PERSL.includes(t)?v.filter(x=>!PERSRE.test(JSON.stringify(x))):v;
-const MENU=[["Moje práce",[["dnes","Můj den"],["teren","Na místě"],["proces","Nabídky"],["posta","Pošta"],["kalendar","Kalendář"],["ulohy","Úlohy pro agenty"],["-1","Případy a zakázky"],["pripady","Případy"],["analyza","Analýza vstupu"],["zakazky","Zakázky"],["slozky","Složky zakázky"],["kontroly","Smlouvy a kontroly"],["-2","Plánování a lidé"],["gantt","Gantt a termíny"],["faze","Plán fází"],["lidi","Lidé a školení"]]],["AI",[["ainast","AI nastavení"],["pravidla","Pravidla AI"],["aismer","AI směrování"],["agenti","Elzáčci"],["-3","Použití"],["chat","Chat s agentem"],["nocni","Noční běhy"],["aizaz","AI záznam a náklady"]]],["Znalosti",[["-4","Předpisy a trh"],["pravo","Právo a normy"],["trh","Trh a konkurence"],["-5","Postupy a nástroje"],["skilly","Skilly"],["postupy","Postupy"],["prompty","Prompty"],["foto","Foto příkazy"],["brand","Brand"],["-6","Vazby"],["mapa","Mapa vazeb"]]],["Sledování",[["prehled","Přehled (velín)"],["roadmapa","Roadmapa"],["procesy","Procesy"],["stav","Stav systému"],["hledat","Hledat vše"],["automatika","Automatika"]]],["Správa",[["nast","Nastavení"],["pruvodce","Úvodní nastavení"],["sprava","Uživatelé a moduly"],["seznamy","Seznamy"],["menu","Moje menu"],["firmy","Synchronizace firem"],["zamestnanci","Synchronizace zaměstnanců"],["portalpub","Publikace do portálu"]]],["Nápověda",[["navod","Návod a AI nápověda"]]]];
+const MENU=[["Moje práce",[["dnes","Můj den"],["teren","Na místě"],["proces","Nabídky"],["posta","Pošta"],["kalendar","Kalendář"],["ulohy","Úlohy pro agenty"],["-1","Případy a zakázky"],["pripady","Případy"],["analyza","Analýza vstupu"],["zakazky","Zakázky"],["slozky","Složky zakázky"],["kontroly","Smlouvy a kontroly"],["-2","Plánování a lidé"],["gantt","Gantt a termíny"],["faze","Plán fází"],["lidi","Lidé a školení"]]],["AI",[["ainast","AI nastavení"],["pravidla","Pravidla AI"],["aismer","AI směrování"],["agenti","Elzáčci"],["-3","Použití"],["chat","Chat s agentem"],["nocni","Noční běhy"],["aizaz","AI záznam a náklady"]]],["Znalosti",[["-4","Předpisy a trh"],["pravo","Právo a normy"],["trh","Trh a konkurence"],["-5","Postupy a nástroje"],["skilly","Skilly"],["postupy","Postupy"],["prompty","Prompty"],["foto","Foto příkazy"],["brand","Brand"]]],["Sledování",[["prehled","Přehled"],["roadmapa","Roadmapa"],["procesy","Procesy"],["mapa","Mapa vazeb"],["stav","Stav systému"],["hledat","Hledat vše"],["automatika","Automatika"]]],["Správa",[["nast","Nastavení"],["pruvodce","Úvodní nastavení"],["sprava","Uživatelé a moduly"],["seznamy","Seznamy"],["menu","Moje menu"],["firmy","Synchronizace firem"],["zamestnanci","Synchronizace zaměstnanců"],["portalpub","Publikace do portálu"]]],["Nápověda",[["navod","Návod a AI nápověda"]]]];
 window.menuOff=function(id){try{return JSON.parse(localStorage.getItem("elzaMenuOff")||"[]").indexOf(id)>=0}catch(e){return false}};
 const LBL={};MENU.forEach(g=>g[1].forEach(i=>LBL[i[0]]=i[1]));
 async function token(popup){try{tok=(await m.acquireTokenSilent({scopes:SC,account:acc})).accessToken}catch(e){if(!popup)throw e;try{tok=(await m.acquireTokenPopup({scopes:SC,account:acc})).accessToken}catch(e2){if(POPERR(e2)){await m.acquireTokenRedirect({scopes:SC,account:acc});return}throw e2}}}
@@ -14,18 +14,35 @@ async function login(){const mn=$("#main");const rq={scopes:["User.Read"],extraS
 async function list(t,sel){const k=t+sel;if(cache[k])return cache[k];await token(false);const b=SP+SITE+"/_api/web/"+(t=="Foto příkazy"?"GetList('"+SITE+"/Lists/FotoPrikazy')":"lists/getbytitle('"+encodeURIComponent(t)+"')");let u=b+"/items?$top=1000&$select="+sel,out=[];while(u&&out.length<20000){const r=await fetch(u,{headers:{Authorization:"Bearer "+tok,Accept:"application/json;odata=nometadata"}});if(!r.ok)throw new Error(t+": HTTP "+r.status);const j=await r.json();out=out.concat(j.value||[]);u=j["odata.nextLink"]||j["@odata.nextLink"]||""}return cache[k]=PERS(t,out)}
 const dt=(d,w)=>{if(!d)return"";const n=Math.round((new Date(d)-Date.now())/864e5);const c=n<0?"r":(w&&n<w)?"a":"";return '<span class="'+c+'">'+new Date(d).toLocaleDateString("cs-CZ")+(c=="r"?" (po termínu)":c=="a"?" (brzy)":"")+'</span>'};
 const tags=a=>a.filter(Boolean).map(x=>'<span class=tag>'+esc(x)+'</span>').join("");
-let Q="",PO="",PD=[],SD=[],AD=[],MD=[],MS="";
-async function prehled(){const n=await Promise.all(["Předpisy","Skilly","Agenti","Funkce","Workflow a vazby"].map(async t=>[t,(await list(t,"Id")).length]));return '<h1>Přehled</h1><div class=grid>'+n.map(x=>'<div class=card><b>'+x[1]+'</b><span>'+esc(x[0])+'</span></div>').join("")+'</div>'}
+let Q="",PO="",PD=[],SD=[];
 async function pravo(){PD=await list("Předpisy","Title,Oznaceni,Oblast,Stav,PlatiDo,DalsiKontrola,Zdroj,Poznamka");const ob=[...new Set(PD.map(x=>x.Oblast).filter(Boolean))].sort();return '<h1>Právo a normy</h1><div class=bar><input id=q placeholder="Hledat podle § , čísla nebo názvu" value="'+esc(Q)+'"><select id=o><option value="">Všechny oblasti</option>'+ob.map(x=>'<option'+(x==PO?" selected":"")+'>'+esc(x)+'</option>').join("")+'</select></div><div id=tb></div>'}
 function pravoT(){const q=Q.toLowerCase();const r=PD.filter(x=>(!PO||x.Oblast==PO)&&(!q||[x.Title,x.Oznaceni,x.Poznamka].join(" ").toLowerCase().includes(q)));$("#tb").innerHTML='<p class=note>'+r.length+' předpisů</p><table><tr><th>Označení<th>Název<th>Stav<th>Platí do<th>Další kontrola<th></tr>'+r.map(x=>'<tr><td>'+esc(x.Oznaceni)+'<td>'+esc(x.Title)+'<td>'+esc(x.Stav)+'<td>'+dt(x.PlatiDo,60)+'<td>'+dt(x.DalsiKontrola,0)+'<td>'+(/^https?:/.test(x.Zdroj||"")?'<a target=_blank rel=noopener href="'+esc(surl(x.Zdroj))+'">zdroj</a>':"")+'</tr>').join("")+'</table>'}
 function pravoM(){$("#q").oninput=e=>{Q=e.target.value;pravoT()};$("#o").onchange=e=>{PO=e.target.value;pravoT()};pravoT()}
 async function skilly(){SD=await list("Skilly","Title,Layer,SkillGroup,Domain,ModelTier,Purpose,Scope");return '<h1>Skilly</h1><div class=bar><input id=q placeholder="Hledat skill" value="'+esc(Q)+'"></div><div id=tb></div>'}
 function skillyT(){const q=Q.toLowerCase();const r=SD.filter(x=>(!window.skillOk||window.skillOk(x))&&(!q||[x.Title,x.Purpose,x.Domain,x.SkillGroup].join(" ").toLowerCase().includes(q)));$("#tb").innerHTML='<p class=note>'+r.length+' skillů</p><div class=grid>'+r.map(x=>'<div class=card><h3>'+esc(x.Title)+'</h3>'+tags([x.Layer,x.Domain,x.SkillGroup,x.ModelTier,x.Scope])+'<p>'+esc(x.Purpose)+'</p></div>').join("")+'</div>'}
 function skillyM(){$("#q").oninput=e=>{Q=e.target.value;skillyT()};skillyT()}
-async function agenti(){AD=await list("Agenti","Title,AgentType,Role,Status,AutonomyLevel,Skills");return '<h1>Elzáčci</h1><div class=grid>'+AD.filter(x=>!window.agentOk||window.agentOk(x)).map(x=>'<div class=card><h3>'+esc(x.Title)+'</h3>'+tags([x.AgentType,x.Status,x.AutonomyLevel])+'<p>'+esc(x.Role)+'</p><p>'+esc(x.Skills)+'</p></div>').join("")+'</div>'}
-async function mapa(){MD=await list("Workflow a vazby","FromId,ToId,RelationType,Condition");return '<h1>Mapa vazeb</h1><div class=bar id=mn></div><div id=tb></div>'}
-function mapaT(){const ids=[...new Set(MD.flatMap(x=>[x.FromId,x.ToId]).filter(Boolean))].sort();$("#mn").innerHTML=ids.map(i=>'<button class="nav'+(i==MS?" on":"")+'" style="width:auto" data-i="'+esc(i)+'">'+esc(i)+'</button>').join("");$("#mn").onclick=e=>{const i=e.target.dataset&&e.target.dataset.i;if(i){MS=i==MS?"":i;mapaT()}};const r=MS?MD.filter(x=>x.FromId==MS||x.ToId==MS):MD;$("#tb").innerHTML='<p class=note>'+r.length+' vazeb'+(MS?" pro "+esc(MS):"")+'</p><table><tr><th>Od<th>Vztah<th>Do<th>Podmínka</tr>'+r.map(x=>'<tr><td>'+esc(x.FromId)+'<td>'+esc(x.RelationType)+' →<td>'+esc(x.ToId)+'<td>'+esc(x.Condition)+'</tr>').join("")+'</table>'}
-const VIEWS={prehled:[prehled],pravo:[pravo,pravoM],skilly:[skilly,skillyM],agenti:[agenti],mapa:[mapa,mapaT]};Object.assign(VIEWS,window.MODS||{});
+async function agenti(){
+ if(!window.AI)return '<h1>Elzáčci</h1><p class=note>AI nastavení není dostupné.</p>';
+ if(tok!='demo')await AI.nacti();
+ const cards=await Promise.all(AI.agents.map(async a=>{
+  const c=await AI.cfg(a.id);
+  const queued=['AG-VYVOJ','AG-VIDEO','AG-SOCIAL'].includes(a.id);
+  const action=queued?((window.hide&&window.hide('ulohy'))?'':'<button class=g data-v=ulohy>Otevřít úlohy</button>'):(window.hide&&window.hide('chat'))?'':'<button class=g data-agent-chat="'+esc(a.id)+'">Otevřít chat</button>';
+  const how=queued?'Připravuje výsledek z úlohy. Převzetí závisí na zpracovateli fronty.':a.id==='AG-POSTA'?'Pracuje v Poště po volbě shrnutí.':'Spustíte v chatu nebo zadáním úlohy.';
+  return '<article class=card><h3>'+esc(a.n)+'</h3><p>'+esc(a.d)+'</p><p>'+esc(c.tool)+' · '+esc(c.model)+'</p><p class=note>'+esc(how)+'</p>'+action+'</article>';
+ }));
+ return '<h1>Elzáčci</h1><p class=note>Modely pro váš účet. Volba modelu sama nepotvrzuje spojení se službou.</p><div class=grid>'+cards.join('')+'</div>';
+}
+function agentiM(){
+ const root=$('#main');
+ root.onclick=e=>{
+  const b=e.target.closest('[data-agent-chat]');
+  if(!b)return;
+  sessionStorage.setItem('elzaChatA',b.dataset.agentChat);
+  go('chat');
+ };
+}
+const VIEWS={pravo:[pravo,pravoM],skilly:[skilly,skillyM],agenti:[agenti,agentiM]};Object.assign(VIEWS,window.MODS||{});
 function tema(){document.body.classList.toggle("dark");try{localStorage.setItem("elzaTema",document.body.classList.contains("dark")?"d":"l")}catch(e){}}
 try{if(localStorage.getItem("elzaTema")=="d")document.body.classList.add("dark")}catch(e){}
 const TABS=[["dnes","Můj den","M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"],["pripady","Případy","M3 7h18M3 12h18M3 17h12"],["posta","Pošta","M3 6h18v12H3zM3 7l9 6 9-6"],["kalendar","Kalendář","M4 5h16v15H4zM4 10h16M9 3v4M15 3v4"]];

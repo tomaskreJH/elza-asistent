@@ -1,4 +1,9 @@
-# Další kroky (po 0.79.2)
+# Další kroky (po 0.80.0)
+## Ověření 0.80.0
+- Hotovo v kódu: routing Codexu, opravena změna poskytovatele v noční frontě, stručnější Přehled a čitelné vazby. [Rozpis navigace a Elzáčků](PILOT-ELZA.md).
+- Lokální CLI na tomto počítači ověřeno na čistém dotazu s Lunou. Ostré předání z aplikace závisí na konkrétním profilu prohlížeče a spárování mostu. Díky tomu lze odlišit provoz CLI od propojení s ELZOU.
+- Po pilotu porovnat spotřebu a úspěšnost na stejném krátkém zadání. Úsilí Codex CLI určuje stanice, web vybírá název modelu. Rozšíření ovládání úsilí by vyžadovalo zvláštní pokyn k úpravě mostu.
+
 ## Uvedení do práce
 - První pilot začíná v Poště tlačítkem Analyzovat vlákno a kontrolou zařazení k případu. Pravidlový rozbor dvou zpráv a jednorázový náhled ověřeny v přihlášené ostré Poště 0.79.2. Elzáček má zvolený ChatGPT (Codex). Syntetický test Zkusit ve stejném prohlížeči skončil hláškou o nespárovaném mostu. Před pilotem shrnutí spárovat autorizovanou stanici s prohlížečem a zopakovat syntetický test. Základní výsledek nevyžaduje model. Před pilotem shrnutí Elzáčkem ověřit zvolený nástroj na syntetické zprávě, spojení mostu v konkrétním prohlížeči, pravidla AI a náhled. Bez funkčního nástroje pokračovat pravidlovou cestou.
 - Kontrola dokumentace v Analýze vstupu dnes eviduje dostupnost podkladů v otevřeném přehledu. Pro pilot technické kontroly vybrat jednu dokumentaci a odborně potvrzené požadavky, zapsat druh a datum vydání, článek, důkaz v dokumentu a odpovědného. Platnost dohledávat v [ČSN online](https://csnonline.agentura-cas.cz/podrobne.aspx) a [e-Sbírce](https://www.e-sbirka.cz/).

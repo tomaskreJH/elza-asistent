@@ -1,3 +1,8 @@
+## 0.80.0 (2026-11-26) – Směrování AI a navigace podle práce
+- Codex nabízí GPT-6 Luna, GPT-6.2 Sol a GPT-6.2 Astra. Krátká práce volí Lunu, automatika nezapíná Astru. Při dostupném limitu nad 95 % se dražší živé volání odloží výslovnou chybou. Předvolby zachovávají poskytovatele. Stejná uložená volba platí pro Zkusit.
+- Noční fronta zachovává vybraný nástroj a model včetně Codexu a odmítne nepodporované nastavení.
+- Elzáčci ukazují skutečné nastavení a vstup do práce. Automatický výběr chatu volí instalované Elzáčky. Přehled řadí naléhavé kroky před souhrny, mapa zobrazuje vstupy a výstupy kolem vybraného uzlu a doplňkové položky jsou u souvisejícího modulu.
+
 ## 0.79.2 (2026-11-26) – Náhled pro každé shrnutí pošty
 - Povinný náhled v Poště má pouze potvrzení pro právě otevřené vlákno a zamítnutí. Ověřeno v ostré Poště 0.79.1: pravidlový rozbor jednoho přečteného vlákna a otevření náhledu. Obsah vlákna nebyl předán modelu.
 - Nastavení ranní kontroly je v rozbalovací části. Pole a tlačítko u nevyřízených zákaznických otázek jsou zarovnané na počítači i mobilu.
