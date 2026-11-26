@@ -1,3 +1,7 @@
+## 0.80.5 (2026-11-26) – Oprava otevření AI nastavení
+
+AI nastavení zobrazí okna Claude, pro která má platná čísla. Otevře se i při samotném týdenním odečtu z mostu.
+
 ## 0.80.4 (2026-11-26) – Týdenní zůstatek AI a návrat odečtu Claude
 
 Most 4 ukládá čas obnovy a procento z události běžné odpovědi Claude Code. Přehled se obnovuje místně při přihlášení a po dokončení běhu. V menu pod hlavními zkratkami jsou pouze týdenní zůstatky. Zelená značí běžný stav, oranžová nejvýše 20 % zbývá a červená nejvýše 5 %. Podrobnosti jsou v AI nastavení.

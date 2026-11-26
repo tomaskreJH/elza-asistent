@@ -59,4 +59,11 @@ require('../katalog.js');require('../kontext.js');require('../ai.js');var A=wind
  t(/18 %/.test(menu)&&/Ruční stav/.test(menu)&&!/5 h/.test(menu)&&/45 %/.test(menu)&&reads.length==3,'menu ukazuje platný odečet Claude a místní odečet Codexu');
  await A.sada();A.prehledLimitu(true);t(reads.length==3,'vykreslení neobnovuje údaje');
  await A.obnovLimity();t(reads.length==6,'obnova znovu načítá všechny zdroje');
+  global.fetch=async function(u){var cesta=new URL(u).pathname;return {ok:true,json:async function(){
+   return {'/stav':{most:4,claude:'nalezen'},'/limity':{ok:true,tyden:{pct:88,konec:za(1)}},'/limity-codex':{ok:false}}[cesta];
+  }}};
+  await A.obnovLimity();
+  global.KTX=window.KTX;global.AI=A;
+  var nastaveni=await window.MODS.ainast[0]();
+  t(/týden 88 %/.test(nastaveni)&&!/5 h 0 %/.test(nastaveni)&&/Zkontrolovat most/.test(nastaveni),'AI nastavení se otevře při samotném týdenním odečtu');
  console.log(bad?'SELHALO':'model OK');process.exit(bad?1:0)})();

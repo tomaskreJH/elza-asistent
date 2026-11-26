@@ -1,4 +1,6 @@
-# Další kroky (po 0.80.4)
+# Další kroky (po 0.80.5)
+
+- V AI nastavení ověřit Poštovního Elzáčka tlačítkem Zkusit na syntetickém zadání. U Claude může most vrátit jen jeden platný odečet.
 ## Týdenní zůstatek AI
 - Most 4 uchovává poslední platná čísla získaná při běžném běhu Claude Code a vrací je i po restartu. Při chybějícím nebo prošlém odečtu se zobrazí pomlčka. Zdroj je událost Claude Code, ne čtení přihlašovacích souborů. [Událost limitu Claude Code](https://code.claude.com/docs/en/agent-sdk/typescript#sdkratelimitevent).
 - V menu se ukazuje jen procentní zůstatek týdenního limitu. Údaje se načítají místně při přihlášení a po úloze. Podrobnosti a ruční záloha Claude jsou v AI nastavení.
