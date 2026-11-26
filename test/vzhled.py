@@ -42,7 +42,17 @@ with sync_playwright() as p:
         vis = pg.evaluate("()=>{var e=document.querySelector('aside .me');if(!e)return false;var r=e.getBoundingClientRect();return r.bottom<=innerHeight+1}")
         chk(vis, f"{kanal}: dolní část menu (Návod, Odhlásit) není vidět")
         # 6 Úlohy: panel Co agent ví vedle zadání a změna podle agenta
-        pg.goto(B + "?demo=1&v=dnes"); pg.wait_for_timeout(1500)
+        pg.goto(B + "?demo=1&v=dnes")
+        pg.wait_for_function("typeof go === 'function' && typeof tok !== 'undefined' && tok === 'demo'")
+        pg.evaluate("()=>{window._first=false;return go('dnes')}")
+        chk(pg.locator(".day-work [data-v=posta]").count() == 1, f"{kanal}: chybí přímý vstup do Pošty")
+        chk(pg.locator(".day-agent:not([open])").count() == 1, f"{kanal}: pomoc Elzáčka má být sbalená")
+        pg.evaluate("""()=>{window.list=async name=>name==='Procesy'?[{Id:1,Title:'Poptávka',Kroky:JSON.stringify([
+            {id:2,n:'Připravit nabídku',dalsi:[3]},{id:1,n:'Ověřit zadání',dalsi:[2]},
+            {id:3,n:'Schválit nabídku'},{id:4,n:'Smyčka',dalsi:[4]}
+        ])}]:[];return go('procesy')}""")
+        stages = pg.locator(".flow-stage").all_inner_texts()
+        chk(len(stages) == 4 and "Ověřit zadání" in stages[0] and "Čeká na: Ověřit zadání" in stages[1] and "Smyčka" in stages[3], f"{kanal}: nesprávné pořadí procesu {stages}")
         pg.evaluate("()=>{window.list=async()=>[];go('ulohy')}"); pg.wait_for_timeout(2000)
         el = pg.query_selector("#kxco")
         chk(el is not None and "Co agent ví" in (el.inner_text() if el else ""), f"{kanal}: u Úloh chybí panel Co agent ví")

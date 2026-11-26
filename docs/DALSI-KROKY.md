@@ -1,4 +1,13 @@
-# Další kroky (po 0.78.1)
+# Další kroky (po 0.79.0)
+## Uvedení do práce
+1. Pilot jedné skutečné poptávky od Pošty přes Případ a Nabídku po Zakázku. Obchod třídí, odborník rozhoduje, technik zapisuje práci z místa a vedoucí vidí termíny. U každého předání ověřit, kdo pokračuje, co potřebuje a kde výsledek najde. Změřit čas, přepisy a počet návratů pro chybějící údaje.
+2. Doplnit v detailu případu jednu další akci podle stavu a přímou vazbu na související záznam. Skripty mají řešit ověření údajů, párování podle kódu, termíny a přesuny stavu. Elzáček je určen pro nejasné podklady, návrhy a odborné otázky.
+3. Navázat na stávající volič nástroje a modelu, Úlohy a Postupy se schválením. Krok popsat vstupem a výsledkem nezávisle na poskytovateli. Pro každý krok ukázat zvolený model, proč byl vybrán a dostupný rozpočet či limit. Nabídnout úspornou volbu nebo odklad. Souběžně pouštět jen nezávislé úlohy s jasným výsledkem, který jde zkontrolovat. Porovnávat čas, přesnost a spotřebu na stejném případu.
+4. Pro každý vstup zachytit výsledek a umožnit pracovníkovi jednoduše zaznamenat opravu. Z opakovaných oprav připravit návrh změny postupu se zdrojem, verzí a schválením. Čerpání znalostí má respektovat přístup a používat jen materiál související s danou prací.
+5. Ověřit tento průchod s obchodem, technikem a vedoucím. Krátké návody přidávat u místa, kde se rozhoduje, a ověřovat spolu s každou změnou průchodu.
+
+Podklady: [GOV.UK: Complete multiple tasks](https://design-system.service.gov.uk/patterns/complete-multiple-tasks/), [Anthropic: Building effective agents](https://www.anthropic.com/engineering/building-effective-agents).
+
 **ČEKÁ NA POKYN „uprav most“:** doplnit cached_input_tokens Codexu do mostu a AI záznamu; následně ověřit na stanici. Do té doby most ani tools/ neměnit.
 **Ostré ověření 0.78.1:** ve Správa → Seznamy ověřit Ukol, zejména ZavisiNa a Milnik. Pokud jsou sloupce dostupné, otevřít Gantt nad existujícími úkoly.
 **DEFINITIVNĚ (Tomáš 2026-11-25): přístup do společné schránky elzy@ ELZA nemá a mít nebude; nenavrhovat, neuvádět jako chybějící ani jako čekající na souhlas.**

@@ -1,3 +1,7 @@
+## 0.79.0 (2026-11-26) – Můj den a čitelné procesy
+- Můj den vede po schválení přímo k poště, případům, zakázkám a práci na místě podle dostupných modulů. Chat a zadání úlohy mají společné rozbalovací místo.
+- Procesy řadí kroky podle závislostí do etap. U kroku uvádějí stav, roli, nástroj a předpoklady. Smyčky a chybějící vazby jsou viditelné. Aktualizován Návod a Průvodce.
+
 ## 0.78.1 (2026-11-26) – Doplnění schématu seznamů
 - Správa → Seznamy a skript pro SharePoint používají stejnou kontrolu. Doplňují chybějící seznamy, sloupce a indexy, zvládnou opakování po chybě a ověřují výsledek. Ukol zahrnuje pole ZavisiNa a Milnik pro plán zakázek.
 - Ověřeno na testovacích datech včetně přerušeného zápisu, opakování a chybějícího indexu po zdánlivě úspěšném zápisu. Prošlo 22 testovacích souborů JavaScriptu, 7 prohlížečových testů a audit vazeb. Produkční schéma Ukol čeká na ověření.
