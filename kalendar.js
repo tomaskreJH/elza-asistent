@@ -13,6 +13,12 @@ function mon(d){var x=sod(d),w=(x.getDay()+6)%7;return add(x,-w)}
 function same(a,b){return a.toDateString()==b.toDateString()}
 function dlong(d){return d.toLocaleDateString("cs-CZ",{weekday:"long",day:"numeric",month:"long"})}
 function cname(id){var c=K.cals.filter(function(x){return x.id==id})[0];return c?c.name:""}
+function accountKey(name){return name+":"+encodeURIComponent(GR.demo?"demo":GR.me())}
+function groupConfig(){
+ try{var saved=JSON.parse(GR.ls(accountKey("elzaKalSkupiny"))||"{}");return saved&&typeof saved==="object"&&!Array.isArray(saved)?saved:{}}
+ catch(e){return {}}
+}
+function groupName(c){return Object.hasOwn(K.groups,c.id)?String(K.groups[c.id]).trim():""}
 function ccol(id){var c=K.cals.filter(function(x){return x.id==id})[0];return c?c.col:"#888"}
 
 GR.css("kcss",".kt{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}.kt h2{margin:0 8px;font-size:18px;min-width:210px}.kw{display:grid;grid-template-columns:210px 1fr;gap:12px}.ks{border:1px solid var(--l);border-radius:12px;padding:10px;background:var(--p);align-self:start}.ks h4{margin:8px 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--m)}.ks label{display:flex;gap:6px;align-items:center;padding:2px 0;cursor:pointer}.ks input{min-width:0;width:auto}.ks i{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none}.kg{border:1px solid var(--l);border-radius:12px;overflow:hidden;background:var(--bg)}.kgh,.kga{display:grid;border-bottom:1px solid var(--l)}.kgh>div{padding:6px;text-align:center;font-weight:600;border-left:1px solid var(--l)}.kgh>div.t{color:var(--a)}.kga>div{border-left:1px solid var(--l);padding:2px;min-height:24px}.kgb{overflow:auto;max-height:calc(100vh - 290px)}.kgbody{display:grid;position:relative}.kgu{position:relative}.kgu span{position:absolute;right:6px;font-size:11px;color:var(--m);transform:translateY(-7px)}.kgc{position:relative;border-left:1px solid var(--l);background-image:linear-gradient(var(--l) 1px,transparent 1px);background-size:100% "+H+"px}.kgc.t{background-color:rgba(217,38,28,.04)}.ke{position:absolute;border-radius:6px;padding:2px 5px;font-size:12px;color:#fff;overflow:hidden;cursor:pointer;border:1px solid rgba(255,255,255,.5);line-height:1.25}.ke.tn{opacity:.75;background-image:repeating-linear-gradient(45deg,transparent 0 6px,rgba(255,255,255,.25) 6px 12px)}.ke.cx{text-decoration:line-through;opacity:.6}.kch{display:block;border-radius:5px;padding:1px 5px;font-size:12px;color:#fff;cursor:pointer;margin:1px 0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.know{position:absolute;left:0;right:0;height:2px;background:var(--a);z-index:1;pointer-events:none}.km{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}.km>div{min-height:104px;border-left:1px solid var(--l);border-top:1px solid var(--l);padding:3px;overflow:hidden}.km>div.o{background:rgba(127,127,127,.07)}.km .n{font-size:12px;color:var(--m);cursor:pointer}.km .n.t{color:#fff;background:var(--a);border-radius:99px;padding:0 6px}.kl h3{margin:14px 0 4px;font-size:14px}.kl .r1{display:flex;gap:10px;padding:5px 8px;border-bottom:1px solid var(--l);cursor:pointer}.kl .r1:hover{background:rgba(127,127,127,.08)}.kl .r1 .tm{width:110px;flex:none;color:var(--m)}.kw>*{min-width:0}@media(max-width:900px){.kw{grid-template-columns:minmax(0,1fr)}}");
@@ -24,9 +30,15 @@ async function loadCals(){
   var r=await GR.all("/me/calendars?$top=50&$select=id,name,hexColor,color,canEdit,isDefaultCalendar,owner",{sc:CR});
   var me=GR.me();
   K.cals=r.map(function(c,i){var o=(c.owner&&c.owner.address||"").toLowerCase();return {id:c.id,name:c.name,col:/^#[0-9a-f]{6}$/i.test(c.hexColor||"")?c.hexColor:PAL[i%PAL.length],edit:!!c.canEdit,def:!!c.isDefaultCalendar,shared:!!o&&o!=me,owner:c.owner&&c.owner.name||""}});
-  var sv=null;try{sv=JSON.parse(GR.ls("elzaKalVyber")||"null")}catch(e){}
-  K.sel={};K.cals.forEach(function(c){K.sel[c.id]=sv?!!sv[c.id]:(c.def||!c.shared)});
-  if(!K.cals.some(function(c){return K.sel[c.id]}))K.cals.forEach(function(c){K.sel[c.id]=true});
+  var sv=null;try{sv=JSON.parse(GR.ls(accountKey("elzaKalVyber"))||"null")}catch(e){}
+  if(!sv){
+    try{
+      var previous=JSON.parse(GR.ls("elzaKalVyber")||"null");
+      if(previous&&K.cals.some(function(c){return Object.hasOwn(previous,c.id)}))sv=previous;
+    }catch(e){}
+  }
+  K.groups=groupConfig();K.sel=Object.create(null);K.cals.forEach(function(c){K.sel[c.id]=sv?!!sv[c.id]:(c.def||!c.shared)});
+  if(!sv&&!K.cals.some(function(c){return K.sel[c.id]}))K.cals.forEach(function(c){K.sel[c.id]=true});
 }
 function range(){
   var d=K.d;
@@ -43,17 +55,18 @@ function label(){
   var e2=add(d,29);return d.toLocaleDateString("cs-CZ",{day:"numeric",month:"numeric"})+" – "+e2.toLocaleDateString("cs-CZ",{day:"numeric",month:"numeric",year:"numeric"});
 }
 async function loadEvents(){
-  var rg=range(),out=[];K.err={};
+  var request={},rg=range(),out=[],errors={};K.eventRequest=request;
   var ids=K.cals.filter(function(c){return K.sel[c.id]});
   await Promise.all(ids.map(async function(c){
     try{
       var p="/me/calendars/"+enc(c.id)+"/calendarView?startDateTime="+enc(rg[0].toISOString())+"&endDateTime="+enc(rg[1].toISOString())+"&$top=100&$orderby="+enc("start/dateTime")+"&$select="+SEL;
       var v=await GR.all(p,{sc:CR,h:{Prefer:'outlook.timezone="Europe/Prague"'}},5);
       v.forEach(function(x){x.cal=c.id;x.s=GR.pd(x.start.dateTime);x.e=GR.pd(x.end.dateTime);out.push(x)});
-    }catch(e){K.err[c.id]=e.status||"chyba"}
+    }catch(e){errors[c.id]=e.status||"chyba"}
   }));
+  if(K.eventRequest!==request)return false;
   out.sort(function(a,b){return a.s-b.s||a.e-b.e});
-  K.list=out;
+  K.list=out;K.err=errors;return true;
 }
 
 /* ROZLOŽENÍ PŘEKRYVAJÍCÍCH SE UDÁLOSTÍ */
@@ -106,7 +119,19 @@ function listv(){
 function side(){
   var mine=K.cals.filter(function(c){return !c.shared}),sh=K.cals.filter(function(c){return c.shared});
   function row(c){return '<label><input type=checkbox data-c="'+esc(c.id)+'"'+(K.sel[c.id]?" checked":"")+'><i style="background:'+c.col+'"></i><span>'+esc(c.name)+(c.owner&&c.shared?' <span class=note>('+esc(c.owner)+')</span>':'')+(K.err[c.id]?' <span class=r title="Kalendář se nepodařilo načíst">⚠ '+esc(K.err[c.id])+'</span>':'')+'</span></label>'}
-  return '<h4>Moje kalendáře</h4>'+mine.map(row).join("")+'<h4>Sdílené se mnou</h4>'+(sh.length?sh.map(row).join(""):'<p class=note style="margin:0">Žádný sdílený kalendář nebyl nalezen.</p>')+'<p style="margin:8px 0 0"><button class=g data-a=all>Vše</button> <button class=g data-a=none>Nic</button></p>';
+  var groups=new Map();
+  sh.forEach(function(c){var name=groupName(c);if(!groups.has(name))groups.set(name,[]);groups.get(name).push(c)});
+  var shared=Array.from(groups).sort(function(a,b){return a[0].localeCompare(b[0],"cs")}).map(function(group){
+   var name=group[0],members=group[1],all=members.every(function(c){return K.sel[c.id]});
+   return '<section class=k-team><div class=k-team-title><b>'+esc(name||"Nezařazené")+'</b>'+
+    '<button class=g data-a=group data-name="'+esc(name)+'" aria-label="'+esc((all?"Skrýt: ":"Zobrazit: ")+(name||"Nezařazené"))+'">'+(all?"Skrýt vše":"Zobrazit vše")+'</button></div>'+members.map(row).join("")+'</section>';
+  }).join("");
+  var organize=sh.length?'<details class=k-organize'+(K.organize?" open":"")+'><summary>Upravit skupiny</summary><p class=note>Stejný název spojí kalendáře do jedné skupiny. Skupiny jsou uložené v tomto prohlížeči.</p>'+
+   sh.map(function(c){return '<label>'+esc(c.owner?c.name+" · "+c.owner:c.name)+'<input data-cgroup="'+esc(c.id)+'" maxlength=48 placeholder="Např. Servis" value="'+esc(groupName(c))+'"></label>'}).join("")+
+   '<button class=g data-a=savegroups>Uložit skupiny</button><span id=k-group-status class=note role=status></span></details>':"";
+  return '<h4>Moje kalendáře</h4>'+mine.map(row).join("")+'<h4>Sdílené se mnou</h4>'+
+   (shared||'<p class=note>Žádný sdílený kalendář nebyl nalezen.</p>')+organize+
+   '<p style="margin:8px 0 0"><button class=g data-a=all>Zobrazit všechny</button> <button class=g data-a=none>Skrýt všechny</button></p>';
 }
 function body(){return K.view=="den"?grid([K.d]):K.view=="tyden"?grid([0,1,2,3,4,5,6].map(function(i){return add(mon(K.d),i)})):K.view=="mesic"?month():listv()}
 function paint(){
@@ -118,7 +143,8 @@ function paint(){
 }
 async function refresh(){
   var e=$("#kb");if(e&&!e.dataset.keep)e.style.opacity=.5;
-  await loadEvents();if(e)e.style.opacity=1;paint();
+  if(!await loadEvents()||!e||!e.isConnected)return;
+  e.style.opacity=1;paint();
 }
 
 /* DETAIL, ZÁPIS */
@@ -196,11 +222,25 @@ function onClick(e){
     return form(null,{s:d,e:new Date(+d+36e5)});
   }
   if(a=="new"){var d2=new Date(K.d);d2.setHours(9,0,0,0);return form(null,{s:d2,e:new Date(+d2+36e5)})}
-  if(a=="all"||a=="none"){K.cals.forEach(function(c){K.sel[c.id]=a=="all"});GR.ls("elzaKalVyber",JSON.stringify(K.sel));return refresh()}
+  if(a=="savegroups"){
+    var config=Object.create(null);
+    document.querySelectorAll("#ksd [data-cgroup]").forEach(function(input){
+      if(input.value.trim())config[input.dataset.cgroup]=input.value.trim();
+    });
+    K.groups=config;K.organize=true;GR.ls(accountKey("elzaKalSkupiny"),JSON.stringify(config));paint();
+    $("#k-group-status").textContent="Skupiny uloženy.";return;
+  }
+  if(a=="group"){
+    var members=K.cals.filter(function(c){return c.shared&&groupName(c)===el.dataset.name});
+    var show=!members.every(function(c){return K.sel[c.id]});
+    members.forEach(function(c){K.sel[c.id]=show});
+    GR.ls(accountKey("elzaKalVyber"),JSON.stringify(K.sel));return refresh();
+  }
+  if(a=="all"||a=="none"){K.cals.forEach(function(c){K.sel[c.id]=a=="all"});GR.ls(accountKey("elzaKalVyber"),JSON.stringify(K.sel));return refresh()}
 }
 function onChange(e){
   var t=e.target;
-  if(t.dataset&&t.dataset.c){K.sel[t.dataset.c]=t.checked;GR.ls("elzaKalVyber",JSON.stringify(K.sel));return refresh()}
+  if(t.dataset&&t.dataset.c){K.sel[t.dataset.c]=t.checked;GR.ls(accountKey("elzaKalVyber"),JSON.stringify(K.sel));return refresh()}
   if(t.id=="kjmp"&&t.value){K.d=new Date(t.value+"T00:00:00");return refresh()}
 }
 async function kal(){
@@ -212,6 +252,7 @@ async function kal(){
 function kalM(){
   var b=$("#gt");if(b)return nopeM();
   var root=$("#kroot");if(!root)return;
+  root.addEventListener("toggle",function(e){if(e.target.classList.contains("k-organize")&&e.target.isConnected)K.organize=e.target.open},true);
   root.addEventListener("click",onClick);root.addEventListener("change",onChange);
   paint();
 }

@@ -31,12 +31,19 @@ var CSS='body:not(.dark){--bg:#f6f4ef;--p:#fff}aside{background:linear-gradient(
 +'.nt{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin:12px 0 18px}.nt button{display:flex;gap:12px;align-items:flex-start;text-align:left;padding:14px;border:1px solid var(--l);border-radius:14px;background:var(--p);color:var(--f);font:inherit;cursor:pointer;min-height:88px}.nt button:hover{border-color:var(--a)}.nt svg{width:26px;height:26px;flex:none;stroke:var(--a);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;margin-top:2px}.nt b{display:block;margin-bottom:2px}.nt span{font-size:12px;color:var(--m);line-height:1.4}.nrez{display:flex;gap:6px;margin:8px 0}.nrez button.on{background:var(--a);color:#fff;border-color:var(--a)}';
 function css(){if(document.getElementById('vzcss'))return;var s=document.createElement('style');s.id='vzcss';s.textContent=CSS;document.head.appendChild(s)}
 function btn(id,on){var l=SHORT[id]||(typeof LBL!='undefined'&&LBL[id])||id;return '<button data-v="'+id+'" class="'+(on?'on':'')+'"><svg viewBox="0 0 24 24"><path d="'+(IC[id]||IC.x)+'"/></svg>'+esc(String(l).slice(0,11))+'</button>'}
-window.tabsUi=function(){css();var t=document.getElementById('tabs'),h=document.getElementById('ttl');if(h)h.textContent=LBL[cur]||'ELZY asistentka';if(!t)return;var wide=innerWidth>800,def=wide?DEF:DEF.filter(function(x){return x!='ulohy'&&x!='nast'}),pins=ls('elzaPin',[]).filter(function(x){return DEF.indexOf(x)<0&&LBL[x]&&ok(x)}).slice(-1);t.innerHTML=def.concat(pins).filter(ok).map(function(i){return btn(i,i==cur)}).join('')+'<button data-v=_drawer><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Více</button>'};
+function roleTabs(wide){
+ var p=window.PRO;
+ if(!p||!p.potvrzenaRole)return wide?DEF:DEF.filter(function(id){return id!=='ulohy'&&id!=='nast'});
+ var role=window.pracovniPlocha().links.map(function(item){return item[0]});
+ var defaults=['dnes'].concat(role,DEF).filter(function(id,i,ids){return ids.indexOf(id)===i&&ok(id)});
+ return defaults.slice(0,wide?6:4);
+}
+window.tabsUi=function(){css();var t=document.getElementById('tabs'),h=document.getElementById('ttl');if(h)h.textContent=LBL[cur]||'ELZY asistentka';if(!t)return;var wide=innerWidth>800,def=roleTabs(wide),pins=ls('elzaPin',[]).filter(function(x){return def.indexOf(x)<0&&LBL[x]&&ok(x)}).slice(-1);t.innerHTML=def.concat(pins).filter(ok).map(function(i){return btn(i,i==cur)}).join('')+'<button data-v=_drawer><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Více</button>'};
 var g0=window.go;window.go=async function(id){await g0(id);if(!tok){var mn=document.getElementById('main');if(mn)mn.innerHTML='<div class=lg><h1>ELZY asistentka</h1><p>Přihlaste se firemním účtem. Data se čtou ze SharePointu podle vašich práv, v aplikaci se nic neukládá.</p><button class=b data-v=_in>Přihlásit firemním účtem</button></div>'}try{deco()}catch(e){}};
 /* pevné rozvržení: připnuté položky (max 7) nahoře v menu, Návod a ochrana dole, bez plovoucích lišt; před přihlášením jen přihlášení */
 var n0=window.nav;window.nav=function(){var ob=document.getElementById('ochr-b');if(ob)document.body.appendChild(ob);n0();try{pinSide()}catch(e){}};
 function pinSide(){var a=document.querySelector('aside');if(!a)return;var me0=a.querySelector('.me');if(!tok){var br=a.querySelector('.brand');a.innerHTML='';if(br)a.appendChild(br);if(me0)a.appendChild(me0);return}
- if(innerWidth>800){var ps=DEF.concat(ls('elzaPin',[]).filter(function(x){return DEF.indexOf(x)<0&&LBL[x]}).slice(-(7-DEF.length))).filter(ok),h='<div class=pins>'+ps.map(function(i){return '<button class="nav'+(i==cur?' on':'')+'" data-v="'+i+'"><svg viewBox="0 0 24 24"><path d="'+(IC[i]||IC.x)+'"/></svg>'+esc(SHORT[i]||LBL[i]||i)+'</button>'}).join('')+'</div>',br2=a.querySelector('.brand');if(br2)br2.insertAdjacentHTML('afterend',h)}
+ if(innerWidth>800){var defaults=roleTabs(true),ps=defaults.concat(ls('elzaPin',[]).filter(function(x){return defaults.indexOf(x)<0&&LBL[x]}).slice(-1)).filter(ok),h='<div class=pins>'+ps.map(function(i){return '<button class="nav'+(i==cur?' on':'')+'" data-v="'+i+'"><svg viewBox="0 0 24 24"><path d="'+(IC[i]||IC.x)+'"/></svg>'+esc(SHORT[i]||LBL[i]||i)+'</button>'}).join('')+'</div>',br2=a.querySelector('.brand');if(br2)br2.insertAdjacentHTML('afterend',h)}
  dedup((ps||[]).concat("navod",contextHidden()));
  if(me0&&!me0.querySelector('#ochr-slot')){me0.insertAdjacentHTML('afterbegin','<button class=nav data-vz=help>Návod a AI nápověda</button><div id=ochr-slot></div>');var ob=document.getElementById('ochr-b'),sl=me0.querySelector('#ochr-slot');if(ob)sl.appendChild(ob);else if(window.OCHRANA&&OCHRANA.refresh)OCHRANA.refresh()}}
 var MORE={
@@ -58,7 +65,7 @@ function contextHidden(){
  return Object.keys(MORE||{}).flatMap(parent=>dostupne(parent)?MORE[parent]:[]);
 }
 window.elzaViewDecor=deco;
-function deco(){var h=document.querySelector('#main h1');if(!h)return;if(tok)contextLinks(h);if(h.querySelector('.pinb')||DEF.indexOf(cur)>=0||!LBL[cur])return;var on=ls('elzaPin',[]).indexOf(cur)>=0;h.insertAdjacentHTML('beforeend','<button class="g pinb" data-vz=pin data-id="'+esc(cur)+'">'+(on?'Odepnout z menu':'Připnout do menu')+'</button>')}
+function deco(){var h=document.querySelector('#main h1');if(!h)return;if(tok)contextLinks(h);if(h.querySelector('.pinb')||roleTabs(innerWidth>800).indexOf(cur)>=0||!LBL[cur])return;var on=ls('elzaPin',[]).indexOf(cur)>=0;h.insertAdjacentHTML('beforeend','<button class="g pinb" data-vz=pin data-id="'+esc(cur)+'">'+(on?'Odepnout z menu':'Připnout do menu')+'</button>')}
 async function sp(path,body,method){var sc=[SP+'/AllSites.Write'],t;if(typeof m=='undefined'||!m)throw new Error('V ukázkovém režimu se nezapisuje.');try{t=(await m.acquireTokenSilent({scopes:sc,account:acc})).accessToken}catch(e){t=(await m.acquireTokenPopup({scopes:sc,account:acc})).accessToken}var h={Authorization:'Bearer '+t,Accept:'application/json;odata=nometadata','Content-Type':'application/json;odata=nometadata'};if(method=='MERGE'){h['X-HTTP-Method']='MERGE';h['IF-MATCH']='*'}var r=await fetch(SP+SITE+'/_api/web/'+path,{method:'POST',headers:h,body:JSON.stringify(body)});if(!r.ok)throw new Error('SharePoint HTTP '+r.status)}
 var DONE=['Schváleno','Zamítnuto','Hotovo'];
 async function ukoly(){try{if(window.ulohyPostup)await window.ulohyPostup()}catch(e){}try{return await list('Ulohy',SEL)}catch(e){return []}}
@@ -66,11 +73,20 @@ function qaRow(){return '<div class=qa><input type=text id=qa_t aria-label="Úlo
 async function hero(R){var d=new Date(),mine=R.filter(function(x){return String(x.Zadal||'').toLowerCase()==me()}),open=mine.filter(function(x){return DONE.indexOf(x.Stav)<0&&x.Stav!='K schválení'}),dnes=mine.filter(function(x){return DONE.indexOf(x.Stav)>=0&&x.Kdy&&new Date(x.Kdy).toDateString()==d.toDateString()}),j=vok(jmeno());return '<div class=hero><div><small>'+esc(d.toLocaleDateString('cs-CZ',{weekday:'long',day:'numeric',month:'long',year:'numeric'}))+'</small><h1>'+esc(pozdrav()+(j?', '+j:''))+'</h1><p>'+esc(svatek(d))+'</p></div><div class=cnts><div><b>'+open.length+'</b><span>právě pracuje</span></div><div><b>'+dnes.length+'</b><span>dnes hotovo</span></div></div><div class=cnts id=limt></div></div>'}
 function wait(R){var w=R.filter(function(x){return x.Stav=='K schválení'&&String(x.Zadal||'').toLowerCase()==me()}),sz=window.STRAZ&&STRAZ.ceka&&STRAZ.ceka()?'<div class=it id=wz-straz><span><b>🛡 Nová verze aplikace: schválit otisky</b> <span class=note>Strážce kódu</span></span><span><button class=b data-vz=straz>Otevřít schválení</button></span></div>':'';return '<div class=wait><h3>Čeká na vás'+(w.length+(sz?1:0)?' ('+(w.length+(sz?1:0))+')':'')+'</h3>'+sz+(w.length||sz?w.map(function(x){return '<div class=it><span><b>'+esc(x.Title)+'</b> <span class=note>'+esc(x.Agent||'')+'</span></span><span><button class=b data-vz=ok data-id="'+x.Id+'">Schválit</button> <button class=g data-vz=no data-id="'+x.Id+'">Zamítnout</button></span></div>'}).join(''):'<p class=note>Nic nečeká na vaše schválení.</p>')+'</div>'}
 function workLinks(){
- var next=[['posta','Vyřídit poštu'],['pripady','Pokračovat v případu'],['zakazky','Otevřít zakázky'],['teren','Zapsat práci na místě']];
- var links=next.filter(function(item){
-  return !(window.hide&&window.hide(item[0]))&&!(window.menuOff&&window.menuOff(item[0]));
- }).map(function(item){return '<button class=g data-v="'+item[0]+'">'+esc(item[1])+'</button>'}).join('');
- return links?'<section class=day-work aria-labelledby=day-work-title><h2 id=day-work-title>Co potřebujete udělat?</h2><div>'+links+'</div></section>':'';
+ var profile=window.pracovniPlocha();
+ if(!profile.links.length)return '';
+ return '<section class=day-work aria-labelledby=day-work-title><header><h2 id=day-work-title>Vaše pracovní plocha</h2>'+
+  (profile.role?'<span class=day-role>'+esc(profile.role)+'</span>':'')+'</header><div class=day-shortcuts>'+
+  profile.links.map(function(item,index){
+   return '<button class="day-shortcut'+(index===0?' primary':'')+'" data-v="'+item[0]+'"><span><b>'+esc(item[1])+'</b><small>'+esc(LBL[item[0]]||item[0])+'</small></span><span aria-hidden="true">→</span></button>';
+  }).join('')+'</div></section>';
+}
+function dayAccess(id){return !(window.hide&&window.hide(id))}
+function dayProfileStatus(){
+ var profile=window.PRO;
+ if(tok==="demo"||!profile||!profile.stav)return '';
+ if(profile.stav==="neaktivni")return '<h1>Můj den</h1><section class=card><h2>Firemní profil je neaktivní</h2><p>Obraťte se na vlastníka aplikace.</p></section>';
+ return '<h1>Můj den</h1><section class=card><h2>Firemní profil není dostupný</h2><p>Zkuste ověření zopakovat. Pokud se profil nenačte, obraťte se na vlastníka aplikace.</p><button class=b data-v=dnes>Zkusit znovu</button></section>';
 }
 function rcBox(){return '<div class=wait style="border-left-color:var(--b)"><h3>Otevřít chat s Elzáčkem</h3><div class=qa><input type=text id=rc_t aria-label="Zadání pro chat s Elzáčkem" placeholder="např. Přišla poptávka na EPS do školy, připrav odpověď"><button class=b data-vz=rc>Najít a otevřít v Chatu</button> <span class=note id=rc_m></span></div></div>'}
 function rcGo(){var t=document.getElementById('rc_t'),v=t&&t.value.trim(),ms=document.getElementById('rc_m');if(!v){if(ms)ms.textContent='Napište zadání.';return}var r=window.AI&&AI.recepce(v,true),has=r&&AI.agents.some(function(a){return a.id==r.id});try{sessionStorage.setItem('elzaChatQ',v);sessionStorage.setItem('elzaChatA',has?r.id:'auto')}catch(e){}go('chat')}
@@ -78,7 +94,26 @@ function rcGo(){var t=document.getElementById('rc_t'),v=t&&t.value.trim(),ms=doc
 function limFill(){window.limFill=limFill;if(!window.AI||!AI.sada)return;AI.sada(false).then(function(M){var t=document.getElementById('limt');if(t)t.innerHTML=AI.mericeHtml(M);}).catch(function(){})}
 if(typeof nav=='function'){var N0=nav;nav=function(){N0();limFill()}}
 window.limFill=limFill;setInterval(limFill,60000);setTimeout(limFill,1500);
-var D0=VIEWS.dnes;if(D0)VIEWS.dnes=[async function(){var R=await ukoly(),h='',rb=window.RANO&&RANO.box?await RANO.box():'',ob=window.OTAZKY&&OTAZKY.box?await OTAZKY.box():'';try{h=await D0[0]()}catch(e){h='<p class=note>'+(tok==='demo'?'Kalendář a případy využívají firemní data.':'Kalendář a případy se nepodařilo načíst. Zkuste obnovit Můj den.')+'</p>'}return await hero(R)+wait(R)+workLinks()+ob+rb+'<details class=day-agent><summary>Poradit se s Elzáčkem</summary>'+rcBox()+'<h3>Zadat úlohu Elzáčkovi</h3>'+qaRow()+'</details>'+String(h).replace('<h1>Můj den</h1>','')},function(){if(D0[1]&&document.getElementById('ps'))D0[1]();limFill();if(window.RANO&&RANO.bind)RANO.bind();if(window.OTAZKY&&OTAZKY.bind)OTAZKY.bind()}];
+var D0=VIEWS.dnes;
+if(D0)VIEWS.dnes=[async function(){
+ var problem=dayProfileStatus();if(problem)return problem;
+ var cases=dayAccess('pripady'),mail=dayAccess('posta'),tasks=dayAccess('ulohy'),chat=dayAccess('chat');
+ var ready=await Promise.all([
+  tasks?ukoly():[],
+  mail&&window.RANO?RANO.box():'',
+  cases&&window.OTAZKY?OTAZKY.box():'',
+  D0[0]().catch(function(){return '<p class=note>Pracovní přehled se nepodařilo načíst. Zkuste obnovit Můj den.</p>'})
+ ]);
+ var actions=(chat?rcBox():'')+(tasks?'<h3>Zadat úlohu Elzáčkovi</h3>'+qaRow():'');
+ return await hero(ready[0])+workLinks()+(tasks?wait(ready[0]):'')+ready[2]+ready[1]+
+  String(ready[3]).replace('<h1>Můj den</h1>','')+
+  (actions?'<details class=day-agent><summary>Práce s Elzáčky</summary>'+actions+'</details>':'');
+},function(){
+ if(D0[1]&&document.getElementById('ps'))D0[1]();
+ limFill();
+ if(window.RANO&&document.getElementById('rano-box'))RANO.bind();
+ if(window.OTAZKY&&dayAccess('pripady')&&!dayProfileStatus())OTAZKY.bind();
+}];
 var U0=VIEWS.ulohy,FL='open';
 function ulohyFlt(){var rows=document.querySelectorAll('#main table tr'),hide=false;[].forEach.call(rows,function(r){var a=r.querySelector('a[data-uopen]');if(!a){if(r.querySelector('td[colspan]'))r.style.display=hide?'none':'';return}var c=r.children,st=(c[2]&&c[2].textContent||'').trim(),zad=(c[3]&&c[3].textContent||'').trim().toLowerCase(),done=DONE.indexOf(st)>=0,ok=FL=='all'||(FL=='open'&&!done)||(FL=='me'&&zad==me())||(FL=='ag'&&!done&&st!='K schválení')||(FL=='done'&&done);hide=!ok;r.style.display=ok?'':'none'});[].forEach.call(document.querySelectorAll('.flt button'),function(b){b.classList.toggle('on',b.dataset.f==FL)})}
 if(U0)VIEWS.ulohy=[async function(){var h=await U0[0](),f='<div class=flt>'+[['open','Otevřené'],['me','Moje'],['ag','Agentů'],['done','Hotové'],['all','Vše']].map(function(x){return '<button class=g data-vz=flt data-f="'+x[0]+'">'+x[1]+'</button>'}).join('')+'</div>',i=String(h).indexOf('</p>');return i<0?h:h.slice(0,i+4)+f+h.slice(i+4)},function(){if(U0[1])U0[1]();ulohyFlt()}];
