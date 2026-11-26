@@ -1,3 +1,7 @@
+## 0.79.2 (2026-11-26) – Náhled pro každé shrnutí pošty
+- Povinný náhled v Poště má pouze potvrzení pro právě otevřené vlákno a zamítnutí. Ověřeno v ostré Poště 0.79.1: pravidlový rozbor jednoho přečteného vlákna a otevření náhledu. Obsah vlákna nebyl předán modelu.
+- Nastavení ranní kontroly je v rozbalovací části. Pole a tlačítko u nevyřízených zákaznických otázek jsou zarovnané na počítači i mobilu.
+
 ## 0.79.1 (2026-11-26) – Použitelná analýza pošty a klidnější Můj den
 - Pošta nabízí základní analýzu vlákna bez modelu s návrhem dalšího kroku a s rozsahem podkladů. Shrnutí Elzáčkem vždy ukáže náhled s nástrojem před předáním obsahu.
 - Analýza vstupu přidává kontrolu dostupnosti podkladů a seznam požadavků se stavem zdroje. Odborná kontrola obsahu a platnosti norem zůstává samostatným krokem.

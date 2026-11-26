@@ -184,7 +184,7 @@ function analyzeThread(){
     '<dt>Objekt / zakázka</dt><dd>'+esc([k.obj,k.pr].filter(Boolean).join(" / ")||"V textu nezjištěno")+'</dd>'+
     '<dt>Další krok</dt><dd>'+esc(next)+'</dd></dl>'+
     (last.text?'<p><strong>Poslední zpráva</strong> '+esc(last.text.slice(0,240))+(last.text.length>240?'…':'')+'</p>':'')+
-    '<p class=note>Podklad: '+parts.length+' zpráv, '+coverage+' plných textů. Přílohy nejsou součástí analýzy.</p>'+
+    '<p class=note>Zahrnuté zprávy: '+parts.length+' · Plný text: '+coverage+'. Přílohy nejsou součástí analýzy.</p>'+
     '<button class=g data-a=aiv>Požádat Elzáčka o shrnutí</button><div class=agent-mail-result role=status></div></section>';
 }
 async function analyzeWithAgent(button){
