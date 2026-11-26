@@ -1,6 +1,7 @@
 // Test otevřených otázek zákazníka (čistá logika). Spuštění: node test/otazky.test.js
 var a=require('assert'),O=require('../otazky.js');
 var t='Dobrý den,\n\nmáme zájem o připojení 10 objektů.\n1. Jaká je cena připojení na PCO?\n2) Prosím zašlete vzor smlouvy\n- Bude potřeba obhlídka?\n> Kdy to půjde? (citace se nečte)\nKdy můžete přijet? Děkuji.\nS pozdravem\nNovák';
+a.deepEqual(O.extrahuj('• potvrzení termínu obhlídky\n• specifikaci podkladů pro nabídku').map(x=>x.q),['potvrzení termínu obhlídky','specifikaci podkladů pro nabídku']);
 var q=O.extrahuj(t);a.deepEqual(q.map(function(x){return x.q}),['Jaká je cena připojení na PCO?','Prosím zašlete vzor smlouvy','Bude potřeba obhlídka?','Kdy můžete přijet?'],JSON.stringify(q));
 a.equal(O.extrahuj('Ano?\nOk.').length,0,'krátké věty nejsou otázky');
 a.equal(O.extrahuj('Kdy to půjde?\nKdy to půjde?').length,1,'duplicity se slučují');

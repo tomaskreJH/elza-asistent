@@ -188,23 +188,26 @@ function analyzeThread(){
     '<dt>Další krok</dt><dd>'+esc(next)+'</dd></dl>'+
     (last.text?'<p><strong>Poslední zpráva</strong> '+esc(last.text.slice(0,240))+(last.text.length>240?'…':'')+'</p>':'')+
     '<p class=note>Zahrnuté zprávy: '+parts.length+' · Plný text: '+coverage+'. Přílohy nejsou součástí analýzy.</p>'+
-    (questions.length?'<details><summary>Nalezené otázky ('+questions.length+')</summary><ul>'+questions.map(function(q){return '<li>'+esc(q.q)+'</li>'}).join("")+'</ul><button class=g data-a=zquestions>Přidat otázky k případu</button><div class=question-result role=status></div></details>':'')+
+    (questions.length?'<details><summary>Nalezené otázky ('+questions.length+')</summary><ul>'+questions.map(function(q){return '<li>'+esc(q.q)+'</li>'}).join("")+'</ul><button class=g data-a=zquestions>Přidat otázky k případu</button><div class=question-result role=status></div></details>':(work?'<p class=note>V načtených zprávách zákazníka nebyly nalezeny otázky. Otevřete jeho zprávy a spusťte rozbor znovu.</p>':''))+
     '<button class=g data-a=aiv>Požádat Elzáčka o shrnutí</button><div class=agent-mail-result role=status></div></section>';
   if(questions.length)questionPreviews.set(box.querySelector("[data-a=zquestions]"),{work:work,questions:questions});
 }
 function otazkyVlakna(){
-  var x=zx(),odberatel=x&&addr(x.from),seen=new Set(),out=[];
+  var items=S.thr.slice().sort(function(a,b){return new Date(dt(a.m))-new Date(dt(b.m))});
+  var odberatel=window.VLAKNO?VLAKNO.prvniExterniOdesilatel(items.map(function(t){return t.m})):"";
+  var seen=new Set(),out=[];
   if(!odberatel)return out;
-  var items=S.thr.slice().sort(function(a,b){return new Date(dt(a.m))-new Date(dt(b.m))}).slice(-8);
+  items=items.filter(function(t){return addr(t.m.from).trim()===odberatel}).slice(-8);
   for(var t of items){
     var body=t.b&&t.b.body, raw=body&&body.content;
-    if(!raw||t.blocked||addr(t.m.from)!==odberatel)continue;
+    if(!raw||t.blocked)continue;
     var html=body.contentType==="html";
     if(window.OCHRANA&&(OCHRANA.isBlocked(odberatel)||OCHRANA.scan(raw,html).level===2||OCHRANA.scan(t.m.subject||"",false).level===2))continue;
     if(html){
       var template=document.createElement("template");
       template.innerHTML=raw;
       template.content.querySelectorAll("script,style,template,blockquote").forEach(function(el){el.remove()});
+      template.content.querySelectorAll("li").forEach(function(el){el.prepend("• ")});
       template.content.querySelectorAll("br,p,div,li").forEach(function(el){el.after("\n")});
       raw=template.content.textContent;
     }

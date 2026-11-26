@@ -12,6 +12,13 @@ function radek(m){var od=adr(m.from);return{kdy:m.receivedDateTime||"",od:jmeno(
 function prehled(msgs){return (msgs||[]).map(radek).sort(function(a,b){return a.kdy<b.kdy?-1:a.kdy>b.kdy?1:0})}
 /* souhrn pro hlavičku: první zpráva, kolik zpráv, kdo se zapojil */
 function souhrn(r){if(!r.length)return null;var kdo={};r.forEach(function(x){kdo[x.role]=(kdo[x.role]||0)+1});return{prvni:r[0].kdy,posledni:r[r.length-1].kdy,pocet:r.length,role:kdo}}
-W.VLAKNO={ROLE:ROLE,role:role,radek:radek,prehled:prehled,souhrn:souhrn};
+function prvniExterniOdesilatel(messages){
+ for(var m of messages){
+  var address=String((m.from&&m.from.emailAddress&&m.from.emailAddress.address)||"").trim().toLowerCase();
+  if(address&&role(address)==="zákazník / externí")return address;
+ }
+ return "";
+}
+W.VLAKNO={ROLE:ROLE,role:role,prvniExterniOdesilatel:prvniExterniOdesilatel,radek:radek,prehled:prehled,souhrn:souhrn};
 if(typeof module!="undefined")module.exports=W.VLAKNO;
 })();

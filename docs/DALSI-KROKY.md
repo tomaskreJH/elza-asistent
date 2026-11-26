@@ -1,6 +1,10 @@
-# Další kroky (po 0.80.7)
+# Další kroky (po 0.80.8)
 
-- Pošta nabízí kontrolu a zápis otázek z načtených plných zpráv původního odesílatele. Detail případu ukládá hovor do Aktivit. Ověřit ostré zápisy při běžné práci.
+- Ostrý Gantt 26. 11. zobrazil časovou osu, úkoly a filtry na existujících datech. Ověření sloupců ZavisiNa a Milnik v produkčním schématu zůstává otevřené.
+
+- Při přeposlání používá rozbor načtené zprávy prvního externího odesílatele. Zkontrolovat návrh otázek na pilotním vlákně a produkční zápis při běžné práci.
+
+- Pošta nabízí kontrolu a zápis otázek z načtených plných zpráv prvního externího odesílatele. Detail případu ukládá hovor do Aktivit. Ověřit ostré zápisy při běžné práci.
 
 - V Poště lze otevřít detail evidovaného případu přímo z přiřazeného vlákna.
 

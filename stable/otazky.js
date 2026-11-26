@@ -9,7 +9,7 @@ function hash(s){var h=5381;s=nrm(s).replace(/[^a-z0-9]+/g," ").trim();for(var i
 function extrahuj(text){var out=[],seen={};String(text||"").split(/\r?\n/).forEach(function(r){r=r.trim();if(!r||/^>/.test(r))return;if(/^(s pozdravem|diky|dekuji|best regards|--)/.test(nrm(r)))return;
  var li=/^(?:\d{1,2}[.)]|[-*•–])\s+(.+)$/.exec(r),t=li?li[1]:r;
  var parts=li?[t]:t.split(/(?<=[.!?])\s+/);parts.forEach(function(p){p=p.replace(/\s+/g," ").trim();if(p.length<8||p.length>400)return;
-  var je=/\?\s*$/.test(p)||(li&&/\?/.test(p))||(li&&/^(prosim|potrebujeme|zaslete|poslete|doplnte|dodejte|jak|kdy|kde|kolik|zda|bude|lze|je mozne|muzete|mohli)/.test(nrm(p)));
+  var je=/\?\s*$/.test(p)||(li&&/\?/.test(p))||(li&&/^(prosim|potrebujeme|zaslete|poslete|doplnte|dodejte|jak|kdy|kde|kolik|zda|bude|lze|je mozne|muzete|mohli|informaci|potvrzeni|upresneni|specifikaci|navrh|orientacni harmonogram)/.test(nrm(p)));
   if(!je)return;var k=hash(p);if(seen[k])return;seen[k]=1;out.push({id:k,q:p})})});return out}
 function pracDny(od,dnes){var a=new Date(od),b=new Date(dnes);if(isNaN(a)||isNaN(b)||b<=a)return 0;a=new Date(Date.UTC(a.getFullYear(),a.getMonth(),a.getDate()));b=new Date(Date.UTC(b.getFullYear(),b.getMonth(),b.getDate()));var n=0;while(a<b){a=new Date(a.getTime()+864e5);var d=a.getUTCDay();if(d!=0&&d!=6)n++}return n}
 function otevrena(x){return !x||x.Stav!="zodpovezena"}

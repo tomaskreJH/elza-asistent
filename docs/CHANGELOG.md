@@ -1,3 +1,7 @@
+## 0.80.8 (2026-11-26) – Otázky z přeposlaných vláken
+
+Rozbor hledá v načtených zprávách prvního externího odesílatele. Zachovává odrážky z HTML a najde i požadavky typu „potvrzení“ a „specifikaci“ bez otazníku. Při prázdném výsledku Pošta vysvětlí, jak načíst zprávy k opakování rozboru.
+
 ## 0.80.7 (2026-11-26) – Otázky z Pošty a zápis hovoru
 
 V přiřazeném vlákně lze zkontrolovat a přidat nalezené otázky z načtených plných zpráv původního odesílatele. Již evidované otázky se při opakovaném přidání přeskočí. Zapsat hovor přidá poznámku a minuty do časové osy případu a připomene nezodpovězené otázky.
