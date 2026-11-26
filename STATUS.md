@@ -1,3 +1,7 @@
+0.82.2 – Pošta: poznámky jsou oddělené podle účtu a vlákna, lze je upravit a smazat i po přiřazení případu. Ukládají se v tomto prohlížeči. Historické poznámky evidované jen u odesílatele nelze bezpečně přiřadit konkrétnímu vláknu. Při rychlé změně výběru se opožděné načtení předchozího vlákna zahodí. Scénář filmu je rozšířen po realizaci a předání díla (docs/VIDEO-SCENAR-PCO.md).
+Změněné soubory: posta.js, pripady.js, app.js, boot.js, index.html, centrum.js, jejich kopie ve stable, integrity.json, test/poznamka-vlakna.test.js, docs/VIDEO-SCENAR-PCO.md a předávací dokumentace. Další krok: ověřit opravu na dvou produkčních vláknech stejného odesílatele, potom skupiny kalendářů a návaznost od nabídky po předání.
+Test: oddělení účtů a vláken v JS, zápis, načtení a smazání v ukázkové Poště stable i beta. Editor je dostupný i při chybě načítání seznamu případů.
+
 0.82.1 – V AI záznamu doplněn graf měsíčních počtů volání a chyb podle nástroje. Galerie Elzáčků zachová svislou pozici po přidání nebo odebrání. Inspirace: AI_TOM, náklady uvádí odhady a u PCO popisuje fáze a odpovědné osoby. Připraven scénář videa docs/VIDEO-SCENAR-PCO.md.
 Změněné soubory: ai.js, stable/ai.js, app.js, stable/app.js, boot.js, stable/boot.js, index.html, centrum.js, stable/centrum.js, integrity.json, docs/VIDEO-SCENAR-PCO.md, docs/CHANGELOG.md, docs/STAV.md, docs/DALSI-KROKY.md, docs/NOVE-VLAKNO-PROMPT.md a STATUS.md. Další krok: ověřit a opravit hlášený přenos poznámek mezi vlákny, potom navázat skupinami kalendářů. Scénář rozlišuje hotové a plánované funkce.
 

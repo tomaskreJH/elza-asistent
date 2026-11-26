@@ -93,19 +93,27 @@ function nova(){return '<h3>Nová poptávka (telefon, ruční zadání)</h3><div
 function casHtml(){var d=new Date();d.setHours(0,0,0,0);var w=new Date(d.getTime()-((d.getDay()+6)%7)*864e5);var a=myMin(d),b=myMin(w);var op=CS.filter(function(x){return vy(x)==VY[0]}).map(function(x){return wid(x)});var by=Object.keys(b.by).sort(function(p,q){return b.by[q]-b.by[p]}).slice(0,6).map(function(k){return esc(k)+': '+b.by[k]+' min'}).join(' · ');return '<h3>Můj čas</h3><p class=note>Dnes '+a.t+' min, tento týden '+b.t+' min'+(by?' ('+by+')':'')+'</p><div class=bar>'+sl(op,'','id=tw','případ…')+sl(TY,'Práce','id=tt')+'<input id=tmin type=number min=1 placeholder="minuty" style="min-width:90px;width:90px"><input id=td placeholder="Popis" style="min-width:220px"><button class=b data-tm=1>Zapsat čas</button></div>'}
 /* 0.73.9: zařazení vlákna v čtecím panelu Pošty (posta.js volá window.POSTAZAR). Přiřazení platí pro celou konverzaci (ConversationId):
    všechny dosavadní zprávy i pozdější zprávy téhož vlákna patří pod případ; přehled komunikace je v detailu případu (Průběh komunikace). */
-function zOd(x){return String((x.from&&x.from.emailAddress||{}).address||'').toLowerCase()}
+function klicPoznamkyVlakna(x){
+ var id=x.conversationId||x.id;
+ var ucet=acc&&acc.username;
+ if(!id||!ucet)throw new Error('Poznámku nelze bezpečně přiřadit.');
+ return 'elzaPoznamkaVlakna:'+JSON.stringify([ucet.toLowerCase(),x.conversationId?'vlakno':'zprava',id]);
+}
+function ctiPoznamkuVlakna(x){
+ return x.conversationId||x.id ? localStorage.getItem(klicPoznamkyVlakna(x))||'' : '';
+}
 window.POSTAZAR={
+ ctiPoznamku:ctiPoznamkuVlakna,
  stav:async function(x){
-  var kontext=await window.kontextPripaduProPostu(),w=kontext.vazby[x.conversationId],ad=zOd(x);
-  await UCENI.nacti();
+  var kontext=await window.kontextPripaduProPostu(),w=kontext.vazby[x.conversationId];
   var linked=kontext.pripady.find(function(c){return c.id===w});
-  return {w:w||'',id:linked&&linked.cislo,kontext:kontext,popis:(UCENI.get()[ad]||{}).p||'',
+  return {w:w||'',id:linked&&linked.cislo,kontext:kontext,popis:ctiPoznamkuVlakna(x),
    opt:kontext.pripady.filter(function(c){return !c.uzavreny}).map(function(c){return {id:c.id,t:(c.id+' '+c.nazev).slice(0,90)}})};
  },
- prirad:async function(x,w,pop){if(!w)throw new Error('Nejdřív vyberte případ.');await link(x.conversationId,w,x.subject,'ručně','ruční výběr',true);if(window.UCENI)UCENI.zapis(zOd(x),'pripad',w,pop);await loadPP(true);KOM={};return w},
- novy:async function(x,pop){var id=await newCase(x,false);if(window.UCENI)UCENI.zapis(zOd(x),'pripad',id,pop);await loadPP(true);KOM={};return id},
- zbytecna:async function(x,pop){var id=await newCase(x,true);if(window.UCENI)UCENI.zapis(zOd(x),'ne','',pop);await loadPP(true);return id},
- popis:function(x,pop){if(window.UCENI)UCENI.popis(zOd(x),pop)},
+ prirad:async function(x,w,pop){if(!w)throw new Error('Nejdřív vyberte případ.');await link(x.conversationId,w,x.subject,'ručně','ruční výběr',true);if(pop)this.popis(x,pop);await loadPP(true);KOM={};return w},
+ novy:async function(x,pop){var id=await newCase(x,false);if(pop)this.popis(x,pop);await loadPP(true);KOM={};return id},
+ zbytecna:async function(x,pop){var id=await newCase(x,true);if(pop)this.popis(x,pop);await loadPP(true);return id},
+ popis:function(x,pop){var key=klicPoznamkyVlakna(x);if(pop)localStorage.setItem(key,pop.slice(0,1500));else localStorage.removeItem(key)},
  odpoj:async function(x){var c=x.conversationId;for(var p of PP.filter(function(q){return q.ConversationId==c}))await spw("lists/getbytitle('PostaPripady')/items("+p.Id+")/recycle()",null,null,true);LAST=Date.now();await loadPP(true);KOM={}}
 };
 function mine(x){var u=me(),n=norm(acc&&acc.name);return norm(x.Ucastnici).indexOf(u)>=0||norm(pr(x.ResponsiblePerson))==n||norm(pr(x.ResponsiblePerson))==u}
