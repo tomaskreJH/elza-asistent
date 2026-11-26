@@ -1,7 +1,7 @@
 # Další kroky (po 0.80.0)
 ## Ověření 0.80.0
 - Hotovo v kódu: routing Codexu, opravena změna poskytovatele v noční frontě, stručnější Přehled a čitelné vazby. [Rozpis navigace a Elzáčků](PILOT-ELZA.md).
-- Lokální CLI na tomto počítači ověřeno na čistém dotazu s Lunou. Ostré předání z aplikace závisí na konkrétním profilu prohlížeče a spárování mostu. Díky tomu lze odlišit provoz CLI od propojení s ELZOU.
+- Ověřeno na ostrém webu: verze schválena ve Strážci a uložená v SharePointu. Přehled a 52 položek Mapy vazeb běží. Poštovní Elzáček má pro Tomáše nastavený Codex Luna. CLI odpovědělo na vzorový dotaz. Tlačítko Zkusit v ELZE hlásí chybějící párování a lokální port neodpověděl. Po spuštění mostu na autorizované stanici a spárování zopakovat Zkusit, potom ověřit samostatně jednu noční úlohu.
 - Po pilotu porovnat spotřebu a úspěšnost na stejném krátkém zadání. Úsilí Codex CLI určuje stanice, web vybírá název modelu. Rozšíření ovládání úsilí by vyžadovalo zvláštní pokyn k úpravě mostu.
 
 ## Uvedení do práce

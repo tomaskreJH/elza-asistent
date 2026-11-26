@@ -32,6 +32,7 @@ Codex používá Lunu pro krátká zadání a Sol jako běžnou automatickou vol
 ## Stav ověření
 
 - Hotovo v kódu: výběr modelu a sjednocení zkoušky s uloženou volbou, předání parametrů do noční fronty, navigace a zobrazení vazeb.
-- Ověřeno na stanici: GPT-6 Luna přes Codex CLI vrátila odpověď na vzorový dotaz bez firemních dat.
-- Čeká na ostrý průchod z aplikace: stav přihlášeného profilu, párování mostu, živá odpověď Elzáčka a výsledek noční úlohy.
+- Ověřeno na stanici: GPT-6 Luna přes Codex CLI vrátila odpověď na vzorový dotaz bez firemních dat. Stanice u přímé zkoušky použila vysoké úsilí. Pro měření úspory je potřeba změřit stejnou práci se stejným úsilím.
+- Ověřeno v přihlášené ELZE: 100 souborů na GitHub Pages sedělo s manifestem. Verze 0.80.0 byla schválena ve Strážci, po načtení zůstalo schválení uložené. Mapa obsahovala 52 uzlů. Poštovní Elzáček má v Tomášově profilu uloženou předvolbu Levnější (GPT-6 Luna).
+- Čeká: zkouška poštovního Elzáčka z ostré aplikace skončila na chybějícím párování. Na zkoušené stanici lokální port mostu neodpověděl. Živá odpověď Elzáčka a výsledek noční úlohy se ověří po spuštění a spárování mostu. Zkouška neodeslala poštu.
 - Čeká před rozšířením mezi kolegy: jeden projitý případ pod běžnou rolí, ověřené oprávnění a zpracovatel Úloh. [Další kroky](DALSI-KROKY.md)
