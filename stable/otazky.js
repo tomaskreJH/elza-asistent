@@ -34,11 +34,34 @@ if(typeof window=="undefined"||!window.document)return;
 function es(s){return typeof esc=="function"?esc(s):String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 var L="ZnalostElza",DB=[],loaded=false,msg="";
 function ok(){return window.SDL&&!SDL.demo()&&window.SEZ&&SEZ.S&&SEZ.S.ZnalostElza}
-async function nacti(){try{if(ok()){SDL.def(L,SEZ.S.ZnalostElza,"ELZA asistent: Znalosti a profil firmy");DB=((await SDL.read(L))||[]).map(zZaznamu).filter(Boolean)}else if(window.SDL&&SDL.demo())DB=[{Id:1,id:"d1",work:"WORK-DEMO",q:"Kdy můžete přijet na obhlídku?",od:new Date(Date.now()-5*864e5).toISOString(),kanal:"email",Stav:"otevrena"}]}catch(e){msg="Čtení otázek selhalo: "+e.message}loaded=true}
+async function nacti(strict){try{if(ok()){SDL.def(L,SEZ.S.ZnalostElza,"ELZA asistent: Znalosti a profil firmy");var rows=await SDL.read(L);if(strict&&!Array.isArray(rows))throw new Error("Seznam ZnalostElza není dostupný.");DB=(rows||[]).map(zZaznamu).filter(Boolean)}else if(window.SDL&&SDL.demo())DB=[{Id:1,id:"d1",work:"WORK-DEMO",q:"Kdy můžete přijet na obhlídku?",od:new Date(Date.now()-5*864e5).toISOString(),kanal:"email",Stav:"otevrena"}]}catch(e){msg="Čtení otázek selhalo: "+e.message;if(strict)throw e}loaded=true}
 async function box(){if(!loaded)await nacti();var z=zpozdene(DB,new Date().toISOString());if(!z.length)return "";
- return '<div class=wait id=otzbox><b>Otázky zákazníků bez zapsané odpovědi ('+z.length+')</b>'+z.slice(0,6).map(function(p){return '<div class=it><span><b>'+es(p.work)+'</b>: '+es(p.q)+'<br><small>od '+es(String(p.od).slice(0,10))+', '+pracDny(p.od,new Date().toISOString())+' prac. dnů bez odpovědi</small><br><input aria-label="Zapsaná odpověď zákazníkovi" data-oq="'+es(p.id)+'" placeholder="Co jste zákazníkovi odpověděl (hovor, e-mail)"></span><button class=b data-oz="'+es(p.id)+'">Zapsat odpověď</button></div>'}).join("")+(msg?'<p class=note>'+es(msg)+'</p>':'')+'</div>'}
-function klik(e){var b=e.target.closest&&e.target.closest("[data-oz]");if(!b)return;var id=b.dataset.oz,inp=document.querySelector('[data-oq="'+id+'"]'),p=DB.filter(function(x){return x.id==id})[0];if(!p||!inp)return;
+ return '<div class=wait id=otzbox><b>Otázky zákazníků bez zapsané odpovědi ('+z.length+')</b>'+z.slice(0,6).map(function(p){return '<div class=it><span><b>'+es(p.work)+'</b>: '+es(p.q)+'<br><small>od '+es(String(p.od).slice(0,10))+', '+pracDny(p.od,new Date().toISOString())+' prac. dnů bez odpovědi</small><br><input aria-label="Zapsaná odpověď zákazníkovi" data-oq="'+es(p.id)+'" placeholder="Co jste zákazníkovi odpověděl (hovor, e-mail)"></span><button class=b data-oz="'+es(p.Id||p.id)+'">Zapsat odpověď</button></div>'}).join("")+(msg?'<p class=note>'+es(msg)+'</p>':'')+'</div>'}
+function klik(e){var b=e.target.closest&&e.target.closest("[data-oz]");if(!b)return;var id=b.dataset.oz,inp=b.closest(".it").querySelector("[data-oq]"),p=DB.find(function(x){return String(x.Id||x.id)===id});if(!p||!inp)return;
  var n;try{n=zodpovez(p,inp.value,String((window.acc&&(acc.username||acc.name))||""),new Date().toISOString(),"telefon")}catch(err){msg=err.message;return}
- Promise.resolve().then(async function(){if(ok()){var z=naZaznam(n);await SDL.write(L,p.Id||0,Object.assign({Kdo:n.odpKdo,Kdy:n.odpKdy},z))}Object.assign(p,n);msg="Odpověď zapsána.";if(window.show)show("dnes");else b.closest(".it").remove()}).catch(function(er){msg="Zápis selhal: "+er.message})}
+ Promise.resolve().then(async function(){if(ok()){var z=naZaznam(n);await SDL.write(L,p.Id||0,Object.assign({Kdo:n.odpKdo,Kdy:n.odpKdy},z))}Object.assign(p,n);msg="Odpověď zapsána.";if(window.go)go("dnes");else b.closest(".it").remove()}).catch(function(er){msg="Zápis selhal: "+er.message})}
+var uklada=Promise.resolve();
+function ulozZPosty(work,qs){
+ var zapis=uklada.then(async function(){
+  if(!ok())throw new Error("Zápis otázek vyžaduje dostupný seznam ZnalostElza.");
+  await nacti(true);
+  var count=0,existujici=DB.filter(function(p){return p.work===work});
+  for(var q of qs){
+   if(!nove(existujici,[q]).length)continue;
+   var p=polozka(q,work,q.od,"email");
+   await SDL.write(L,0,naZaznam(p));
+   existujici.push(p);loaded=false;
+   count++;
+  }
+  return count;
+ });
+ uklada=zapis.catch(function(){});
+ return zapis;
+}
+W.OTAZKY.ulozZPosty=ulozZPosty;
+W.OTAZKY.cekaNaOdpoved=async function(work){
+ if(!loaded)await nacti();
+ return pripomenoutHovor(DB,work);
+};
 W.OTAZKY.box=box;W.OTAZKY.bind=function(){var mn=document.getElementById("main");if(mn&&!mn._ot){mn._ot=1;mn.addEventListener("click",klik)}};
 })();

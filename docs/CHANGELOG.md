@@ -1,3 +1,7 @@
+## 0.80.7 (2026-11-26) – Otázky z Pošty a zápis hovoru
+
+V přiřazeném vlákně lze zkontrolovat a přidat nalezené otázky z načtených plných zpráv původního odesílatele. Již evidované otázky se při opakovaném přidání přeskočí. Zapsat hovor přidá poznámku a minuty do časové osy případu a připomene nezodpovězené otázky.
+
 ## 0.80.6 (2026-11-26) – Přímý přechod z Pošty do případu
 
 Po otevření přiřazeného vlákna vede tlačítko Otevřít případ rovnou do jeho detailu a průběhu komunikace.

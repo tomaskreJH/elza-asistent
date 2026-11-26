@@ -169,6 +169,7 @@ function threadInput(items){
       return {text:raw.replace(/\s+/g," ").trim().slice(0,2500), full:!!(body&&body.content), subject:subject};
     }).filter(Boolean);
 }
+var questionPreviews=new WeakMap();
 function analyzeThread(){
   var box=document.getElementById("mpai"), parts=threadInput(S.thr);
   if(!parts.length){box.textContent="Pro analýzu není k dispozici žádná zpráva, která prošla kontrolou vstupu.";return}
@@ -179,13 +180,51 @@ function analyzeThread(){
   var tech=k.tech.map(function(t){return t.kod}).join(", ")||"Doplnit";
   var next=k.druhy.length&&n.postup.kroky.length?n.postup.kroky[0].text:"Potvrdit účel zprávy a rozhodnout, zda patří k případu.";
   var coverage=parts.filter(function(p){return p.full}).length;
+  var work=document.getElementById("mpz").dataset.work;
+  var questions=work&&window.OTAZKY?otazkyVlakna():[];
   box.innerHTML='<section class=mail-analysis aria-label="Výsledek analýzy"><h3>Výsledek analýzy</h3>'+
     '<dl><dt>Typ</dt><dd>'+esc(type)+'</dd><dt>Technologie</dt><dd>'+esc(tech)+'</dd>'+
     '<dt>Objekt / zakázka</dt><dd>'+esc([k.obj,k.pr].filter(Boolean).join(" / ")||"V textu nezjištěno")+'</dd>'+
     '<dt>Další krok</dt><dd>'+esc(next)+'</dd></dl>'+
     (last.text?'<p><strong>Poslední zpráva</strong> '+esc(last.text.slice(0,240))+(last.text.length>240?'…':'')+'</p>':'')+
     '<p class=note>Zahrnuté zprávy: '+parts.length+' · Plný text: '+coverage+'. Přílohy nejsou součástí analýzy.</p>'+
+    (questions.length?'<details><summary>Nalezené otázky ('+questions.length+')</summary><ul>'+questions.map(function(q){return '<li>'+esc(q.q)+'</li>'}).join("")+'</ul><button class=g data-a=zquestions>Přidat otázky k případu</button><div class=question-result role=status></div></details>':'')+
     '<button class=g data-a=aiv>Požádat Elzáčka o shrnutí</button><div class=agent-mail-result role=status></div></section>';
+  if(questions.length)questionPreviews.set(box.querySelector("[data-a=zquestions]"),{work:work,questions:questions});
+}
+function otazkyVlakna(){
+  var x=zx(),odberatel=x&&addr(x.from),seen=new Set(),out=[];
+  if(!odberatel)return out;
+  var items=S.thr.slice().sort(function(a,b){return new Date(dt(a.m))-new Date(dt(b.m))}).slice(-8);
+  for(var t of items){
+    var body=t.b&&t.b.body, raw=body&&body.content;
+    if(!raw||t.blocked||addr(t.m.from)!==odberatel)continue;
+    var html=body.contentType==="html";
+    if(window.OCHRANA&&(OCHRANA.isBlocked(odberatel)||OCHRANA.scan(raw,html).level===2||OCHRANA.scan(t.m.subject||"",false).level===2))continue;
+    if(html){
+      var template=document.createElement("template");
+      template.innerHTML=raw;
+      template.content.querySelectorAll("script,style,template,blockquote").forEach(function(el){el.remove()});
+      template.content.querySelectorAll("br,p,div,li").forEach(function(el){el.after("\n")});
+      raw=template.content.textContent;
+    }
+    var text=raw.split(/\r?\n\s*(?:From|Od|Odesílatel):|[-]{3,}\s*(?:Původní|Original)/i)[0];
+    for(var q of OTAZKY.extrahuj(text)){
+      if(seen.has(q.id))continue;
+      seen.add(q.id);out.push(Object.assign(q,{od:dt(t.m)}));
+    }
+  }
+  return out;
+}
+async function saveThreadQuestions(button){
+  var result=button.parentElement.querySelector(".question-result"),preview=questionPreviews.get(button);
+  if(!preview||document.getElementById("mpz").dataset.work!==preview.work){result.textContent="Případ se změnil. Spusťte analýzu znovu.";return}
+  button.disabled=true;
+  try{
+    var count=await OTAZKY.ulozZPosty(preview.work,preview.questions);
+    result.textContent=count?"Přidáno k případu: "+count+".":"Žádná nová otázka k přidání.";
+  }catch(e){result.textContent="Zápis se nepodařil: "+e.message}
+  finally{button.disabled=false}
 }
 async function analyzeWithAgent(button){
   var result=button.parentElement.querySelector(".agent-mail-result");
@@ -203,9 +242,10 @@ async function analyzeWithAgent(button){
 }
 function zx(){if(!S.thr||!S.thr.length)return null;return S.thr.map(function(t){return t.m}).sort(function(a,b){return (+new Date(dt(a))||0)-(+new Date(dt(b))||0)})[0]}  /* první zpráva vlákna (obvykle od zákazníka) */
 async function fillZar(){var a=document.getElementById("mpz"),b=document.getElementById("mpzb"),x=zx();if(!a||!b||!x||!window.POSTAZAR)return;var cid=x.conversationId;
-  var z;try{z=await POSTAZAR.stav(x)}catch(e){a.textContent="";b.innerHTML='<span class=note>Zařazení nelze načíst: '+esc(e.message)+'</span>';return}
+  var z;try{z=await POSTAZAR.stav(x)}catch(e){delete a.dataset.work;a.textContent="";b.innerHTML='<span class=note>Zařazení nelze načíst: '+esc(e.message)+'</span>';return}
   if(!a.isConnected||!zx()||zx().conversationId!=cid)return;
-  if(z.w){a.innerHTML=(z.id?'<button class=g data-a=zopen data-id="'+esc(z.id)+'">Otevřít případ '+esc(z.w)+'</button>':'<span class=mp-cat>Případ '+esc(z.w)+'</span>')+' <button class=g data-a=zod title="Vlákno odpojit od případu">Odpojit</button>';b.innerHTML=z.popis?'<span class=note>'+esc(z.popis)+'</span>':'';return}
+  delete a.dataset.work;
+  if(z.w){if(z.id)a.dataset.work=z.w;a.innerHTML=(z.id?'<button class=g data-a=zopen data-id="'+esc(z.id)+'">Otevřít případ '+esc(z.w)+'</button>':'<span class=mp-cat>Případ '+esc(z.w)+'</span>')+' <button class=g data-a=zod title="Vlákno odpojit od případu">Odpojit</button>';b.innerHTML=z.popis?'<span class=note>'+esc(z.popis)+'</span>':'';return}
   var pre=z.nv&&z.nv.w&&z.nv.druh!="vice"?z.nv.w:"";
   a.innerHTML='<select id=zsel title="Případ"><option value="">případ…</option>'+z.opt.map(function(o){return '<option value="'+esc(o.id)+'"'+(o.id==pre?" selected":"")+'>'+esc(o.t)+'</option>'}).join("")+'</select><button class=b data-a=zpa>Přiřadit</button><button class=g data-a=zno>Založit případ</button><button class=g data-a=zzb>Zbytečná poptávka</button>';
   b.innerHTML=(z.nv?'<div class=note>Návrh ELZY: '+esc(z.nv.proc)+(z.nv.ok?'':' (k ověření)')+'</div>':'')+'<div class=row><input id=zpop value="'+esc(z.popis)+'" placeholder="Jak to vidíte: co e-mail znamená, kam patří a proč" style="flex:1;min-width:200px"><button class=g data-a=zpu>Uložit popis</button></div>'}
@@ -405,6 +445,7 @@ async function onClick(e){
   if(a=="img"){S.thr[i].img=true;document.getElementById("mm"+i).innerHTML=blk(S.thr[i],i);frame(i);return}
   if(a=="zopen")return window.pripadOtevri(el.dataset.id);
   if(a=="anv")return analyzeThread();
+  if(a=="zquestions")return saveThreadQuestions(el);
   if(a=="aiv")return analyzeWithAgent(el);
   if(a=="at")return download(i,el.dataset.id);
   if(a=="rp")return startCompose("reply",i);

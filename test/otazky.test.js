@@ -15,4 +15,21 @@ var h=O.zodpovez(p1,'Cena je v nabídce.','tk@elzy.cz','2026-11-25T11:00:00Z','t
 a.equal(O.zpozdene([h],'2026-11-30T10:00:00Z').length,0,'zodpovězená se nehlásí');a.ok(!O.pripomenoutHovor([h],'W1'));
 var s=O.shrnuti([h,p2],'W1','Dobrý den, pane Nováku');a.ok(/Cena je v nabídce/.test(s)&&!/vzor smlouvy/.test(s),'jen zodpovězené');a.equal(O.shrnuti([p2],'W1'),'');
 var r=O.naZaznam(h);a.equal(r.Druh,'otazka');a.ok(/^otazka:W1:/.test(r.Klic));var b=O.zZaznamu(r);a.equal(b.q,h.q);a.equal(b.odp,h.odp);a.equal(b.Stav,'zodpovezena');a.equal(O.zZaznamu({Druh:'trideni'}),null);
-console.log('otazky OK');
+(async function(){
+ var fs=require('fs'),vm=require('vm'),rows=[],fail=true;
+ var ctx={document:{},SEZ:{S:{ZnalostElza:[]}},SDL:{
+  demo:()=>false,def:()=>{},read:async()=>rows.slice(),
+  write:async(list,id,row)=>{if(fail&&rows.length){fail=false;throw new Error('simulovany vypadek')}rows.push({...row,Id:rows.length+1})}
+ }};
+ ctx.window=ctx;
+ vm.runInNewContext(fs.readFileSync(require.resolve('../otazky.js'),'utf8'),ctx);
+ var otazky=ctx.OTAZKY,podklady=q.slice(0,2).map(x=>({...x,od:'2026-11-20T10:00:00Z'}));
+ await a.rejects(otazky.ulozZPosty('W1',podklady),/simulovany/);
+ a.equal(await otazky.ulozZPosty('W1',podklady),1);
+ a.equal(await otazky.ulozZPosty('W1',podklady),0);
+ a.equal(await otazky.ulozZPosty('W2',[podklady[0]]),1);
+ a.equal(rows.length,3);
+ a.ok(await otazky.cekaNaOdpoved('W1'));
+ a.ok(!(await otazky.cekaNaOdpoved('W3')));
+ console.log('otazky OK');
+})().catch(function(error){console.error(error);process.exitCode=1});
