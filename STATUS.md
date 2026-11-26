@@ -6,6 +6,10 @@
 - Pošta nabízí relevantní specialisty podle rozboru. Živé zpracování zákaznické pošty dál vyžaduje náhled.
 - Stav předchozího pilotu a ranní automatizace zůstává v docs/DALSI-KROKY.md.
 
+## Ověření
+
+V ostré verzi 0.81.3 se pod účtem vlastníka zobrazilo všech devět pracovních rolí. Pošta u MAKRO zvolila specialistu PCO a nabídla také Elzáčka Nabídka. Model nad skutečnou poštou nebyl spuštěn. Prošly testy JavaScriptu a tři prohlížečové sady.
+
 ## Změněné soubory
 
 - ai.js, posta.js, centrum.js, pruvodce.html, app.js, boot.js, index.html, integrity.json
