@@ -1,3 +1,8 @@
+0.82.0 – ELZY asistentka v Poště automaticky ukazuje odhad typu zprávy z náhledu. Filtry a řazení se rozbalují pod hledáním, zprávu lze otevřít klávesnicí. Další krok: propojit prioritní zprávu v Můj den přímo s interním čtecím panelem.
+Porovnání: Syniru ukazuje čekající práci na hlavní stránce, CliqSales vede k rozhodnutí na jednom místě. V demu ověřeno zobrazení automatických odhadů, rozbalení filtrů a otevření vlákna klávesou Enter při 390 i 1400 px. Výška filtru 44 a 36 px. Prošly JS testy, audit, vzhled a průvodce.
+Při vizuální kontrole odhalen newsletter chybně označený jako zakázka. Pošta nyní pro štítky používá filtr hromadné pošty z ranní kontroly.
+Změny: rano.js, app.js, vzhled.js, index.html, boot.js, posta.js, manifest.webmanifest, pruvodce.html, centrum.js, odpovídající stable, integrity.json a předávací dokumentace.
+
 # Stav práce — ELZA 0.81.3
 
 ## Hotovo

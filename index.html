@@ -1,4 +1,4 @@
-<!doctype html><html lang=cs><meta charset=utf-8><meta http-equiv=Content-Security-Policy content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://login.microsoftonline.com https://graph.microsoft.com https://elzycz.sharepoint.com https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com http://127.0.0.1:47321; frame-src 'self' blob: https://login.microsoftonline.com; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name=referrer content=no-referrer><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name=theme-color content="#102c54"><meta name=mobile-web-app-capable content=yes><meta name=apple-mobile-web-app-capable content=yes><meta name=apple-mobile-web-app-status-bar-style content=black-translucent><link rel=manifest href=manifest.webmanifest><link rel=icon href=icon.svg type=image/svg+xml><link rel=apple-touch-icon href=icon.svg><title>ELZA Asistent</title>
+<!doctype html><html lang=cs><meta charset=utf-8><meta http-equiv=Content-Security-Policy content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://login.microsoftonline.com https://graph.microsoft.com https://elzycz.sharepoint.com https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com http://127.0.0.1:47321; frame-src 'self' blob: https://login.microsoftonline.com; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"><meta name=referrer content=no-referrer><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name=theme-color content="#102c54"><meta name=mobile-web-app-capable content=yes><meta name=apple-mobile-web-app-capable content=yes><meta name=apple-mobile-web-app-status-bar-style content=black-translucent><link rel=manifest href=manifest.webmanifest><link rel=icon href=icon.svg type=image/svg+xml><link rel=apple-touch-icon href=icon.svg><title>ELZY asistentka</title>
 <style>
 :root{--bg:#fff;--p:#f3f4f5;--l:rgba(41,49,51,.16);--f:#293133;--m:#5f6b6e;--a:#d9261c;--r:#b00020;--b:#102c54;--w:#b35c00}
 body.dark{--bg:#0b1726;--p:#183050;--l:rgba(246,244,239,.12);--f:#f6f4ef;--m:#9aa6b4;--a:#ff5a4d;--r:#ff7b6b;--w:#f2b705}
@@ -88,10 +88,16 @@ main table{display:block;overflow-x:auto;max-width:100%}main img,main video{max-
 .guide-flow li span{display:block;margin-top:4px;color:var(--m);font-size:.88rem}
 #main button.cx-t{font:inherit;text-align:left;color:var(--f);cursor:pointer}
 @media(max-width:600px){.map-directions{grid-template-columns:1fr}.guide-flow{display:grid}}
+/* Ovládání pošty na úzkém panelu i dotykové obrazovce. */
+.mp-tb details>summary{cursor:pointer;padding:8px 2px;font-weight:600}
+.mp-tb input:not([type=checkbox]),.mp-tb select,.mp-tb button{min-height:36px;max-width:100%;box-sizing:border-box}
+.mp-tb .row{flex-wrap:wrap}
+.mp-it:focus-visible,.mp-tb summary:focus-visible{outline:2px solid currentColor;outline-offset:-2px}
+@media(max-width:800px){.mp-tb input:not([type=checkbox]),.mp-tb select,.mp-tb button,.mp-tb summary{min-height:44px;font-size:16px}}
 </style>
 <header id=top><button data-v=_drawer aria-label="Menu">&#9776;</button><span class=wm>ELZY<i></i></span><b id=ttl></b><button data-v=_theme aria-label="Světlý nebo tmavý režim">&#9680;</button></header><div id=scrim data-v=_scrim></div><aside></aside><main id=main></main><nav id=tabs></nav>
 <script src="msal-browser.min.js?v=2.38.2" integrity="sha384-hhkHFODse2T75wPL7oJ0RZ+0CgRa74LNPhgx6wO6DMNEhU3/fSbTZdVzxsgyUelp" crossorigin=anonymous></script>
-<script src="boot.js?v=154"></script>
-<script src="app.js?v=154"></script>
-<script src="mobil.js?v=154"></script>
-<script src="vzhled.js?v=154"></script>
+<script src="boot.js?v=155"></script>
+<script src="app.js?v=155"></script>
+<script src="mobil.js?v=155"></script>
+<script src="vzhled.js?v=155"></script>

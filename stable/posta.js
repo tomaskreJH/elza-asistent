@@ -111,8 +111,9 @@ function rl(){
     var x=g.m[0],un=g.m.some(function(y){return !y.isRead}),att=g.m.some(function(y){return y.hasAttachments});
     var nm=isOut()?"Komu: "+((x.toRecipients||[]).map(who).join(", ")):who(x.from);
     var cats=[].concat.apply([],g.m.map(function(y){return y.categories||[]}));var pc=window.PCASE&&window.PCASE[x.conversationId];if(pc)cats=["Případ "+pc].concat(cats);
+    var typ=typNahledu(x);if(typ)cats.push("Odhad: "+typ);
     var fl=g.m.some(function(y){return y.flag&&y.flag.flagStatus=="flagged"});
-    return '<div class="mp-it'+(un?" un":"")+(S.sel==g.k?" on":"")+'" data-a=sel data-k="'+esc(g.k)+'"><div class=t1><span class=f>'+esc(nm)+(g.m.length>1?' <span class=note>('+g.m.length+')</span>':'')+'</span><span class=d>'+(att?"📎 ":"")+(fl?"⚑ ":"")+esc(dshort(dt(x)))+'</span></div><div class=s>'+esc(x.subject||"(bez předmětu)")+(x.wait?' <span class=r>· čeká '+x.wait+' d</span>':'')+'</div><div class=p>'+esc(x.bodyPreview||"")+'</div>'+(cats.length?'<div>'+[...new Set(cats)].map(function(c){return '<span class=mp-cat>'+esc(c)+'</span>'}).join("")+'</div>':'')+'</div>';
+    return '<div class="mp-it'+(un?" un":"")+(S.sel==g.k?" on":"")+'" tabindex=0 role=button data-a=sel data-k="'+esc(g.k)+'"><div class=t1><span class=f>'+esc(nm)+(g.m.length>1?' <span class=note>('+g.m.length+')</span>':'')+'</span><span class=d>'+(att?"📎 ":"")+(fl?"⚑ ":"")+esc(dshort(dt(x)))+'</span></div><div class=s>'+esc(x.subject||"(bez předmětu)")+(x.wait?' <span class=r>· čeká '+x.wait+' d</span>':'')+'</div><div class=p>'+esc(x.bodyPreview||"")+'</div>'+(cats.length?'<div>'+[...new Set(cats)].map(function(c){return '<span class=mp-cat>'+esc(c)+'</span>'}).join("")+'</div>':'')+'</div>';
   }).join("");
   if(S.next)h+='<div style="padding:10px"><button class=g data-a=more>Načíst další</button></div>';
   var e=$("#mpl");if(e)e.innerHTML=h;
@@ -120,9 +121,9 @@ function rl(){
 function cats(){var a=[];S.items.forEach(function(x){(x.categories||[]).forEach(function(c){if(a.indexOf(c)<0)a.push(c)})});return a.sort()}
 function tb(){
   var po=[["","Všude"],["from","Od"],["to","Komu"],["subject","Předmět"],["body","Text zprávy"],["attachment","Příloha"]];
-  return '<div class=mp-tb><div class=row><input id=mq placeholder="Hledat (Enter)" value="'+esc(S.q)+'"><select id=mpo>'+po.map(function(p){return '<option value="'+p[0]+'"'+(S.pole==p[0]?" selected":"")+'>'+p[1]+'</option>'}).join("")+'</select><button class=g data-a=go>Hledat</button></div>'+
-  '<div class=row><select id=mf>'+[["vse","Všechny"],["nepr","Nepřečtené"],["priloha","S přílohou"],["oznac","Označené"]].map(function(p){return '<option value='+p[0]+(S.f==p[0]?" selected":"")+'>'+p[1]+'</option>'}).join("")+'</select><input id=mod placeholder="Odesílatel" value="'+esc(S.od)+'"><select id=mpc><option value="">Všechny případy</option><option value="_bez"'+(S.pc=="_bez"?" selected":"")+'>Bez případu</option><option value="_s"'+(S.pc=="_s"?" selected":"")+'>Jen přiřazená</option>'+pcs().map(function(c){return '<option'+(S.pc==c?" selected":"")+'>'+esc(c)+'</option>'}).join("")+'</select><select id=mk><option value="">Štítek</option>'+cats().map(function(c){return '<option'+(S.kat==c?" selected":"")+'>'+esc(c)+'</option>'}).join("")+'</select></div>'+
-  '<div class=row><input type=date id=md1 value="'+esc(S.dod)+'" title="Od data" ><input type=date id=md2 value="'+esc(S.ddo)+'" title="Do data" ><button class="g'+(S.view=="vlakna"?" on":"")+'" data-a=vw data-w=vlakna>Vlákna</button><button class="g'+(S.view=="zpravy"?" on":"")+'" data-a=vw data-w=zpravy>Zprávy</button><select id=mlord title="Řazení seznamu">'+[["nove","Nejnovější nahoře"],["stare","Nejstarší nahoře"],["nepr","Nepřečtené první"]].map(function(p){return '<option value='+p[0]+(S.lord==p[0]?" selected":"")+'>'+p[1]+'</option>'}).join("")+'</select><label style="font-size:12px"><input type=checkbox id=mall'+(S.all?" checked":"")+' style="min-width:0"> všechny složky</label></div>'+
+  return '<div class=mp-tb><div class=row><input id=mq aria-label="Vyhledat v poště" placeholder="Hledat (Enter)" value="'+esc(S.q)+'"><select id=mpo aria-label="Prohledávané pole">'+po.map(function(p){return '<option value="'+p[0]+'"'+(S.pole==p[0]?" selected":"")+'>'+p[1]+'</option>'}).join("")+'</select><button class=g data-a=go>Hledat</button></div>'+
+  '<details'+(S.f!=="vse"||S.od||S.pc||S.kat||S.dod||S.ddo||S.all?' open':'')+'><summary>Filtry a řazení</summary><div class=row><select id=mf aria-label="Stav zprávy">'+[["vse","Všechny"],["nepr","Nepřečtené"],["priloha","S přílohou"],["oznac","Označené"]].map(function(p){return '<option value='+p[0]+(S.f==p[0]?" selected":"")+'>'+p[1]+'</option>'}).join("")+'</select><input id=mod placeholder="Odesílatel" value="'+esc(S.od)+'"><select id=mpc aria-label="Případ"><option value="">Všechny případy</option><option value="_bez"'+(S.pc=="_bez"?" selected":"")+'>Bez případu</option><option value="_s"'+(S.pc=="_s"?" selected":"")+'>Jen přiřazená</option>'+pcs().map(function(c){return '<option'+(S.pc==c?" selected":"")+'>'+esc(c)+'</option>'}).join("")+'</select><select id=mk aria-label="Štítek"><option value="">Štítek</option>'+cats().map(function(c){return '<option'+(S.kat==c?" selected":"")+'>'+esc(c)+'</option>'}).join("")+'</select></div>'+
+  '<div class=row><input type=date id=md1 value="'+esc(S.dod)+'" title="Od data" ><input type=date id=md2 value="'+esc(S.ddo)+'" title="Do data" ><button class="g'+(S.view=="vlakna"?" on":"")+'" data-a=vw data-w=vlakna>Vlákna</button><button class="g'+(S.view=="zpravy"?" on":"")+'" data-a=vw data-w=zpravy>Zprávy</button><select id=mlord title="Řazení seznamu">'+[["nove","Nejnovější nahoře"],["stare","Nejstarší nahoře"],["nepr","Nepřečtené první"]].map(function(p){return '<option value='+p[0]+(S.lord==p[0]?" selected":"")+'>'+p[1]+'</option>'}).join("")+'</select><label style="font-size:12px"><input type=checkbox id=mall'+(S.all?" checked":"")+' style="min-width:0"> všechny složky</label></div></details>'+
   '<div class=row><button class=b data-a=new>Nová zpráva</button><button class=g data-a=refresh>Obnovit</button><button class=g data-a=triage>Rozebrat přehled</button><button class=g data-a=pilot>Starší pošta po dávkách</button><button class=g data-a=sig>Podpis</button></div></div>';
 }
 
@@ -170,6 +171,19 @@ function threadInput(items){
     }).filter(Boolean);
 }
 var questionPreviews=new WeakMap();
+var labelCache=new WeakMap();
+function typNahledu(message){
+ if(!window.ANALYZA)return "";
+ if(!labelCache.has(message)){
+  var part=threadInput([{m:message}])[0];
+  var sender=(message.from||{}).emailAddress||{};
+  var text=part&&part.subject+" "+part.text;
+  var bulk=part&&window.RANO&&RANO.jeHromadna([sender.name,sender.address,text].join(" "));
+  var result=part&&!bulk&&klasifikacePosty(text);
+  labelCache.set(message,result&&result.typ!=="Typ k ověření"?result.typ:"");
+ }
+ return labelCache.get(message);
+}
 function klasifikacePosty(input){
  var k=ANALYZA.klasifikuj(input),n=ANALYZA.navrh(input);
  return {typ:k.druhy.length?n.postup.nazev:"Typ k ověření",
@@ -577,7 +591,7 @@ function onChange(e){
   if(el.id=="mlord"){S.lord=el.value;GR.ls("elzaSeznamRazeni",S.lord);return rl()}
   if(el.id=="mf"||el.id=="mk"||el.id=="mpc"||el.id=="mall"||el.id=="md1"||el.id=="md2"||el.id=="mpo"){readTb();if(el.id=="mf"||el.id=="mk"||el.id=="mpc")return rl();return reloadList()}
 }
-function onKey(e){if(e.key=="Enter"&&(e.target.id=="mq"||e.target.id=="mod")){readTb();reloadList()}}
+function onKey(e){if((e.key==="Enter"||e.key===" ")&&e.target.matches(".mp-it[data-a=sel]")){e.preventDefault();e.target.click();return}if(e.key=="Enter"&&(e.target.id=="mq"||e.target.id=="mod")){readTb();reloadList()}}
 
 async function mail(){
   S.w=await GR.has(W);S.c=null;

@@ -66,7 +66,7 @@ function duvodPriority(subject,preview,importance){
  if(/\b(do dnes|nejpozdeji dnes|termin dnes|do zitra rano)\b/.test(text))return "Zmíněn blízký termín";
  return "";
 }
-W.RANO={oknoPosty:oknoPosty,duvodPriority:duvodPriority,rnLoad:rnLoad,rnSave:rnSave,rnZmer:rnZmer,rnStart:rnStart,rnModel:rnModel,predPD:predPD,karta:karta,zpracuj:zpracuj,autoVyber:autoVyber,navrhShoda:navrhShoda,doporuceni:doporuceni,SCHRANKA:SCHRANKA};
+W.RANO={jeHromadna:function(text){return HROM.test(nrm(text))},oknoPosty:oknoPosty,duvodPriority:duvodPriority,rnLoad:rnLoad,rnSave:rnSave,rnZmer:rnZmer,rnStart:rnStart,rnModel:rnModel,predPD:predPD,karta:karta,zpracuj:zpracuj,autoVyber:autoVyber,navrhShoda:navrhShoda,doporuceni:doporuceni,SCHRANKA:SCHRANKA};
 if(typeof module!="undefined")module.exports=W.RANO;
 if(typeof window=="undefined"||typeof document=="undefined")return;
 var SEL="id,subject,from,receivedDateTime,bodyPreview,conversationId,webLink,isDraft",ST={k:null,err:"",busy:false,msg:""};

@@ -1,3 +1,5 @@
+0.82.0 – ELZY asistentka v Poště automaticky ukazuje odhad typu zprávy z náhledu. Filtry a řazení se rozbalují pod hledáním, zprávu lze otevřít klávesnicí. Další krok: propojit prioritní zprávu v Můj den přímo s interním čtecím panelem.
+
 ## 0.81.3 (2026-11-26) – Pracovní Elzáčci dostupní vlastníkovi
 
 Devět balíčků role je dostupných vlastníkovi bez přidávání z Galerie. Nastavení stávajících rolí má přednost. Pošta nabízí více specialistů a před předáním pošty zobrazí náhled.

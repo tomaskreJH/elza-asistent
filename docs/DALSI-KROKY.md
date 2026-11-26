@@ -1,3 +1,5 @@
+0.82.0 – ELZY asistentka v Poště automaticky ukazuje odhad typu zprávy z náhledu. Filtry a řazení se rozbalují pod hledáním, zprávu lze otevřít klávesnicí. Další krok: propojit prioritní zprávu v Můj den přímo s interním čtecím panelem.
+
 # Další kroky (po 0.81.3)
 
 - Vlastník má ve výchozím nastavení devět pracovních Elzáčků pro poptávky, nabídky, PCO, EPS, projekci, intervaly, termíny, řízení a smlouvy. Uložené definice mají přednost. Pošta nabízí relevantní specialisty a zachovává schválení náhledu.
