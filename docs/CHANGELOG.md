@@ -1,3 +1,7 @@
+## 0.81.0 (2026-11-26) – Přehled více vláken a Elzáčci v Poště
+
+Rozebrat přehled roztřídí načtená vlákna podle aktuálního filtru. Výsledek otevře celé vlákno s volbou aktivního specialisty a povinným náhledem. Karta PCO v komunikaci uvádí nalezené zmínky a otevřené otázky odděleně od potvrzeného stavu případu.
+
 ## 0.80.9 (2026-11-26) – Úpravy odpovědí přímo v případu
 
 Detail případu zobrazuje otázky zákazníka. Odpověď a její kanál lze zapsat i později upravit v existující položce SharePointu. Chyba oprávnění nebo chybějící položka se zobrazí přímo u formuláře. Správa seznamů rozlišuje právo zápisu položek a správu schématu.
