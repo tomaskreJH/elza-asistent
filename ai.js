@@ -67,6 +67,18 @@ async function gemini(c,q){var j=await jfetch('https://generativelanguage.google
 /* ELZA most (0.68.0): lokální pomocník na 127.0.0.1, Claude CLI na předplatné a Ollama, párovací kód jen v tomto prohlížeči */
 var MOST='http://127.0.0.1:47321';function mkod(){var k=LS('elzaMostKod');if(!k)throw new Error('Lokální most není spárovaný: AI nastavení → Lokální most → vložit párovací kód.');return k}
 async function most(cesta,body,label){var o={method:body?'POST':'GET',headers:{'x-elza-kod':mkod(),'content-type':'application/json'},signal:AbortSignal.timeout(body?900000:10000)};if(body)o.body=JSON.stringify(body);try{return await jfetch(MOST+cesta,o,label)}catch(e){if(/Failed to fetch|NetworkError|Load failed|timed out|abort/i.test(e.message))throw new Error(label+': lokální most neběží na tomto počítači (spusťte ElzaMost, Návod → Claude CLI).');throw e}}
+async function diagMost(){
+ if(LS('elzaMostKod')){
+  var state=await most('/stav',null,'Most');
+  return 'Most odpovídá. Codex CLI: '+(state.codex||'nenalezen')+' · Claude CLI: '+(state.claude||'nenalezen')+' · Ollama: '+((state.ollama||[]).join(', ')||'neběží');
+ }
+ var response;
+ try{response=await fetch(MOST+'/stav',{cache:'no-store',signal:AbortSignal.timeout(5000)})}
+ catch(e){return 'Prohlížeč nedostal odpověď od mostu. Ověřte běh mostu na stejné stanici a přístup prohlížeče k místní síti.'}
+ if(response.status===401)return 'Most běží. V tomto prohlížeči chybí párovací kód.';
+ if(response.status===403)return 'Most odpověděl, ale zamítl původ prohlížeče (403).';
+ return 'Most odpověděl stavem HTTP '+response.status+'. Pro volání modelu ověřte párování.';
+}
 async function claudeCli(c,q){var j=await most('/claude',{model:c.model,system:SYS,prompt:usr(q)},'Claude (předplatné)');c.uz=j.usage||null;return String(j.text||'').trim()}
 async function ollama(c,q){var j=await most('/ollama',{model:c.model,system:SYS,prompt:usr(q)},'Ollama');c.uz=j.usage||null;return String(j.text||'').trim()}
 /* 0.77.0 ChatGPT (Codex): oficiální Codex CLI přihlášený ChatGPT účtem (předplatné, žádné API); model se bere z nastavení Codexu, vlastní model se předá jen ve tvaru bezpečného názvu */
@@ -238,7 +250,7 @@ function nastM(){var mn=document.getElementById('main');limityKarta('limkarta');
  if(d.aiundo){var ul2=undoL(),x=ul2.pop();if(!x)return;LS('elzaAIUndo',JSON.stringify(ul2));var R3=await rows(true),ex3=R3.filter(function(r){return r.Agent==x.a&&String(r.Upn||'').toLowerCase()==me()})[0];if(ex3){await sp("lists/getbytitle('NastaveniAI')/items("+ex3.Id+")",x.prev||{Nastroj:agent(x.a).t,Model:'auto',Poznamka:'Osobní volba uživatele (vráceno)'},'MERGE');delete cache['NastaveniAI'+SEL_]}POSL='Vráceno: '+agent(x.a).n+'.';return go('ainast')}
  if(d.aitest!=null||d.aitp!=null){var pa=d.aitest!=null?[d.aitest]:d.aitp.split('|'),i2=+pa[0],a2=AGENTS[i2],box=document.getElementById('ar'+i2);box.textContent='AI pracuje…';var t2=document.getElementById('at'+i2).value,cc;if(pa[1]){cc=pvVyber(t2,a2,pa[1])}else{var sv2=document.getElementById('am'+i2).value,saved=await cfg(a2.id);cc=sv2=='__auto'&&t2==(saved.row&&saved.row.Nastroj||a2.t)?saved:{tool:t2,model:sv2=='__vl'?document.getElementById('avt'+i2).value.trim():sv2=='__auto'?autoModel(t2,a2):sv2}}
   if(!cc.model){box.textContent='Vlastní model je prázdný.';return}var qq={task:'Odpověz jednou větou: kdo jsi a čím můžeš ELZE pomoci?',max:200},old=PROV[cc.tool];try{await setriCodex(cc);await kontrolaLimitu(cc.tool);var r=await old(cc,qq);zapis('Zkusit',cc,qq,r,null);box.textContent=r+' ['+cc.tool+' · '+cc.model+(cc.uz?' · '+cc.uz.vstup+'/'+cc.uz.vystup+' tok'+(cc.uz.rezim?', '+cc.uz.rezim:''):'')+']'}catch(er){zapis('Zkusit',cc,qq,'',er);box.innerHTML='<span class=r>'+esc(er.message)+'</span>'}return}
- if(d.most){var ms=document.getElementById('mstav');if(d.most=='ulozit'){var v0=document.getElementById('mkod').value.trim();if(v0.length<16){msg('Vložte celý párovací kód.');return}LS('elzaMostKod',v0);return go('ainast')}if(d.most=='smazat'){try{localStorage.removeItem('elzaMostKod')}catch(x){}return go('ainast')}ms.textContent='Zjišťuji…';try{var st=await most('/stav',null,'Most');ms.textContent='Most běží na '+st.pc+'. Claude CLI: '+(st.claude||'nenainstalován')+'. Ollama: '+((st.ollama||[]).join(', ')||'neběží')+'.'}catch(er){ms.textContent=er.message}return}
+ if(d.most){var ms=document.getElementById('mstav');if(d.most=='ulozit'){var v0=document.getElementById('mkod').value.trim();if(v0.length<16){msg('Vložte celý párovací kód.');return}LS('elzaMostKod',v0);return go('ainast')}if(d.most=='smazat'){try{localStorage.removeItem('elzaMostKod')}catch(x){}return go('ainast')}ms.textContent='Zjišťuji…';try{ms.textContent=await diagMost()}catch(er){ms.textContent=er.message}return}
  if(d.pred){var dt={};PRED.forEach(function(p,i){dt[p[0]]={plan:document.getElementById('pp'+i).value.trim(),okno:document.getElementById('po'+i).value,tyden:document.getElementById('pt'+i).value}});LS('elzaPred',JSON.stringify(dt));msg('Předplatné uloženo v tomto prohlížeči.');return go('ainast')}
  if(d.aikey){var v=document.getElementById('ak'+d.aikey).value.trim();if(v.length<10){msg('Vložte celý klíč.');return}LS('elzaKey_'+d.aikey,v);return go('ainast')}
  if(d.aidel){LS('elzaKey_'+d.aidel,null);return go('ainast')}

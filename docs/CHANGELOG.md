@@ -1,3 +1,7 @@
+## 0.80.1 (2026-11-26) – Menší zápisy při synchronizaci firem
+- Firma sleduje obchodní pole a příznak odstranění bez RowNo. U existujících firem posílá jen změněné hodnoty. Záznam, který zmizel ze zdroje, mění jen příznak odstranění. Nový ruční pokus nejdříve znovu porovná obě strany. Přehled uvádí počty podle polí.
+- Zkontrolovat most rozliší dosažitelnou službu bez spárování, odmítnutý původ a chybějící odpověď místního portu.
+
 ## 0.80.0 (2026-11-26) – Směrování AI a navigace podle práce
 - Codex nabízí GPT-6 Luna, GPT-6.2 Sol a GPT-6.2 Astra. Krátká práce volí Lunu, automatika nezapíná Astru. Při dostupném limitu nad 95 % se dražší živé volání odloží výslovnou chybou. Předvolby zachovávají poskytovatele. Stejná uložená volba platí pro Zkusit.
 - Noční fronta zachovává vybraný nástroj a model včetně Codexu a odmítne nepodporované nastavení.

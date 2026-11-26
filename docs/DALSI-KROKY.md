@@ -1,4 +1,11 @@
-# Další kroky (po 0.80.0)
+# Další kroky (po 0.80.1)
+## Provozní ověření 0.80.1
+- Instalovaný most odpovídá skriptu v repozitáři. Proces běžel a port naslouchal, ale HTTP neodpovídalo. Po standardním restartu s RemoteSigned most odpověděl 401 bez kódu a 200 s místním kódem, cizí původ vrátil 403. Codex Luna vrátil přes most očekávanou syntetickou odpověď.
+- Syntetické volání Claude Sonnet překročilo 55 s a přestala odpovídat také kontrola stavu. Druhý restart službu obnovil. Most obsluhuje dotazy a noční práci sekvenčně. PRO ÚPRAVU MOSTU: zvážit oddělení dlouhých běhů a časový limit CLI při zachování kontroly původu, kódu a místních zásad. Úprava čeká na Tomášův pokyn podle bodu 15.
+- V přečtených místních událostech Defenderu, Code Integrity a AppLockeru nebyla nalezena shoda pro most. Centrální časová osa zařízení v tenantovi není ověřená. [Microsoft Defender – události ASR](https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction-windows-events).
+- Připojení EPS na PCO HZS bylo v tomto profilu jen v Galerii. Přidáno mezi aktivní Elzáčky a ověřeno otevření správného agenta v chatu. Po spárování prohlížeče ověřit syntetický dotaz a teprve potom odborný pilot nad podklady schválenými k použití.
+- Firma: porovnání bez RowNo, při aktualizaci jen změněná pole, potvrdit stav v náhledu po nasazení. Zápis ostré synchronizace z této kontroly nebyl ručně spuštěn.
+
 ## Ověření 0.80.0
 - Hotovo v kódu: routing Codexu, opravena změna poskytovatele v noční frontě, stručnější Přehled a čitelné vazby. [Rozpis navigace a Elzáčků](PILOT-ELZA.md).
 - Ověřeno na ostrém webu: verze schválena ve Strážci a uložená v SharePointu. Přehled a 52 položek Mapy vazeb běží. Poštovní Elzáček má pro Tomáše nastavený Codex Luna. CLI odpovědělo na vzorový dotaz. Tlačítko Zkusit v ELZE hlásí chybějící párování a lokální port neodpověděl. Po spuštění mostu na autorizované stanici a spárování zopakovat Zkusit, potom ověřit samostatně jednu noční úlohu.
