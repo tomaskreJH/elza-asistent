@@ -1,3 +1,7 @@
+## 0.80.4 (2026-11-26) – Týdenní zůstatek AI a návrat odečtu Claude
+
+Most 4 ukládá čas obnovy a procento z události běžné odpovědi Claude Code. Přehled se obnovuje místně při přihlášení a po dokončení běhu. V menu pod navigací jsou pouze týdenní zůstatky. Zelená značí běžný stav, oranžová nejvýše 20 % zbývá a červená nejvýše 5 %. Podrobnosti jsou v AI nastavení.
+
 ## 0.80.3 (2026-11-26) – Připojení a limity AI v menu
 
 Menu, Můj den a AI nastavení sdílejí jeden přehled. Odečty se načítají při přihlášení a po výsledku AI bez časovače. U předplatného Claude lze uložit ruční stav z /usage pro 5 hodin a 7 dní s časem obnovy. U Codexu je uvedené stáří dostupného místního odečtu. U placených API se zobrazuje odhad vůči měsíčnímu stropu ELZY.

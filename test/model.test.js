@@ -50,13 +50,13 @@ require('../katalog.js');require('../kontext.js');require('../ai.js');var A=wind
  var pnl=A.tokPanel({pet:85,tyden:40});t(/Přepnout na levnější/.test(pnl)&&/data-aitok=on/.test(pnl)&&/Nic se nepřepíná samo/.test(pnl),'doporučení při limitu nad 80 % je jedním klepnutím a nic nepřepíná samo');
  global.tok='test';global.m={acquireTokenSilent:async function(){throw new Error('bez oprávnění')}};
  localStorage.setItem('elzaMostKod','test');
- localStorage.setItem('elzaClaudeUsage:'+acc.username,JSON.stringify({pet:{pct:82,konec:za(1)},tyden:{pct:93,konec:za(-1)}}));
+ localStorage.setItem('elzaClaudeUsage:'+acc.username,JSON.stringify({pet:{pct:93,konec:za(-1)},tyden:{pct:82,konec:za(1)}}));
  var reads=[];
  global.fetch=async function(u){var cesta=new URL(u).pathname;reads.push(cesta);return {ok:true,json:async function(){
-  return {'/stav':{most:3,claude:'nalezen',codex:'nalezen'},'/limity':{ok:false},'/limity-codex':{ok:true,pet:{pct:55,okno:'5 h',konec:za(1)}}}[cesta];
+  return {'/stav':{most:3,claude:'nalezen',codex:'nalezen'},'/limity':{ok:false},'/limity-codex':{ok:true,tyden:{pct:55,okno:'7 dní',konec:za(1)}}}[cesta];
  }}};
  await A.obnovLimity();var menu=A.prehledLimitu(true);
- t(/82 %/.test(menu)&&/Ruční stav/.test(menu)&&!/93 %/.test(menu)&&/55 %/.test(menu)&&reads.length==3,'menu ukazuje platný odečet Claude a místní odečet Codexu');
+ t(/18 %/.test(menu)&&/Ruční stav/.test(menu)&&!/5 h/.test(menu)&&/45 %/.test(menu)&&reads.length==3,'menu ukazuje platný odečet Claude a místní odečet Codexu');
  await A.sada();A.prehledLimitu(true);t(reads.length==3,'vykreslení neobnovuje údaje');
  await A.obnovLimity();t(reads.length==6,'obnova znovu načítá všechny zdroje');
  console.log(bad?'SELHALO':'model OK');process.exit(bad?1:0)})();

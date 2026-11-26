@@ -79,9 +79,9 @@ $kod = (Get-Content $TokenSoubor -Raw).Trim()
 for ($i = 0; $i -lt 10 -and -not $ok; $i++) {
   try {
     $odp = Invoke-RestMethod -TimeoutSec 2 -Uri 'http://127.0.0.1:47321/stav' -Headers @{'x-elza-kod'=$kod; Origin='https://tomaskrejh.github.io'}
-    $ok = $odp.most -eq 3
+    $ok = $odp.most -eq 4
   } catch { Start-Sleep -Milliseconds 500 }
 }
-if ($ok) { Write-Host 'OVERENO: most 3 odpovida na 127.0.0.1:47321.' -ForegroundColor Green }
-else { Write-Host "CHYBA: most 3 neodpovida. Log: $Log" -ForegroundColor Red; exit 1 }
+if ($ok) { Write-Host 'OVERENO: most 4 odpovida na 127.0.0.1:47321.' -ForegroundColor Green }
+else { Write-Host "CHYBA: most 4 neodpovida. Log: $Log" -ForegroundColor Red; exit 1 }
 try { Set-Clipboard $kod; Write-Host 'Token je ve schránce: v aplikaci AI nastavení → Lokální most ho vložte (Ctrl+V).' } catch { Write-Host "Token je v souboru $TokenSoubor" }

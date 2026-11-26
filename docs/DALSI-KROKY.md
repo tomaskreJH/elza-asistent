@@ -1,5 +1,10 @@
-# Další kroky (po 0.80.3)
-- Měřáky AI jsou v menu a sdílejí stav s Můj den a AI nastavením. Doplnění automatického odečtu Claude vyžaduje podporovaný zdroj použití předplatného. POTŘEBUJE ÚPRAVU MOSTU: ověřit předání hodnot rate_limits z oficiálního stavového řádku Claude Code a uložení posledního platného odečtu pro start ELZY. Stavový řádek poskytuje údaje po první odpovědi v relaci u podporovaných plánů. Předání nesmí číst přihlašovací údaje ani spouštět zkušební inferenci. [Stavový řádek Claude Code](https://code.claude.com/docs/en/statusline). Ruční odečet z /usage je dostupný v AI nastavení.
+# Další kroky (po 0.80.4)
+## Týdenní zůstatek AI
+- Most 4 uchovává poslední platná čísla získaná při běžném běhu Claude Code a vrací je i po restartu. Při chybějícím nebo prošlém odečtu se zobrazí pomlčka. Zdroj je událost Claude Code, ne čtení přihlašovacích souborů. [Událost limitu Claude Code](https://code.claude.com/docs/en/agent-sdk/typescript#sdkratelimitevent).
+- V menu se ukazuje jen procentní zůstatek týdenního limitu. Údaje se načítají místně při přihlášení a po úloze. Podrobnosti a ruční záloha Claude jsou v AI nastavení.
+- U další reorganizace prověřit čitelnost mobilního menu, názvy skupin a shody zkratek. Funkční části měnit jen v dohodnutém rozsahu.
+- DODAT DO SDÍLENÉ SLOŽKY: elza-most*.ps1 a elza-most*.cmd.
+
 ## Most 3 a verze 0.80.2
 - Most 2 mohl zablokovat celou obsluhu i při běžném dotazu na stav nebo limity. Most 3 odděluje požadavky a model. Instalátor zkouší autentizované HTTP a návod popisuje nové stavové zprávy.
 - Na každé stanici spusťte ze sdílené složky elza-most-instalace.cmd a potom elza-most-overeni.cmd. V konkrétním prohlížeči ověřte AI nastavení → Lokální most → Zkontrolovat most, potom Zkusit u Poštovního Elzáčka na syntetickém zadání. Vydání webu schvaluje vlastník ve Strážci.

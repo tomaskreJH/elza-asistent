@@ -1,4 +1,4 @@
-﻿# ELZA most – lokální pomocník pro ELZA asistenta (verze most 3)
+﻿# ELZA most – lokální pomocník pro ELZA asistenta (verze most 4)
 # Spouští oficiální Claude CLI (předplatné, bez API klíče) a volitelně Ollamu.
 # Bezpečnost: poslouchá jen na 127.0.0.1, přijme jen stránku ELZA asistenta (Origin),
 # každé volání musí nést párovací kód. Claude běží bez nástrojů (jen text), nic na disku nemění.
@@ -108,6 +108,37 @@ function SpustModel($program, $argumenty, $prompt, $slozka, $sekundy){
   }
 }
 
+function OknoClaude($stav){
+  if ($null -eq $stav.utilization -or -not ($stav.utilization -is [ValueType])) { return }
+  try {
+    $vyuziti = [double]$stav.utilization
+    $konec = [DateTimeOffset]::FromUnixTimeSeconds([long]$stav.resetsAt)
+    if ($vyuziti -ge 0 -and $vyuziti -le 1 -and $konec -gt [DateTimeOffset]::UtcNow) {
+      return @{pct=[Math]::Round($vyuziti * 100,1); konec=$konec.ToString('o')}
+    }
+  } catch {}
+}
+function VystupClaude($vystup){
+  $okna = @{}
+  $r = $null
+  foreach ($radek in ($vystup -split "`n")) {
+    if ($radek -notmatch '"type"\s*:\s*"(rate_limit_event|result)"') { continue }
+    try { $z = $radek | ConvertFrom-Json } catch { continue }
+    if ($z.type -eq 'result') { $r = $z; continue }
+    if ($z.type -ne 'rate_limit_event') { continue }
+    $stav = $z.rate_limit_info
+    foreach ($p in @(@{k='pet';n='five_hour'},@{k='tyden';n='seven_day'})) {
+      $okno = OknoClaude $stav.unifiedWindows.($p.n)
+      if ($okno) { $okna[$p.k] = $okno }
+    }
+    $klic = switch ($stav.rateLimitType) { 'five_hour' { 'pet' } 'seven_day' { 'tyden' } }
+    if ($klic) {
+      $okno = OknoClaude $stav
+      if ($okno) { $okna[$klic] = $okno }
+    }
+  }
+  return @{vysledek=$r; okna=$okna}
+}
 function ZavolejClaude($model, $system, $prompt){
   if (-not $Cl) { return @{ok=$false; chyba='Most nenašel Claude CLI. Instalace je v Návodu.'} }
   if ($model -and $model -notmatch '^[A-Za-z0-9._-]{1,80}$') { return @{ok=$false; chyba='Neplatný název modelu Claude.'} }
@@ -115,20 +146,20 @@ function ZavolejClaude($model, $system, $prompt){
   $pr = Join-Path $env:TEMP 'elza-most-prazdno'
   [IO.Directory]::CreateDirectory($pr) | Out-Null
   $instrukce = if ($system) { [string]$system } else { 'Jsi asistent firmy ELZY. Odpovídej česky, stručně a věcně.' }
-  $a = @('-p','--output-format','json','--max-turns','1','--strict-mcp-config','--tools','','--disable-slash-commands','--no-session-persistence','--setting-sources','user','--system-prompt',$instrukce)
+  $a = @('-p','--verbose','--output-format','stream-json','--max-turns','1','--strict-mcp-config','--tools','','--disable-slash-commands','--no-session-persistence','--setting-sources','user','--system-prompt',$instrukce)
   if ($model) { $a += @('--model',[string]$model) }
   $x = SpustModel $Cl $a $prompt $pr 90
   $s = [int]((Get-Date)-$t0).TotalSeconds
   Zapis ("claude $model $s s")
   if ($x.timeout) { return @{ok=$false; http=504; chyba='Claude nedokončil volání do 90 sekund.'} }
-  $r = $null
-  try { $r = $x.vystup | ConvertFrom-Json } catch {}
+  $v = VystupClaude $x.vystup
+  $r = $v.vysledek
   if ($x.kod -eq 0 -and $r -and -not $r.is_error) {
     $ti = [int]$r.usage.input_tokens + [int]$r.usage.cache_read_input_tokens + [int]$r.usage.cache_creation_input_tokens
-    return @{ok=$true; text=[string]$r.result; s=$s; usage=@{vstup=$ti; vystup=[int]$r.usage.output_tokens; usd=[double]$r.total_cost_usd; rezim='lehky'}}
+    return @{ok=$true; text=[string]$r.result; s=$s; usage=@{vstup=$ti; vystup=[int]$r.usage.output_tokens; usd=[double]$r.total_cost_usd; rezim='lehky'}; claudeLimity=$v.okna}
   }
-  if (($r.result + ' ' + $x.chyby) -match '429|rate.limit|usage.limit|hit.your.limit') { return @{ok=$false; http=429; chyba='Claude hlásí dosažený limit předplatného.'} }
-  return @{ok=$false; chyba='Claude CLI úlohu nedokončil. Zkontrolujte stav předplatného a přihlášení přímo v Claude CLI.'}
+  if (($r.result + ' ' + $x.chyby) -match '429|rate.limit|usage.limit|hit.your.limit') { return @{ok=$false; http=429; chyba='Claude hlásí dosažený limit předplatného.'; claudeLimity=$v.okna} }
+  return @{ok=$false; chyba='Claude CLI úlohu nedokončil. Zkontrolujte stav předplatného a přihlášení přímo v Claude CLI.'; claudeLimity=$v.okna}
 }
 function ZavolejOllamu($model, $system, $prompt){
   $body = @{model=[string]$model; stream=$false; messages=@(@{role='system';content=[string]$system},@{role='user';content=[string]$prompt})} | ConvertTo-Json -Depth 5
@@ -220,7 +251,7 @@ function Diagnostika(){
 }
 # V obou runspacech jsou jen funkce z tohoto souboru. HTTP smyčka nikdy nečeká na CLI ani na diagnostiku.
 $StavWorkeru = [Management.Automation.Runspaces.InitialSessionState]::CreateDefault()
-foreach ($nazev in @('ArgumentWindows','SpustModel','ZavolejClaude','ZavolejCodex','ZavolejOllamu','Zapis','OknoTxt','LimityCodex','Diagnostika')) {
+foreach ($nazev in @('ArgumentWindows','SpustModel','OknoClaude','VystupClaude','ZavolejClaude','ZavolejCodex','ZavolejOllamu','Zapis','OknoTxt','LimityCodex','Diagnostika')) {
   $definice = (Get-Item "Function:\$nazev").ScriptBlock.ToString()
   $StavWorkeru.Commands.Add([Management.Automation.Runspaces.SessionStateFunctionEntry]::new($nazev,$definice))
 }
@@ -253,6 +284,37 @@ function SpustModelNaPozadi($tool, $u, $ctx){
   $prace.id = $u.id
   $script:ModelPrace = $prace
 }
+# Stav obsahuje pouze čísla a čas obnovy z běžné odpovědi CLI.
+$ClaudeLimitySoubor = Join-Path $Slozka 'claude-limity.json'
+$ClaudeOkna = @{}
+if (Test-Path -LiteralPath $ClaudeLimitySoubor) {
+  try {
+    $z = Get-Content -LiteralPath $ClaudeLimitySoubor -Raw -Encoding UTF8 | ConvertFrom-Json
+    foreach ($k in @('pet','tyden')) { if ($z.$k) { $ClaudeOkna[$k] = $z.$k } }
+  } catch { Zapis 'uložený odečet Claude nelze přečíst' }
+}
+function StavLimituClaude(){
+  $stav = @{ok=$false; duvod='Čeká na týdenní odečet z běžného volání Claude.'}
+  foreach ($k in @('pet','tyden')) {
+    $okno = $ClaudeOkna[$k]
+    $konec = [DateTimeOffset]::MinValue
+    if ($okno -and [DateTimeOffset]::TryParse([string]$okno.konec,[ref]$konec) -and $konec -gt [DateTimeOffset]::UtcNow) { $stav[$k] = $okno }
+  }
+  $stav.ok = $stav.ContainsKey('tyden')
+  if ($stav.ok) { $stav.Remove('duvod') }
+  return $stav
+}
+function UlozLimityClaude($okna){
+  if (-not $okna.Count) { return }
+  foreach ($k in $okna.Keys) { $ClaudeOkna[$k] = $okna[$k] }
+  $tmp = $ClaudeLimitySoubor + '.tmp'
+  try {
+    ConvertTo-Json -InputObject $ClaudeOkna -Depth 4 | Set-Content -LiteralPath $tmp -Encoding UTF8
+    if ([IO.File]::Exists($ClaudeLimitySoubor)) { [IO.File]::Replace($tmp,$ClaudeLimitySoubor,[NullString]::Value) }
+    else { [IO.File]::Move($tmp,$ClaudeLimitySoubor) }
+  } catch { Zapis 'odečet Claude je dostupný jen do restartu mostu' }
+  finally { Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue }
+}
 function DokonciModel(){
   if (-not $script:ModelPrace -or -not $script:ModelPrace.operace.IsCompleted) { return }
   $prace = $script:ModelPrace
@@ -261,6 +323,7 @@ function DokonciModel(){
     Zapis ('chyba práce: ' + $_.Exception.GetType().Name)
     $r = @{ok=$false; chyba='Spojení s poskytovatelem AI selhalo. Zkontrolujte jeho přihlášení nebo dostupnost.'}
   }
+  if ($r.claudeLimity) { UlozLimityClaude $r.claudeLimity }
   if ($prace.ctx) {
     try {
       if ($r.ok) { Odpoved $prace.ctx 200 @{text=$r.text; s=$r.s; usage=$r.usage} }
@@ -300,7 +363,7 @@ $DiagDalsi = [datetime]::MinValue
 $DiagPrace = $null
 $script:ModelPrace = $null
 $L.Start()
-Zapis 'start most 3'
+Zapis 'start most 4'
 $Cekani = $L.GetContextAsync()
 while ($L.IsListening) {
   try {
@@ -327,9 +390,9 @@ while ($L.IsListening) {
       $n = NactiNast
       $v = if ($Cl) { 'nalezen' } else { '' }
       $cv = if ($Cx) { 'nalezen' } else { '' }
-      Odpoved $ctx 200 @{most=3; pracuje=[bool]$script:ModelPrace; nocChyba=$script:NocChyba; pc=$env:COMPUTERNAME; claude=$v; codex=$cv; ollama=$Diag.ollama; noc=$n}; continue
+      Odpoved $ctx 200 @{most=4; pracuje=[bool]$script:ModelPrace; nocChyba=$script:NocChyba; pc=$env:COMPUTERNAME; claude=$v; codex=$cv; ollama=$Diag.ollama; noc=$n}; continue
     }
-    if ($cesta -eq '/limity') { Odpoved $ctx 200 @{ok=$false; duvod='Limity předplatného jsou v Claude CLI pod /usage.'}; continue }
+    if ($cesta -eq '/limity') { Odpoved $ctx 200 (StavLimituClaude); continue }
     if ($cesta -eq '/limity-codex') { Odpoved $ctx 200 $Diag.limity; continue }
     if ($cesta -eq '/fronta' -and $q.HttpMethod -eq 'GET') {
       $s = @(NactiFrontu | ForEach-Object { @{id=$_.id; stav=$_.stav; tool=$_.tool; model=$_.model; konec=$_.konec} })

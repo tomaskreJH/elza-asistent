@@ -26,7 +26,7 @@ $h = $O.Clone(); $h['x-elza-kod'] = $tok
 $r = Kod @{c='/stav'; h=$h}
 $stav = $null
 if ($r[0] -eq 200) { try { $stav = $r[1] | ConvertFrom-Json } catch {} }
-Krok 'stav s tokenem = 200, most 3' ($r[0] -eq 200 -and $stav.most -eq 3) ('HTTP ' + $r[0] + ', verze ' + $stav.most)
+Krok 'stav s tokenem = 200, most 4' ($r[0] -eq 200 -and $stav.most -eq 4) ('HTTP ' + $r[0] + ', verze ' + $stav.most)
 if ($stav) {
   $out += ('INFO Claude CLI: ' + $(if ($stav.claude) { $stav.claude } else { 'nenalezen' }))
   $out += ('INFO Codex CLI: ' + $(if ($stav.codex) { $stav.codex } else { 'nenalezen' }))

@@ -1,4 +1,4 @@
-"""Izolovaná zkouška ELZA mostu 3 ve Windows PowerShellu bez předplatného a firemních dat."""
+"""Izolovaná zkouška ELZA mostu 4 ve Windows PowerShellu bez předplatného a firemních dat."""
 import concurrent.futures
 import json
 import os
@@ -72,7 +72,10 @@ function ZavolejClaude($model, $system, $prompt){
   $x = SpustModel $py @('-X','utf8','-c',$kod,$system) $prompt $pr $limit
   if ($x.timeout) { return @{ok=$false; http=504; chyba='test limit'} }
   if ($x.kod -ne 0) { throw ('test proces: ' + $x.chyby) }
-  return @{ok=$true; text=($x.vystup.Trim())}
+  $limit = [DateTimeOffset]::UtcNow.AddDays(1).ToUnixTimeSeconds()
+  $json = @{type='rate_limit_event';rate_limit_info=@{rateLimitType='seven_day';utilization=0.82;resetsAt=$limit}} | ConvertTo-Json -Compress
+  $okna = (VystupClaude $json).okna
+  return @{ok=$true; text=($x.vystup.Trim()); claudeLimity=$okna}
 }
 '''
         source = source.replace("function Diagnostika(){", mock + "\nfunction Diagnostika(){", 1)
@@ -112,7 +115,7 @@ function ZavolejClaude($model, $system, $prompt){
                     delayed = pool.submit(request, "/claude", {"model": "timeout", "prompt": "test"})
                     start = time.monotonic()
                     status, response = until(lambda: request("/stav"), lambda reply: reply[1]["pracuje"])
-                    assert status == 200 and response["most"] == 3
+                    assert status == 200 and response["most"] == 4
                     assert time.monotonic() - start < 1.5
                     assert request("/claude", {"prompt": "test"})[0] == 409
                     assert delayed.result()[0] == 504
@@ -122,10 +125,13 @@ function ZavolejClaude($model, $system, $prompt){
                 status, response = request("/claude", job)
                 assert status == 200, response
                 assert json.loads(response["text"]) == [text, text]
+                assert request("/limity")[1]["tyden"]["pct"] == 82
+                assert json.loads((state / "claude-limity.json").read_text(encoding="utf-8-sig"))["tyden"]["pct"] == 82
                 assert request("/fronta", {"ted": True, "ulohy": [dict(job, id="noc")]})[1]["pridano"] == 1
                 status, response = until(
                     lambda: request("/fronta/vysledky"),
                     lambda reply: any(row["id"] == "noc" for row in reply[1]["vysledky"]),
+                    timeout=20,
                 )
                 assert status == 200
                 result = next(row for row in response["vysledky"] if row["id"] == "noc")
