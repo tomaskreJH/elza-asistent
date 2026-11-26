@@ -1,6 +1,6 @@
 # Další kroky (po 0.81.0)
 
-- Rozebrat přehled zpracuje načtená vlákna z aktuálního filtru bez modelu. Po otevření vlákna lze použít poštovního nebo případového Elzáčka a podle aktivních rolí specialistu PCO, Poptávky či Nabídka. Model běží po kontrole náhledu pouze na vybraném vlákně.
+- Rozebrat přehled zpracuje načtená vlákna z aktuálního filtru bez modelu. Po otevření vlákna lze použít poštovního nebo případového Elzáčka a podle aktivních rolí specialistu PCO, Poptávky či Nabídka. Model běží po kontrole náhledu pouze na vybraném vlákně. Ostré ověření: 46 vláken v přehledu, výsledek MAKRO otevřel správný případ a doporučil PCO specialistu. Model se při ověření nevolal.
 - PCO v komunikaci je orientační podklad vedle průběhu komunikace. Z textové zmínky neodvozuje dokončení technického kroku. Další ověření: porovnat rozbor na více poptávkách a změřit počet správně přiřazených specialistů.
 
 - Detail případu zapisuje a upravuje odpovědi v existujícím seznamu ZnalostElza. Správa seznamů ověřila ZnalostElza a pole ZavisiNa a Milnik v Ukol. U Ukol byl hlášen chybějící index Title. Ostrý zápis z nového formuláře ověřit na skutečné pracovní položce.

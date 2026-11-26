@@ -6,6 +6,10 @@
 - Rozbor vlákna nabízí aktivní Elzáčky podle role. Živé volání používá stávající náhled.
 - Karta PCO u případu popisuje zmínky v komunikaci a nevydává je za splněné technické kroky. Návod a Průvodce odpovídají oběma větvím vydání.
 
+## Ověření
+
+Na ostrém webu rozbor zpracoval 46 načtených vláken. MAKRO otevřelo správný případ a rozbor doporučil aktivního specialistu Připojení EPS na PCO HZS. Karta PCO v komunikaci je pod průběhem komunikace. Živé volání nad poštou se při ověření nespustilo. Prošly testy JavaScriptu, Průvodce, vzhledu a průchod Poštou v Chromu.
+
 ## Změněné soubory
 
 - `posta.js`, `pripady.js`, `centrum.js`, `pruvodce.html`
