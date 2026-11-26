@@ -20,7 +20,7 @@ var r=O.naZaznam(h);a.equal(r.Druh,'otazka');a.ok(/^otazka:W1:/.test(r.Klic));va
  var fs=require('fs'),vm=require('vm'),rows=[],fail=true;
  var ctx={document:{},SEZ:{S:{ZnalostElza:[]}},SDL:{
   demo:()=>false,def:()=>{},read:async()=>rows.slice(),
-  write:async(list,id,row)=>{if(fail&&rows.length){fail=false;throw new Error('simulovany vypadek')}rows.push({...row,Id:rows.length+1})}
+  write:async(list,id,row)=>{if(id){Object.assign(rows.find(x=>x.Id===id),row);return}if(fail&&rows.length){fail=false;throw new Error('simulovany vypadek')}rows.push({...row,Id:rows.length+1})}
  }};
  ctx.window=ctx;
  vm.runInNewContext(fs.readFileSync(require.resolve('../otazky.js'),'utf8'),ctx);
@@ -32,5 +32,14 @@ var r=O.naZaznam(h);a.equal(r.Druh,'otazka');a.ok(/^otazka:W1:/.test(r.Klic));va
  a.equal(rows.length,3);
  a.ok(await otazky.cekaNaOdpoved('W1'));
  a.ok(!(await otazky.cekaNaOdpoved('W3')));
+ var polozka=otazky.zZaznamu(rows[0]),id=polozka.Id;
+ await otazky.ulozOdpoved(polozka,'Odpoved 1','telefon','tester');
+ await otazky.ulozOdpoved(polozka,'Opravena odpoved','e-mail','tester');
+ a.equal(rows.length,3);
+ a.equal(rows[0].Id,id);
+ a.equal(otazky.zZaznamu(rows[0]).odp,'Opravena odpoved');
+ a.equal(otazky.zZaznamu(rows[0]).odpKanal,'e-mail');
+ a.match(await otazky.boxPripadu('W1'),/Opravena odpoved/);
+ await a.rejects(otazky.ulozOdpoved({},'test','telefon','tester'),/ZnalostElza/);
  console.log('otazky OK');
 })().catch(function(error){console.error(error);process.exitCode=1});

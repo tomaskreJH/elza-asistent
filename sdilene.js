@@ -10,7 +10,9 @@ async function tkn(sc){var S=[SP+"/"+sc];try{return(await m.acquireTokenSilent({
 function def(l,fields,desc){SCH[l]=fields;DESC[l]=desc||"ELZA asistent"}
 function sel(l){return"Id,Title,"+(SCH[l]||[]).map(function(f){return f[0]}).join(",")}
 async function read(l,flt){if(demo())return[];await token(false);var a=[],last=0;for(;;){var u=sb(l)+"/items?$select="+sel(l)+"&$filter=Id gt "+last+(flt?" and "+flt:"")+"&$orderby=Id&$top=500";var r=await fetch(u,{headers:{Authorization:"Bearer "+tok,Accept:"application/json;odata=nometadata"}});if(r.status==404)return null;if(!r.ok)throw new Error(l+": čtení selhalo, HTTP "+r.status);var j=(await r.json()).value;a=a.concat(j);if(j.length<500)break;last=j[j.length-1].Id}return a}
-async function write(l,id,b){if(demo())throw new Error("V ukázkovém režimu se nic nezapisuje.");if(!SCH[l])throw new Error("Zápis je povolen jen do seznamů, které modul popsal.");var h=jh(await tkn("AllSites.Write"));if(id){h["IF-MATCH"]="*";h["X-HTTP-Method"]="MERGE"}var r=await fetch(sb(l)+"/items"+(id?"("+id+")":""),{method:"POST",headers:h,body:JSON.stringify(b)});if(!r.ok)throw new Error(l+": zápis selhal, HTTP "+r.status)}
+async function write(l,id,b){if(demo())throw new Error("V ukázkovém režimu se nic nezapisuje.");if(!SCH[l])throw new Error("Zápis je povolen jen do seznamů, které modul popsal.");var h=jh(await tkn("AllSites.Write"));if(id){h["IF-MATCH"]="*";h["X-HTTP-Method"]="MERGE"}var r=await fetch(sb(l)+"/items"+(id?"("+id+")":""),{method:"POST",headers:h,body:JSON.stringify(b)});if(r.status===401||r.status===403)throw new Error(l+": účet nemá oprávnění k zápisu položky.");
+if(r.status===404)throw new Error(l+(id?": položka nebo seznam nebyly nalezeny.":": seznam nebyl nalezen."));
+if(!r.ok)throw new Error(l+": zápis selhal, HTTP "+r.status)}
 /* založí chybějící seznamy a sloupce (po klepnutí; nic nemaže) */
 async function create(names){return SEZ.create(names)}
 /* složky: cesta relativně ke knihovně, vytváří se po segmentech, existující se nechá být */

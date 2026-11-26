@@ -1,3 +1,7 @@
+## 0.80.9 (2026-11-26) – Úpravy odpovědí přímo v případu
+
+Detail případu zobrazuje otázky zákazníka. Odpověď a její kanál lze zapsat i později upravit v existující položce SharePointu. Chyba oprávnění nebo chybějící položka se zobrazí přímo u formuláře. Správa seznamů rozlišuje právo zápisu položek a správu schématu.
+
 ## 0.80.8 (2026-11-26) – Otázky z přeposlaných vláken
 
 Rozbor hledá v načtených zprávách prvního externího odesílatele. Zachovává odrážky z HTML a najde i požadavky typu „potvrzení“ a „specifikaci“ bez otazníku. Při prázdném výsledku Pošta vysvětlí, jak načíst zprávy k opakování rozboru.

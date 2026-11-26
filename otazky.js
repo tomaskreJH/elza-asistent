@@ -35,11 +35,55 @@ function es(s){return typeof esc=="function"?esc(s):String(s==null?"":s).replace
 var L="ZnalostElza",DB=[],loaded=false,msg="";
 function ok(){return window.SDL&&!SDL.demo()&&window.SEZ&&SEZ.S&&SEZ.S.ZnalostElza}
 async function nacti(strict){try{if(ok()){SDL.def(L,SEZ.S.ZnalostElza,"ELZA asistent: Znalosti a profil firmy");var rows=await SDL.read(L);if(strict&&!Array.isArray(rows))throw new Error("Seznam ZnalostElza není dostupný.");DB=(rows||[]).map(zZaznamu).filter(Boolean)}else if(window.SDL&&SDL.demo())DB=[{Id:1,id:"d1",work:"WORK-DEMO",q:"Kdy můžete přijet na obhlídku?",od:new Date(Date.now()-5*864e5).toISOString(),kanal:"email",Stav:"otevrena"}]}catch(e){msg="Čtení otázek selhalo: "+e.message;if(strict)throw e}loaded=true}
-async function box(){if(!loaded)await nacti();var z=zpozdene(DB,new Date().toISOString());if(!z.length)return "";
- return '<div class=wait id=otzbox><b>Otázky zákazníků bez zapsané odpovědi ('+z.length+')</b>'+z.slice(0,6).map(function(p){return '<div class=it><span><b>'+es(p.work)+'</b>: '+es(p.q)+'<br><small>od '+es(String(p.od).slice(0,10))+', '+pracDny(p.od,new Date().toISOString())+' prac. dnů bez odpovědi</small><br><input aria-label="Zapsaná odpověď zákazníkovi" data-oq="'+es(p.id)+'" placeholder="Co jste zákazníkovi odpověděl (hovor, e-mail)"></span><button class=b data-oz="'+es(p.Id||p.id)+'">Zapsat odpověď</button></div>'}).join("")+(msg?'<p class=note>'+es(msg)+'</p>':'')+'</div>'}
-function klik(e){var b=e.target.closest&&e.target.closest("[data-oz]");if(!b)return;var id=b.dataset.oz,inp=b.closest(".it").querySelector("[data-oq]"),p=DB.find(function(x){return String(x.Id||x.id)===id});if(!p||!inp)return;
- var n;try{n=zodpovez(p,inp.value,String((window.acc&&(acc.username||acc.name))||""),new Date().toISOString(),"telefon")}catch(err){msg=err.message;return}
- Promise.resolve().then(async function(){if(ok()){var z=naZaznam(n);await SDL.write(L,p.Id||0,Object.assign({Kdo:n.odpKdo,Kdy:n.odpKdy},z))}Object.assign(p,n);msg="Odpověď zapsána.";if(window.go)go("dnes");else b.closest(".it").remove()}).catch(function(er){msg="Zápis selhal: "+er.message})}
+function radek(p,pripad){
+ return '<div class=it><span>'+(pripad?'':'<b>'+es(p.work)+'</b>: ')+es(p.q)+
+  '<br><small>'+es(otevrena(p)?'Bez zapsané odpovědi':'Odpověď zapsána')+'</small><br>'+
+  '<textarea rows=2 aria-label="Odpověď zákazníkovi" data-oq>'+es(p.odp||"")+'</textarea> '+
+  '<label>Kanál <select data-oqkanal>'+["telefon","e-mail","osobně"].map(function(k){
+   return '<option'+(k===(p.odpKanal||"telefon")?' selected':'')+'>'+k+'</option>';
+  }).join("")+'</select></label></span><button class=b data-oz="'+es(p.Id||p.id)+'">'+
+  (otevrena(p)?'Zapsat odpověď':'Uložit úpravu')+'</button><span data-oqstatus role=status></span></div>';
+}
+async function box(){
+ if(!loaded)await nacti();
+ var z=zpozdene(DB,new Date().toISOString());
+ if(!z.length)return "";
+ return '<div class=wait id=otzbox><b>Otázky zákazníků bez zapsané odpovědi ('+z.length+')</b>'+
+  z.slice(0,6).map(function(p){return radek(p,false)}).join("")+'</div>';
+}
+async function boxPripadu(work){
+ try{if(ok())await nacti(true);else if(!loaded)await nacti()}
+ catch(e){return '<p class=note>'+es(msg)+'</p>'}
+ var polozky=DB.filter(function(p){return p.work===work});
+ return '<details><summary>Otázky zákazníka ('+polozky.length+')</summary>'+
+  (polozky.length?polozky.map(function(p){return radek(p,true)}).join(""):'<p class=note>Otázky můžete přidat z přiřazeného vlákna v Poště.</p>')+'</details>';
+}
+async function ulozOdpoved(p,odp,kanal,kdo){
+ if(!ok()||!p.Id)throw new Error("Úprava vyžaduje existující položku v seznamu ZnalostElza.");
+ var n=zodpovez(p,odp,kdo,new Date().toISOString(),kanal);
+ var z=naZaznam(n);
+ await SDL.write(L,p.Id,{Stav:z.Stav,Text:z.Text,Kdo:n.odpKdo,Kdy:n.odpKdy});
+ Object.assign(p,n);
+ return n;
+}
+async function klik(e){
+ var b=e.target.closest&&e.target.closest("[data-oz]");
+ if(!b||b.disabled)return;
+ var it=b.closest(".it"),status=it.querySelector("[data-oqstatus]");
+ var p=DB.find(function(x){return String(x.Id||x.id)===b.dataset.oz});
+ if(!p){status.textContent="Položku se nepodařilo načíst. Obnovte stránku.";return}
+ var kdo=typeof acc!=="undefined"&&acc?(acc.username||acc.name||""):"";
+ b.disabled=true;
+ try{
+  await ulozOdpoved(p,it.querySelector("[data-oq]").value,it.querySelector("[data-oqkanal]").value,kdo);
+  it.querySelector("small").textContent="Odpověď zapsána.";
+  status.textContent="Odpověď uložena.";
+  b.textContent="Uložit úpravu";
+ }catch(err){status.textContent="Zápis se nepodařil: "+err.message}
+ finally{b.disabled=false}
+}
+W.OTAZKY.ulozOdpoved=ulozOdpoved;
+W.OTAZKY.boxPripadu=boxPripadu;
 var uklada=Promise.resolve();
 function ulozZPosty(work,qs){
  var zapis=uklada.then(async function(){

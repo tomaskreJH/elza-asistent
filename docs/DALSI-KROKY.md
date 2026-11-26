@@ -1,6 +1,8 @@
-# Další kroky (po 0.80.8)
+# Další kroky (po 0.80.9)
 
-- Ostrý Gantt 26. 11. zobrazil časovou osu, úkoly a filtry na existujících datech. Ověření sloupců ZavisiNa a Milnik v produkčním schématu zůstává otevřené.
+- Detail případu zapisuje a upravuje odpovědi v existujícím seznamu ZnalostElza. Správa seznamů ověřila ZnalostElza a pole ZavisiNa a Milnik v Ukol. U Ukol byl hlášen chybějící index Title. Ostrý zápis z nového formuláře ověřit na skutečné pracovní položce.
+
+- Ostrý Gantt 26. 11. zobrazil časovou osu, úkoly a filtry na existujících datech. Produkční kontrola schématu později potvrdila oba sloupce.
 
 - Při přeposlání používá rozbor načtené zprávy prvního externího odesílatele. Ostré ověření 26. 11.: na vlákně MAKRO po otevření plné zákaznické zprávy návrh zobrazil šest otázek a tlačítko k přidání. Produkční zápis čeká na ověření při běžné práci.
 
@@ -50,7 +52,7 @@
 Podklady: [GOV.UK: Complete multiple tasks](https://design-system.service.gov.uk/patterns/complete-multiple-tasks/), [Anthropic: Building effective agents](https://www.anthropic.com/engineering/building-effective-agents).
 
 **ČEKÁ NA POKYN „uprav most“:** doplnit cached_input_tokens Codexu do mostu a AI záznamu; následně ověřit na stanici. Do té doby most ani tools/ neměnit.
-**Ostré ověření 0.78.1:** ve Správa → Seznamy ověřit Ukol, zejména ZavisiNa a Milnik. Pokud jsou sloupce dostupné, otevřít Gantt nad existujícími úkoly.
+**Ověřeno 26. 11.:** Ukol má ZavisiNa a Milnik, ostrý Gantt načetl existující úkoly. Přehled hlásí chybějící index Title.
 **DEFINITIVNĚ (Tomáš 2026-11-25): přístup do společné schránky elzy@ ELZA nemá a mít nebude; nenavrhovat, neuvádět jako chybějící ani jako čekající na souhlas.**
 **Zásada úklidu (Tomáš 2026-11-25):** před každou novou funkcí zkontrolovat, zda neduplikuje existující; nové věci zasazovat do stávajících obrazovek, ne nové položky menu. Zbývá sloučit Analýzu vstupu do Případů a Sledování (Přehled, Roadmapa, Procesy, Stav).
 **Hotovo 0.76.0:** bod 3 (Kdo je zákazník, ZakaznikInfo na Zakázky ELZA, ruční zápis, Espo čtením). Zbývá: napojit kartu do detailu případu a před koncept nabídky, naplnit z Espa u MAKRO (čtení v přihlášeném prohlížeči).
