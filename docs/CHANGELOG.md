@@ -1,3 +1,7 @@
+## 0.80.6 (2026-11-26) – Přímý přechod z Pošty do případu
+
+Po otevření přiřazeného vlákna vede tlačítko Otevřít případ rovnou do jeho detailu a průběhu komunikace.
+
 ## 0.80.5 (2026-11-26) – Oprava otevření AI nastavení
 
 AI nastavení zobrazí okna Claude, pro která má platná čísla. Otevře se i při samotném týdenním odečtu z mostu.

@@ -204,8 +204,8 @@ async function analyzeWithAgent(button){
 function zx(){if(!S.thr||!S.thr.length)return null;return S.thr.map(function(t){return t.m}).sort(function(a,b){return (+new Date(dt(a))||0)-(+new Date(dt(b))||0)})[0]}  /* první zpráva vlákna (obvykle od zákazníka) */
 async function fillZar(){var a=document.getElementById("mpz"),b=document.getElementById("mpzb"),x=zx();if(!a||!b||!x||!window.POSTAZAR)return;var cid=x.conversationId;
   var z;try{z=await POSTAZAR.stav(x)}catch(e){a.textContent="";b.innerHTML='<span class=note>Zařazení nelze načíst: '+esc(e.message)+'</span>';return}
-  if(!zx()||zx().conversationId!=cid)return;
-  if(z.w){a.innerHTML='<span class=mp-cat>Případ '+esc(z.w)+'</span> <button class=g data-a=zod title="Vlákno odpojit od případu">Odpojit</button>';b.innerHTML=z.popis?'<span class=note>'+esc(z.popis)+'</span>':'';return}
+  if(!a.isConnected||!zx()||zx().conversationId!=cid)return;
+  if(z.w){a.innerHTML=(z.id?'<button class=g data-a=zopen data-id="'+esc(z.id)+'">Otevřít případ '+esc(z.w)+'</button>':'<span class=mp-cat>Případ '+esc(z.w)+'</span>')+' <button class=g data-a=zod title="Vlákno odpojit od případu">Odpojit</button>';b.innerHTML=z.popis?'<span class=note>'+esc(z.popis)+'</span>':'';return}
   var pre=z.nv&&z.nv.w&&z.nv.druh!="vice"?z.nv.w:"";
   a.innerHTML='<select id=zsel title="Případ"><option value="">případ…</option>'+z.opt.map(function(o){return '<option value="'+esc(o.id)+'"'+(o.id==pre?" selected":"")+'>'+esc(o.t)+'</option>'}).join("")+'</select><button class=b data-a=zpa>Přiřadit</button><button class=g data-a=zno>Založit případ</button><button class=g data-a=zzb>Zbytečná poptávka</button>';
   b.innerHTML=(z.nv?'<div class=note>Návrh ELZY: '+esc(z.nv.proc)+(z.nv.ok?'':' (k ověření)')+'</div>':'')+'<div class=row><input id=zpop value="'+esc(z.popis)+'" placeholder="Jak to vidíte: co e-mail znamená, kam patří a proč" style="flex:1;min-width:200px"><button class=g data-a=zpu>Uložit popis</button></div>'}
@@ -403,6 +403,7 @@ async function onClick(e){
   if(a=="sig"){var d=GR.modal('<h2>Podpis</h2><textarea id=sg style="min-height:120px">'+esc(sign())+'</textarea><p class=note>Podpis se vkládá do nových zpráv a odpovědí. Uložen jen v tomto prohlížeči.</p><div class=gm-r><button class=b id=ok>Uložit</button><button class=g id=x>Zavřít</button></div>');d.querySelector("#x").onclick=GR.closeModal;d.querySelector("#ok").onclick=function(){GR.ls("elzaPodpis",d.querySelector("#sg").value);GR.closeModal()};return}
   if(a=="tg"){var t=S.thr[i];t.open=!t.open;var m=document.getElementById("mm"+i);m.innerHTML=blk(t,i);frame(i);if(t.open&&!t.b)loadBody(i);return}
   if(a=="img"){S.thr[i].img=true;document.getElementById("mm"+i).innerHTML=blk(S.thr[i],i);frame(i);return}
+  if(a=="zopen")return window.pripadOtevri(el.dataset.id);
   if(a=="anv")return analyzeThread();
   if(a=="aiv")return analyzeWithAgent(el);
   if(a=="at")return download(i,el.dataset.id);

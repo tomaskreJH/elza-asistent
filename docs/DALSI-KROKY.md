@@ -1,4 +1,6 @@
-# Další kroky (po 0.80.5)
+# Další kroky (po 0.80.6)
+
+- V Poště lze otevřít detail evidovaného případu přímo z přiřazeného vlákna.
 
 - V AI nastavení ověřit Poštovního Elzáčka tlačítkem Zkusit na syntetickém zadání. U Claude může most vrátit jen jeden platný odečet.
 ## Týdenní zůstatek AI
