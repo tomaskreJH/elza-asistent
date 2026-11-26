@@ -1,6 +1,6 @@
 # Další kroky (po 0.81.1)
 
-- Pošta rozlišuje uloženou vazbu, jednoznačný kód, návrh podle kontaktu či objektu, více možností a neověřený stav. Automatické přiřazení zapisuje jen jednoznačný kód. Návrh odpovědi vyžaduje načtenou poslední zákaznickou zprávu a náhled.
+- Pošta rozlišuje uloženou vazbu, jednoznačný kód, návrh podle kontaktu či objektu, více možností a neověřený stav. Automatické přiřazení zapisuje jen jednoznačný kód. Návrh odpovědi vyžaduje načtenou poslední zákaznickou zprávu a náhled. Ostrý rozbor porovnal 46 vláken a u MAKRO zobrazil správný případ a akci návrhu odpovědi.
 
 - Rozebrat přehled zpracuje načtená vlákna z aktuálního filtru bez modelu. Po otevření vlákna lze použít poštovního nebo případového Elzáčka a podle aktivních rolí specialistu PCO, Poptávky či Nabídka. Model běží po kontrole náhledu pouze na vybraném vlákně. Ostré ověření: 46 vláken v přehledu, výsledek MAKRO otevřel správný případ a doporučil PCO specialistu. Model se při ověření nevolal.
 - PCO v komunikaci je orientační podklad vedle průběhu komunikace. Z textové zmínky neodvozuje dokončení technického kroku. Další ověření: porovnat rozbor na více poptávkách a změřit počet správně přiřazených specialistů.

@@ -6,6 +6,10 @@
 - Automatické přiřazení respektuje stávající vazbu a vyžaduje jednoznačný kód. Kontakt a objekt slouží jako návrhy k ověření.
 - Návrh odpovědi vyžaduje otevřenou poslední dostupnou zákaznickou zprávu. Elzáček vidí text v náhledu a přiřazené číslo případu, pokud je dostupné.
 
+## Ověření
+
+Ostrý rozbor porovnal 46 vláken. MAKRO zobrazilo platnou vazbu WORK-20261124-0001 a u vlákna je dostupná příprava návrhu odpovědi. Automatické testy pokryly jeden kód, více kódů, společného zákazníka i nedostupná data. Prošly testy Chromu, vzhledu a Průvodce. Při ostrém ověření se model nad skutečnou poštou nespustil.
+
 ## Změněné soubory
 
 - app.js, boot.js, index.html, integrity.json, posta.js, pripady.js, vlakno.js
