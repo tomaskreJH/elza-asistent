@@ -1,3 +1,9 @@
+## 0.80.2 (2026-11-26) – Funkční kontrola lokálního mostu během práce
+
+Most 3 odděluje obsluhu HTTP od práce modelu a diagnostiky. Stav je dostupný i při běhu noční úlohy. Most obslouží jeden model najednou. Claude a Codex dostanou na odpověď 90 sekund. Nedokončená úloha po restartu se označí jako přerušená, aby se model znovu nespustil.
+
+Instalátor ověřuje autentizovanou HTTP odpověď. Zachovává ochranu Windows a RemoteSigned. Most už nečte přihlašovací soubor Claude a neobnovuje limity zkušebním voláním. Stav využití je k dispozici v Claude pod /usage. V ELZE lze rozlišit nepřístupný most, neplatné párování a obsazený model.
+
 ## 0.80.1 (2026-11-26) – Menší zápisy při synchronizaci firem
 - Firma sleduje obchodní pole a příznak odstranění bez RowNo. U existujících firem posílá jen změněné hodnoty. Záznam, který zmizel ze zdroje, mění jen příznak odstranění. Nový ruční pokus nejdříve znovu porovná obě strany. Přehled uvádí počty podle polí.
 - Zkontrolovat most rozliší dosažitelnou službu bez spárování, odmítnutý původ a chybějící odpověď místního portu.

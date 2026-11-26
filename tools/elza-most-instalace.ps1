@@ -28,7 +28,6 @@ $src = Join-Path $Zdroj 'elza-most.ps1'
 if (-not (Test-Path $Ps) -or (Get-FileHash $src).Hash -ne (Get-FileHash $Ps).Hash) {
   Copy-Item -Force $src $Ps; $zmenaSkriptu = $true; $Zmeny += 'zkopírován elza-most.ps1'
 }
-Unblock-File $Ps -ErrorAction SilentlyContinue
 
 # 3) token (32 bajtů, CSPRNG), soubor jen pro aktuálního uživatele
 if (-not (Test-Path $TokenSoubor)) {
@@ -74,9 +73,15 @@ if (-not $id) {
 
 if ($Zmeny.Count) { Zapis ($Zmeny -join '; '); $Zmeny | ForEach-Object { Write-Host " - $_" } } else { Write-Host 'Vše aktuální, žádná změna.' }
 
-# 7) ověření
+# 7) funkční HTTP, ne samotný otevřený port
 $ok = $false
-for ($i = 0; $i -lt 10 -and -not $ok; $i++) { Start-Sleep 1; try { (New-Object Net.Sockets.TcpClient('127.0.0.1',47321)).Close(); $ok = $true } catch {} }
-if ($ok) { Write-Host 'OVERENO: most bezi na 127.0.0.1:47321.' -ForegroundColor Green }
-else { Write-Host "CHYBA: most nebezi. Log: $Log" -ForegroundColor Red; if (Test-Path $Log) { Get-Content $Log -Tail 10 } }
-try { Get-Content $TokenSoubor -Raw | Set-Clipboard; Write-Host 'Token je ve schránce: v aplikaci AI nastavení → Lokální most ho vložte (Ctrl+V).' } catch { Write-Host "Token je v souboru $TokenSoubor" }
+$kod = (Get-Content $TokenSoubor -Raw).Trim()
+for ($i = 0; $i -lt 10 -and -not $ok; $i++) {
+  try {
+    $odp = Invoke-RestMethod -TimeoutSec 2 -Uri 'http://127.0.0.1:47321/stav' -Headers @{'x-elza-kod'=$kod; Origin='https://tomaskrejh.github.io'}
+    $ok = $odp.most -eq 3
+  } catch { Start-Sleep -Milliseconds 500 }
+}
+if ($ok) { Write-Host 'OVERENO: most 3 odpovida na 127.0.0.1:47321.' -ForegroundColor Green }
+else { Write-Host "CHYBA: most 3 neodpovida. Log: $Log" -ForegroundColor Red; exit 1 }
+try { Set-Clipboard $kod; Write-Host 'Token je ve schránce: v aplikaci AI nastavení → Lokální most ho vložte (Ctrl+V).' } catch { Write-Host "Token je v souboru $TokenSoubor" }

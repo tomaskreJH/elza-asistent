@@ -1,7 +1,13 @@
-# Další kroky (po 0.80.1)
+# Další kroky (po 0.80.2)
+## Most 3 a verze 0.80.2
+- Most 2 mohl zablokovat celou obsluhu i při běžném dotazu na stav nebo limity. Most 3 odděluje požadavky a model. Instalátor zkouší autentizované HTTP a návod popisuje nové stavové zprávy.
+- Na každé stanici spusťte ze sdílené složky elza-most-instalace.cmd a potom elza-most-overeni.cmd. V konkrétním prohlížeči ověřte AI nastavení → Lokální most → Zkontrolovat most, potom Zkusit u Poštovního Elzáčka na syntetickém zadání. Vydání webu schvaluje vlastník ve Strážci.
+- Bezpečnost sledujte v místních událostech a v tenantovi. Pokud se stanice ohlásí s blokací, bezpečnosti předejte overeni.txt a čas závady. Vydání nemění zásady Defenderu.
+- DODAT DO SDÍLENÉ SLOŽKY: elza-most*.ps1 a elza-most*.cmd.
+
 ## Provozní ověření 0.80.1
 - Instalovaný most odpovídá skriptu v repozitáři. Proces běžel a port naslouchal, ale HTTP neodpovídalo. Po standardním restartu s RemoteSigned most odpověděl 401 bez kódu a 200 s místním kódem, cizí původ vrátil 403. Codex Luna vrátil přes most očekávanou syntetickou odpověď.
-- Syntetické volání Claude Sonnet překročilo 55 s a přestala odpovídat také kontrola stavu. Druhý restart službu obnovil. Fiktivní zkouška Codex Sol později překročila 45 s a stavový požadavek znovu neodpověděl. Poslední restart obnovil odpověď 401. Příčinu čekání jednotlivého poskytovatele zatím nelze přiřadit. Most obsluhuje dotazy a noční práci sekvenčně. PRO ÚPRAVU MOSTU: zvážit oddělení dlouhých běhů a časový limit CLI při zachování kontroly původu, kódu a místních zásad. Úprava čeká na Tomášův pokyn podle bodu 15.
+- Syntetické volání Claude Sonnet překročilo 55 s a přestala odpovídat také kontrola stavu. Druhý restart službu obnovil. Fiktivní zkouška Codex Sol později překročila 45 s a stavový požadavek znovu neodpověděl. Poslední restart obnovil odpověď 401. Příčinu čekání jednotlivého poskytovatele zatím nelze přiřadit. Most obsluhuje dotazy a noční práci sekvenčně. Oddělení práce a časové limity doplňuje most 3.
 - V přečtených místních událostech Defenderu, Code Integrity a AppLockeru nebyla nalezena shoda pro most. Centrální Defender se otevřel, Advanced Hunting však nenačetl schéma a vrátil chybu při spuštění dotazu. Případný historický zásah bezpečností v tenantovi zůstává neověřený. [Microsoft Defender – události ASR](https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction-windows-events).
 - Připojení EPS na PCO HZS bylo v tomto profilu jen v Galerii. Přidáno mezi aktivní Elzáčky, ověřeno otevření správného agenta v chatu a pro Tomášův profil uloženo ChatGPT (Codex) s pilotním modelem GPT-6 Luna po úspěšném syntetickém testu přes místní most. Po spárování prohlížeče ověřit syntetický dotaz a teprve potom odborný pilot nad podklady schválenými k použití.
 - Firma: porovnání bez RowNo, při aktualizaci jen změněná pole, ostrý náhled 0.80.1 našel 7 967 řádků ve zdroji a 7 968 v kopii, žádné přidání, aktualizace ani nově zmizelý záznam. Automatika byla vypnutá. Zápis se nespouštěl.

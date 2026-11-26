@@ -6,7 +6,7 @@ $U = 'http://127.0.0.1:47321'
 $O = @{Origin = 'https://tomaskrejh.github.io'}
 $out = @("ELZA most - overeni $(Get-Date -Format s) na $env:COMPUTERNAME (PowerShell $($PSVersionTable.PSVersion))")
 function Krok($n, $ok, $t) { $script:out += ('{0} {1}: {2}' -f $(if ($ok) { 'OK  ' } else { 'CHYBA' }), $n, $t) }
-function Kod($h) { try { $r = Invoke-WebRequest -UseBasicParsing -TimeoutSec 20 -Uri ($U + $h.c) -Headers $h.h; return @($r.StatusCode, $r.Content) } catch { $s = 0; try { $s = [int]$_.Exception.Response.StatusCode } catch {}; return @($s, $_.Exception.Message) } }
+function Kod($h) { try { $r = Invoke-WebRequest -UseBasicParsing -TimeoutSec 3 -Uri ($U + $h.c) -Headers $h.h; return @($r.StatusCode, $r.Content) } catch { $s = 0; try { $s = [int]$_.Exception.Response.StatusCode } catch {}; return @($s, $_.Exception.Message) } }
 # 1) soubory a BOM
 foreach ($f in 'elza-most.ps1','token') { Krok "soubor $f" (Test-Path (Join-Path $D $f)) (Join-Path $D $f) }
 $b = [IO.File]::ReadAllBytes((Join-Path $D 'elza-most.ps1'))[0..5] -join ','
@@ -23,20 +23,26 @@ Krok 'proces mostu' ($pr.Count -eq 1) ("pocet " + $pr.Count)
 $tok = (Get-Content (Join-Path $D 'token') -Raw).Trim()
 $r = Kod @{c='/stav'; h=$O}; Krok 'bez tokenu = 401' ($r[0] -eq 401) $r[0]
 $h = $O.Clone(); $h['x-elza-kod'] = $tok
-$r = Kod @{c='/stav'; h=$h}; Krok 'stav s tokenem = 200' ($r[0] -eq 200) ([string]$r[1]).Substring(0,[Math]::Min(200,([string]$r[1]).Length))
-$r = Kod @{c='/limity'; h=$h}
-$lim = [string]$r[1]; $lim = $lim.Substring(0,[Math]::Min(250,$lim.Length))
-if ($r[0] -eq 200 -and $lim -match '"ok":true') { Krok 'limity' $true $lim }
-elseif ($lim -match '429') { $script:out += ('CEKA  limity: sluzba limitu zada klid (429), neni to chyba mostu. Zopakujte overeni za 10 minut. ' + $lim) }
-else { Krok 'limity' $false $lim }
+$r = Kod @{c='/stav'; h=$h}
+$stav = $null
+if ($r[0] -eq 200) { try { $stav = $r[1] | ConvertFrom-Json } catch {} }
+Krok 'stav s tokenem = 200, most 3' ($r[0] -eq 200 -and $stav.most -eq 3) ('HTTP ' + $r[0] + ', verze ' + $stav.most)
+if ($stav) {
+  $out += ('INFO Claude CLI: ' + $(if ($stav.claude) { $stav.claude } else { 'nenalezen' }))
+  $out += ('INFO Codex CLI: ' + $(if ($stav.codex) { $stav.codex } else { 'nenalezen' }))
+}
 $cizi = @{Origin='https://example.com'; 'x-elza-kod'=$tok}
 $r = Kod @{c='/stav'; h=$cizi}; Krok 'cizi stranka = 403' ($r[0] -eq 403) $r[0]
-# 5) Defender: detekce za posledních 24 h (čtení, nic se nemění)
+# 5) Defender: pouze místní události vztahující se k mostu, včetně pravidel ASR
+$filtr = @{LogName='Microsoft-Windows-Windows Defender/Operational'; Id=1116,1117,1006,1015,1121,1122; StartTime=(Get-Date).AddDays(-1)}
 try {
-  $det = @(Get-MpThreatDetection -ErrorAction Stop | Where-Object { $_.InitialDetectionTime -gt (Get-Date).AddDays(-1) })
-  Krok 'Defender detekce 24 h' ($det.Count -eq 0) (($det | ForEach-Object { "$($_.ThreatID) $($_.Resources -join ' ')" }) -join ' | ')
-} catch { Krok 'Defender detekce 24 h' $true ('nelze cist (' + $_.Exception.Message + '), zkontrolujte Historii ochrany') }
-try { $ev = @(Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-Windows Defender/Operational'; Id=1116,1117,1006,1015; StartTime=(Get-Date).AddDays(-1)} -ErrorAction Stop); Krok 'Defender udalosti 24 h' ($ev.Count -eq 0) (($ev | Select-Object -First 3 | ForEach-Object { $_.Message.Split("`n")[0..3] -join ' ' }) -join ' | ') } catch { Krok 'Defender udalosti 24 h' $true 'zadne' }
+  $ev = @(Get-WinEvent -FilterHashtable $filtr -ErrorAction Stop | Where-Object { $_.Message -match '(?i)\bELZA[- ]?most\b' })
+  Krok 'mistni Defender 24 h' ($ev.Count -eq 0) ('udalosti mostu: ' + $ev.Count)
+} catch {
+  if ($_.FullyQualifiedErrorId -like 'NoMatchingEventsFound*') { Krok 'mistni Defender 24 h' $true 'zadne odpovidajici udalosti' }
+  else { $out += 'NEOVERENO mistni Defender 24 h: protokol nelze precist' }
+}
+$out += 'INFO overeni pokryva mistni protokol Windows, zaznamy tenantu necte.'
 $txt = $out -join "`r`n"
 $txt | Set-Content -Encoding UTF8 (Join-Path $D 'overeni.txt')
 try { $txt | Set-Content -Encoding UTF8 (Join-Path $PSScriptRoot 'overeni.txt') } catch {}
