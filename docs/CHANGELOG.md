@@ -1,3 +1,7 @@
+## 0.81.1 (2026-11-26) – Pošta nejdřív ověřuje vazbu k případu
+
+Přehled u každého vlákna ukáže stav vazby a důvod. Jednoznačný kód případu nebo zakázky umožňuje automatické přiřazení. Shoda kontaktu či objektu je návrh k posouzení. Po otevření zákaznické zprávy lze přes Elzáčka připravit návrh odpovědi s ohledem na potvrzenou vazbu.
+
 ## 0.81.0 (2026-11-26) – Přehled více vláken a Elzáčci v Poště
 
 Rozebrat přehled roztřídí načtená vlákna podle aktuálního filtru. Výsledek otevře celé vlákno s volbou aktivního specialisty a povinným náhledem. Karta PCO v komunikaci uvádí nalezené zmínky a otevřené otázky odděleně od potvrzeného stavu případu.

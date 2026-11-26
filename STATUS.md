@@ -1,22 +1,17 @@
-# Stav práce — ELZA 0.81.0
+# Stav práce — ELZA 0.81.1
 
 ## Hotovo
 
-- Pošta nabízí hromadný pravidlový rozbor načtených vláken a přímé otevření výsledku.
-- Rozbor vlákna nabízí aktivní Elzáčky podle role. Živé volání používá stávající náhled.
-- Karta PCO u případu popisuje zmínky v komunikaci a nevydává je za splněné technické kroky. Návod a Průvodce odpovídají oběma větvím vydání.
-
-## Ověření
-
-Na ostrém webu rozbor zpracoval 46 načtených vláken. MAKRO otevřelo správný případ a rozbor doporučil aktivního specialistu Připojení EPS na PCO HZS. Karta PCO v komunikaci je pod průběhem komunikace. Živé volání nad poštou se při ověření nespustilo. Prošly testy JavaScriptu, Průvodce, vzhledu a průchod Poštou v Chromu.
+- Přehled Pošty zobrazuje stav vazby ke každému vláknu a jeho důvod. U přiřazeného vlákna vede přímo do případu.
+- Automatické přiřazení respektuje stávající vazbu a vyžaduje jednoznačný kód. Kontakt a objekt slouží jako návrhy k ověření.
+- Návrh odpovědi vyžaduje otevřenou poslední dostupnou zákaznickou zprávu. Elzáček vidí text v náhledu a přiřazené číslo případu, pokud je dostupné.
 
 ## Změněné soubory
 
-- `posta.js`, `pripady.js`, `centrum.js`, `pruvodce.html`
-- `app.js`, `boot.js`, `index.html`, `integrity.json`
-- `stable/app.js`, `stable/posta.js`, `stable/pripady.js`, `stable/centrum.js`
-- `test/pco.test.js`, `docs/CHANGELOG.md`, `docs/STAV.md`, `docs/DALSI-KROKY.md`, `docs/NOVE-VLAKNO-PROMPT.md`, `STATUS.md`
+- app.js, boot.js, index.html, integrity.json, posta.js, pripady.js, vlakno.js
+- centrum.js, pruvodce.html, stable/app.js, stable/centrum.js, stable/posta.js, stable/pripady.js, stable/vlakno.js
+- test/vlakno.test.js, docs/CHANGELOG.md, docs/STAV.md, docs/DALSI-KROKY.md, docs/NOVE-VLAKNO-PROMPT.md a STATUS.md
 
 ## Další krok pro další AI
 
-Ověř reprezentativní výběr přeposlaných poptávek pod běžným účtem, porovnej návrhy specialistů a zapiš nepřesnosti. Starší pokyny a stav pokračování jsou v docs/DALSI-KROKY.md.
+Ověř přesnost návrhů na různých případech jednoho zákazníka. U rozpracované věci doplň rozdíl proti poslednímu potvrzenému stavu a podklady z časové osy. Živý návrh nad skutečným vláknem ověř po schválení náhledu.

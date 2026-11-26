@@ -19,6 +19,27 @@ function prvniExterniOdesilatel(messages){
  }
  return "";
 }
-W.VLAKNO={ROLE:ROLE,role:role,prvniExterniOdesilatel:prvniExterniOdesilatel,radek:radek,prehled:prehled,souhrn:souhrn};
+function vazbaPripadu(input,cases,linked){
+ if(linked)return {stav:"prirazeno",id:linked,duvod:"Vlákno už je přiřazené."};
+ if(!Array.isArray(cases))return {stav:"nedostupne",duvod:"Případy se nepodařilo načíst."};
+ var text=String(input.text||"").toUpperCase();
+ var codes=new Set(text.match(/\b(?:WORK-\d{8}-\d+|PR\d{6}|OBJ\d{5}|Z-\d{4}-\d{3,}|ZK\d+)\b/g)||[]);
+ var exact=cases.filter(function(c){return [c.id,c.espo,c.zak].some(function(k){return k&&codes.has(String(k).toUpperCase())})});
+ if(exact.length===1)return {stav:"kod",id:exact[0].id,duvod:"Shoduje se kód případu nebo zakázky v textu."};
+ if(exact.length>1)return {stav:"vice",duvod:"Text odkazuje na více případů.",moznosti:exact.map(function(c){return c.id})};
+ var address=String(input.adresa||"").trim().toLowerCase(),domain=address.split("@")[1];
+ var broad=/^(?:gmail|seznam|email|centrum|outlook|post|volny|icloud|hotmail|atlas|tiscali)\./i;
+ var weak=cases.filter(function(c){
+  if(c.uzavreny)return false;
+  return String(c.klice||"").toLowerCase().split(/[;,\s]+/).some(function(k){
+   return (address&&(k===address||(domain&&!broad.test(domain)&&k==="@"+domain)))||
+    (/^obj\d{5}$/.test(k)&&codes.has(k.toUpperCase()));
+  });
+ });
+ if(weak.length===1)return {stav:"mozna",id:weak[0].id,duvod:"Podobnost kontaktu nebo objektu stačí k návrhu vazby. Ověřte, že jde o stejnou věc."};
+ if(weak.length>1)return {stav:"vice",duvod:"Kontaktu nebo objektu odpovídá více otevřených případů.",moznosti:weak.map(function(c){return c.id})};
+ return {stav:"bez",duvod:"V načtených podkladech se nenašla vazba. Může jít o novou věc."};
+}
+W.VLAKNO={vazbaPripadu:vazbaPripadu,ROLE:ROLE,role:role,prvniExterniOdesilatel:prvniExterniOdesilatel,radek:radek,prehled:prehled,souhrn:souhrn};
 if(typeof module!="undefined")module.exports=W.VLAKNO;
 })();
