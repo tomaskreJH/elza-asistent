@@ -383,8 +383,8 @@ function nastM(){var mn=document.getElementById('main');limityKarta('limkarta');
  if(d.pred){var dt={};PRED.forEach(function(p,i){dt[p[0]]={plan:document.getElementById('pp'+i).value.trim(),okno:document.getElementById('po'+i).value,tyden:document.getElementById('pt'+i).value}});LS('elzaPred',JSON.stringify(dt));msg('Předplatné uloženo v tomto prohlížeči.');return go('ainast')}
  if(d.aikey){var v=document.getElementById('ak'+d.aikey).value.trim();if(v.length<10){msg('Vložte celý klíč.');return}LS('elzaKey_'+d.aikey,v);obnovLimity();return go('ainast')}
  if(d.aidel){LS('elzaKey_'+d.aidel,null);obnovLimity();return go('ainast')}
- if(d.galadd){await pridejPre(d.galadd);return go('ainast')}
- if(d.galdel){await odeber(d.galdel);return go('ainast')}
+ if(d.galadd){var y=window.scrollY;await pridejPre(d.galadd);await go('ainast');window.scrollTo(0,y);return}
+ if(d.galdel){var y=window.scrollY;await odeber(d.galdel);await go('ainast');window.scrollTo(0,y);return}
  if(d.agef){var ag=MOJI.filter(function(x){return x.id==d.agef})[0];if(ag){var ord=['n','s','v'];await zmen(ag.id,'e',ord[(ord.indexOf(ag.e||'s')+1)%3])}return go('ainast')}
  if(d.agsm){var pp=d.agsm.split('|'),ag2=MOJI.filter(function(x){return x.id==pp[0]})[0];if(ag2){var m2=(Array.isArray(ag2.m)?ag2.m:['cist','navrh']).filter(function(x){return x!=pp[1]});if(el.checked)m2.push(pp[1]);await zmen(ag2.id,'m',m2)}return go('ainast')}
  if(d.vet){var vt=document.getElementById('vt').value.trim(),vn=document.getElementById('vn');if(vt.length<8){msg('Napište aspoň jednu větu o tom, co má Elzáček dělat.');return}vn.innerHTML='<p class=note>AI navrhuje…</p>';var tx='';try{tx=await ask('AG-ELZA',{task:VPROMPT+vt,max:1200})}catch(er){msg('AI není dostupná, návrh je jen z vaší věty: '+er.message)}
@@ -399,10 +399,19 @@ async function sp(path,body,method){var sc=[SP+'/AllSites.Write'],t;try{t=(await
 async function aizaz(){css();var R=await zazn(true),m0=mesic(new Date().toISOString()),mr=R.filter(function(r){return mesic(r.Kdy)==m0});
  function sum(a,k){var o={};a.forEach(function(r){var x=o[r[k]||'?']=o[r[k]||'?']||{n:0,i:0,o:0,u:0,e:0};x.n++;x.i+=+r.VstupZnaku||0;x.o+=+r.VystupZnaku||0;x.u+=+r.OdhadUSD||0;if(r.Stav=='chyba')x.e++});return o}
  function tb(o,h){var k=Object.keys(o).sort();return '<table><tr><th>'+h+'<th>Volání<th>Chyb<th>Vstup (znaků)<th>Výstup (znaků)<th>Odhad USD</tr>'+(k.length?k.map(function(n){var x=o[n];return '<tr><td>'+esc(n)+'<td>'+x.n+'<td>'+x.e+'<td>'+x.i+'<td>'+x.o+'<td>'+x.u.toFixed(2)+'</tr>'}).join(''):'<tr><td colspan=6 class=note>Zatím žádné volání.</tr>')+'</table>'}
+ function grafVolani(o){
+  var keys=Object.keys(o).sort(function(a,b){return o[b].n-o[a].n});
+  if(!keys.length)return '<p class=note>Za tento měsíc zatím nejsou volání.</p>';
+  var max=Math.max.apply(null,keys.map(function(k){return o[k].n}));
+  return '<div aria-label="Počet volání podle nástroje">'+keys.map(function(k){
+   var x=o[k],width=Math.round(100*x.n/max);
+   return '<div style="margin:12px 0"><div><b>'+esc(k)+'</b> · '+x.n+' volání · '+x.e+' chyb</div><div style="background:var(--l);border-radius:6px;overflow:hidden;height:12px"><div style="width:'+width+'%;height:100%;background:#3186ce"></div></div></div>';
+  }).join('')+'</div>';
+ }
  var mine=0;mr.forEach(function(r){if(String(r.Kdo||'').toLowerCase()==me())mine+=+r.OdhadUSD||0});
  return '<h1>AI záznam a náklady</h1><p class=note>Eviduje se každé volání AI z aplikace: kdo, kdy, který Elzáček a nástroj, text zadání a velikost vstupu a výstupu. Obsah e-mailů a dokumentů ani odpovědi AI se neukládají. Náklady jsou orientační odhad (1 token = 3,5 znaku, ceníkové ceny API). Copilot je v ceně licence M365 a stojí 0.</p>'
  +'<div class=row><b>Měsíc '+esc(m0)+'</b>: moje spotřeba '+mine.toFixed(2)+' USD z limitu <input id=lm type=number min=0 step=1 value="'+limitUSD()+'" style="width:80px"> USD <button class=g data-azl=1>Uložit strop</button> <span class=note id=azs>Strop platí v tomto prohlížeči pro API nástroje (Claude, ChatGPT, Gemini).</span></div>'
- +(mine>=0.8*limitUSD()&&limitUSD()>0?'<p class=r><b>Pozor:</b> spotřeba je '+Math.round(100*mine/limitUSD())+' % měsíčního stropu.</p>':'')+'<h3>Podle nástroje</h3>'+tb(sum(mr,'Nastroj'),'Nástroj')+'<h3>Podle uživatele</h3>'+tb(sum(mr,'Kdo'),'Uživatel')+'<h3>Podle Elzáčka</h3>'+tb(sum(mr,'Title'),'Elzáček')
+ +(mine>=0.8*limitUSD()&&limitUSD()>0?'<p class=r><b>Pozor:</b> spotřeba je '+Math.round(100*mine/limitUSD())+' % měsíčního stropu.</p>':'')+'<h3>Využití nástrojů tento měsíc</h3>'+grafVolani(sum(mr,'Nastroj'))+'<h3>Podle nástroje</h3>'+tb(sum(mr,'Nastroj'),'Nástroj')+'<h3>Podle uživatele</h3>'+tb(sum(mr,'Kdo'),'Uživatel')+'<h3>Podle Elzáčka</h3>'+tb(sum(mr,'Title'),'Elzáček')
  +nakladyTab(R)+statTab(R)+'<h3>Poslední volání</h3><table><tr><th>Kdy<th>Kdo<th>Elzáček<th>Nástroj<th>Model · tokeny · režim<th>Stav<th>Zadání</tr>'+R.slice().sort(function(a,b){return String(b.Kdy).localeCompare(String(a.Kdy))}).slice(0,40).map(function(r){return '<tr><td>'+esc(new Date(r.Kdy).toLocaleString('cs-CZ'))+'<td>'+esc(r.Kdo)+'<td>'+esc(r.Title)+'<td>'+esc(r.Nastroj)+'<td>'+esc(r.Model)+'<td>'+esc(r.Stav)+(r.Chyba?' '+esc(r.Chyba):'')+'<td>'+esc(r.Zadani)+'</tr>'}).join('')+'</table>'}
 function aizazM(){var mn=document.getElementById('main');mn.onclick=function(e){var el=e.target.closest('[data-azl]');if(!el)return;var v=parseFloat(document.getElementById('lm').value);if(isNaN(v)||v<0){document.getElementById('azs').textContent='Zadejte číslo.';return}LS('elzaLimitUSD',String(v));document.getElementById('azs').textContent='Uloženo.'}}
 window.MODS=window.MODS||{};window.MODS.ainast=[nast,nastM];window.MODS.aizaz=[aizaz,aizazM];

@@ -1,3 +1,5 @@
+0.82.1 – V AI záznamu doplněn graf měsíčních počtů volání a chyb podle nástroje. Galerie Elzáčků zachová svislou pozici po přidání nebo odebrání. Inspirace: AI_TOM, náklady uvádí odhady a u PCO popisuje fáze a odpovědné osoby. Připraven scénář videa docs/VIDEO-SCENAR-PCO.md.
+
 0.82.0 – ELZY asistentka v Poště automaticky ukazuje odhad typu zprávy z náhledu. Filtry a řazení se rozbalují pod hledáním, zprávu lze otevřít klávesnicí. Další krok: propojit prioritní zprávu v Můj den přímo s interním čtecím panelem.
 
 # Další kroky (po 0.81.3)

@@ -1,3 +1,16 @@
+0.82.1 – V AI záznamu doplněn graf měsíčních počtů volání a chyb podle nástroje. Galerie Elzáčků zachová svislou pozici po přidání nebo odebrání. Inspirace: AI_TOM, náklady uvádí odhady a u PCO popisuje fáze a odpovědné osoby. Připraven scénář videa docs/VIDEO-SCENAR-PCO.md.
+Změněné soubory: ai.js, stable/ai.js, app.js, stable/app.js, boot.js, stable/boot.js, index.html, centrum.js, stable/centrum.js, integrity.json, docs/VIDEO-SCENAR-PCO.md, docs/CHANGELOG.md, docs/STAV.md, docs/DALSI-KROKY.md, docs/NOVE-VLAKNO-PROMPT.md a STATUS.md. Další krok: ověřit a opravit hlášený přenos poznámek mezi vlákny, potom navázat skupinami kalendářů. Scénář rozlišuje hotové a plánované funkce.
+
+# Rozpracováno 26. 11. 2026
+
+Tomáš nahlásil přenesení poznámky mezi e-maily a nemožnost ji upravit. Příčinu a dotčené uložiště je třeba ověřit na konkrétních záznamech, zatím nebyla opravena. Pravidlové odhady z verze 0.82.0 nejsou učením z poznámek. Učení postupů v analyza.js sbírá úpravy kroků a po opakování navrhuje změnu postupu, kterou člověk schvaluje.
+
+Další požadavky: skupiny kalendářů techniků, přibližné měření práce, obecné fáze bez předpokladu hlásičů, přehledné AI nastavení a zachování pozice po přidání Elzáčka, jména a avatary, skutečný Brand, vazby Elzáčků a postupů, grafická mapa a grafy AI nákladů. Prověřit původní artefakt Claude a přehled AI_TOM. Veřejné načtení artefaktu selhalo, nutno ověřit v přihlášeném prohlížeči.
+
+Změněný soubor v tomto běhu: STATUS.md. Kód ani nasazení se nezměnily.
+
+Další krok: dohledat zdroj a identitu poznámek, bezpečně opravit vazbu a editaci s regresním testem, poté navázat ostatními požadavky.
+
 0.82.0 – ELZY asistentka v Poště automaticky ukazuje odhad typu zprávy z náhledu. Filtry a řazení se rozbalují pod hledáním, zprávu lze otevřít klávesnicí. Další krok: propojit prioritní zprávu v Můj den přímo s interním čtecím panelem.
 Porovnání: Syniru ukazuje čekající práci na hlavní stránce, CliqSales vede k rozhodnutí na jednom místě. V demu ověřeno zobrazení automatických odhadů, rozbalení filtrů a otevření vlákna klávesou Enter při 390 i 1400 px. Výška filtru 44 a 36 px. Prošly JS testy, audit, vzhled a průvodce.
 Při vizuální kontrole odhalen newsletter chybně označený jako zakázka. Pošta nyní pro štítky používá filtr hromadné pošty z ranní kontroly.
