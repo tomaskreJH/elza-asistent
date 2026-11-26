@@ -17,4 +17,13 @@ require('../katalog.js');require('../ai.js');var A=window.AI,bad=0;function t(c,
  var n=A.parseNavrh('Tady je návrh: {"n":"Hlídač revizí","g":"Nesmysl","d":"d","p":"p","sk":[{"n":"Termíny","kdy":"ráno","k":"revize","t":"kroky"},{"n":"","t":"x"}]} konec','věta');t(n.n=='Hlídač revizí'&&n.g=='Kancelář'&&n.sk.length==1,'návrh z věty: JSON z textu, neznámá skupina, prázdný postup zahozen');
  var f=A.parseNavrh('není json','Hlídej platnost revizí u zakázek každé ráno');t(f.n&&f.p=='Hlídej platnost revizí u zakázek každé ráno','bez JSONu návrh z věty');
  await A.odeber('AG-EPS');t(A.moji().length==0&&A.agents.length==6,'odebrání Elzáčka');
+ window.PRO={role:'vlastnik'};
+ await Promise.all([A.nacti(),A.nacti()]);
+ t(A.agents.some(a=>a.id==='AG-NABIDKA'&&a.sk.length&&a.m.join()==='cist,navrh'),'vlastník má nabídky s postupem a omezenými akcemi');
+ t(!A.agents.some(a=>a.id==='AG-EPS'),'výslovně odebraná výchozí role se nevrátí');
+ await A.pridejPre('AG-EPS');
+ t(A.agents.filter(a=>a.id==='AG-EPS').length===1,'opětovné přidání vytvoří jedinou definici');
+ window.PRO={role:'technik'};
+ await A.nacti();
+ t(!A.agents.some(a=>a.id==='AG-NABIDKA'),'výchozí sada se nerozšíří na jinou roli');
  if(bad)process.exit(1);console.log('elzacci OK')})();

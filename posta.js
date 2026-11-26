@@ -232,7 +232,11 @@ async function rozebratPrehled(pilot){
   }).join("")+'</ol>':'<p class=note>Pod těmito filtry nejsou načtená vlákna.</p>');
 }
 function doporuceniProPostu(v,work){
- return [v.tech.includes("PCO")&&v.tech.includes("EPS")?"AG-PCO":"",/nabídk/i.test(v.typ)?"AG-NABIDKA":"",
+ return [v.tech.includes("PCO")&&v.tech.includes("EPS")?"AG-PCO":"",
+  /interval/i.test(v.typ)?"AG-SERVISINT":"",
+  /servis|kontrol/i.test(v.typ)&&v.tech.includes("EPS")?"AG-EPS":"",
+  /projekt/i.test(v.typ)?"AG-PROJEKT":"",
+  /nabídk/i.test(v.typ)?"AG-NABIDKA":"",
   /poptáv/i.test(v.typ)?"AG-POPTAVKY":"",work?"AG-PRIPADY":"","AG-POSTA"].filter(Boolean);
 }
 function analyzeThread(){
@@ -298,7 +302,7 @@ async function nabidniElzacky(select,doporuceni){
   try{
    await AI.nacti();
    if(!select.isConnected)return;
-   var ids=["AG-POSTA","AG-PRIPADY","AG-PCO","AG-POPTAVKY","AG-NABIDKA"];
+   var ids=["AG-POSTA","AG-PRIPADY","AG-PCO","AG-POPTAVKY","AG-NABIDKA","AG-EPS","AG-PROJEKT","AG-SERVISINT","AG-TERMINY"];
    var dostupni=AI.agents.filter(function(a){return ids.includes(a.id)});
    select.innerHTML=dostupni.map(function(a){return '<option value="'+esc(a.id)+'">'+esc(a.n)+'</option>'}).join("");
    select.value=doporuceni.find(function(id){return dostupni.some(function(a){return a.id===id})})||"AG-POSTA";
@@ -318,6 +322,10 @@ async function analyzeWithAgent(button,draft){
     var data=parts.map(function(p){return "Předmět: "+p.subject+"\n"+p.text}).join("\n---\n");
     var agent=button.parentElement.querySelector(".mail-agent").value;
     var zadani={
+      "AG-EPS":"Ze zpráv vypiš projevy závady nebo požadavek na servis EPS, nejbližší termín a co ověřit. Technický stav bez důkazu nepotvrzuj.",
+      "AG-PROJEKT":"Vypiš rozsah projektu, dostupné podklady a co ještě chybí k práci projektanta.",
+      "AG-SERVISINT":"Vypiš pouze doložené termíny a podklady ke kontrolám. Pokud schází zdroj, uveď, co musí technik ověřit.",
+      "AG-TERMINY":"Vypiš termíny doložené ve zprávách, jejich kontext a co hrozí prodlením.",
       "AG-PCO":"Z komunikace vypiš podklady, otevřené technické otázky a jeden krok k ověření. Zmínka v textu sama nepotvrzuje skutečný stav.",
       "AG-POPTAVKY":"Vytřiď poptávku, vypiš požadavek, chybějící údaje a jeden další krok.",
       "AG-NABIDKA":"Připrav podklady pro nabídku. Vypiš požadavky a chybějící údaje bez návrhu ceny.",

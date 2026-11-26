@@ -1,3 +1,7 @@
+## 0.81.3 (2026-11-26) – Pracovní Elzáčci dostupní vlastníkovi
+
+Devět balíčků role je dostupných vlastníkovi bez přidávání z Galerie. Nastavení stávajících rolí má přednost. Pošta nabízí více specialistů a před předáním pošty zobrazí náhled.
+
 ## 0.81.2 (2026-11-26) – Pilot starší pošty a pracovní okno
 
 Pošta umožňuje procházet sedmidenní dávky s uloženým obdobím. Oznámení z Espa navrhnou případ podle doloženého názvu. Můj den při otevření a průběžně během zobrazení ukazuje prioritní doručené zprávy a nabídne 25 minut podle kalendáře.

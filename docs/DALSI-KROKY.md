@@ -1,4 +1,6 @@
-# Další kroky (po 0.81.2)
+# Další kroky (po 0.81.3)
+
+- Vlastník má ve výchozím nastavení devět pracovních Elzáčků pro poptávky, nabídky, PCO, EPS, projekci, intervaly, termíny, řízení a smlouvy. Uložené definice mají přednost. Pošta nabízí relevantní specialisty a zachovává schválení náhledu.
 
 - Pošta nabízí sedmidenní dávky doručené pošty s místním uložením období. Oznámení z Espa už rozlišuje a podle doloženého názvu navrhne vazbu. Na ostré týdenní dávce (první stránka, 46 vláken) obě oznámení ZDP Makro ČB navrhla WORK-20261124-0001.
 - Můj den zobrazuje pravidlovou prioritu poslední načtené dávky zpráv a nejbližší volných 25 minut mezi 8 a 17 h. Běží při zobrazeném Mém dni, bez zápisu do kalendáře. Sdílené pokračování mezi PC a NB, dohledávání celých souvisejících vláken a běh při zavřené aplikaci jsou otevřené.
