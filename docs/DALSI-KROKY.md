@@ -3,7 +3,7 @@
 - Most 4 uchovává poslední platná čísla získaná při běžném běhu Claude Code a vrací je i po restartu. Při chybějícím nebo prošlém odečtu se zobrazí pomlčka. Zdroj je událost Claude Code, ne čtení přihlašovacích souborů. [Událost limitu Claude Code](https://code.claude.com/docs/en/agent-sdk/typescript#sdkratelimitevent).
 - V menu se ukazuje jen procentní zůstatek týdenního limitu. Údaje se načítají místně při přihlášení a po úloze. Podrobnosti a ruční záloha Claude jsou v AI nastavení.
 - U další reorganizace prověřit čitelnost mobilního menu, názvy skupin a shody zkratek. Funkční části měnit jen v dohodnutém rozsahu.
-- DODAT DO SDÍLENÉ SLOŽKY: elza-most*.ps1 a elza-most*.cmd.
+- Soubory mostu jsou ve sdílené složce a mají shodné SHA-256. TOM-TABLET: ověřen skutečný týdenní odečet po odpovědi Haiku, shoda s místní kopií a dostupnost stavového endpointu během běhu. V místních událostech Defenderu za 24 hodin nebyla shoda.
 
 ## Most 3 a verze 0.80.2
 - Most 2 mohl zablokovat celou obsluhu i při běžném dotazu na stav nebo limity. Most 3 odděluje požadavky a model. Instalátor zkouší autentizované HTTP a návod popisuje nové stavové zprávy.
