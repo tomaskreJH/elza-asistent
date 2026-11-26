@@ -1,6 +1,6 @@
 # Další kroky (po 0.81.2)
 
-- Pošta nabízí sedmidenní dávky doručené pošty s místním uložením období. Oznámení z Espa už rozlišuje a podle doloženého názvu navrhne vazbu.
+- Pošta nabízí sedmidenní dávky doručené pošty s místním uložením období. Oznámení z Espa už rozlišuje a podle doloženého názvu navrhne vazbu. Na ostré týdenní dávce (první stránka, 46 vláken) obě oznámení ZDP Makro ČB navrhla WORK-20261124-0001.
 - Můj den zobrazuje pravidlovou prioritu poslední načtené dávky zpráv a nejbližší volných 25 minut mezi 8 a 17 h. Běží při zobrazeném Mém dni, bez zápisu do kalendáře. Sdílené pokračování mezi PC a NB, dohledávání celých souvisejících vláken a běh při zavřené aplikaci jsou otevřené.
 
 - Pošta rozlišuje uloženou vazbu, jednoznačný kód, návrh podle kontaktu či objektu, více možností a neověřený stav. Automatické přiřazení zapisuje jen jednoznačný kód. Návrh odpovědi vyžaduje načtenou poslední zákaznickou zprávu a náhled. Ostrý rozbor porovnal 46 vláken a u MAKRO zobrazil správný případ a akci návrhu odpovědi.
