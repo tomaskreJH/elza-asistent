@@ -1,3 +1,7 @@
+## 0.80.3 (2026-11-26) – Připojení a limity AI v menu
+
+Menu, Můj den a AI nastavení sdílejí jeden přehled. Odečty se načítají při přihlášení a po výsledku AI bez časovače. U předplatného Claude lze uložit ruční stav z /usage pro 5 hodin a 7 dní s časem obnovy. U Codexu je uvedené stáří dostupného místního odečtu. U placených API se zobrazuje odhad vůči měsíčnímu stropu ELZY.
+
 ## 0.80.2 (2026-11-26) – Funkční kontrola lokálního mostu během práce
 
 Most 3 odděluje obsluhu HTTP od práce modelu a diagnostiky. Stav je dostupný i při běhu noční úlohy. Most obslouží jeden model najednou. Claude a Codex dostanou na odpověď 90 sekund. Nedokončená úloha po restartu se označí jako přerušená, aby se model znovu nespustil.

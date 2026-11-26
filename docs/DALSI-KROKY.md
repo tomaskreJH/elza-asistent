@@ -1,4 +1,5 @@
-# Další kroky (po 0.80.2)
+# Další kroky (po 0.80.3)
+- Měřáky AI jsou v menu a sdílejí stav s Můj den a AI nastavením. Doplnění automatického odečtu Claude vyžaduje podporovaný zdroj použití předplatného. POTŘEBUJE ÚPRAVU MOSTU: ověřit předání hodnot rate_limits z oficiálního stavového řádku Claude Code a uložení posledního platného odečtu pro start ELZY. Stavový řádek poskytuje údaje po první odpovědi v relaci u podporovaných plánů. Předání nesmí číst přihlašovací údaje ani spouštět zkušební inferenci. [Stavový řádek Claude Code](https://code.claude.com/docs/en/statusline). Ruční odečet z /usage je dostupný v AI nastavení.
 ## Most 3 a verze 0.80.2
 - Most 2 mohl zablokovat celou obsluhu i při běžném dotazu na stav nebo limity. Most 3 odděluje požadavky a model. Instalátor zkouší autentizované HTTP a návod popisuje nové stavové zprávy.
 - Na každé stanici spusťte ze sdílené složky elza-most-instalace.cmd a potom elza-most-overeni.cmd. V konkrétním prohlížeči ověřte AI nastavení → Lokální most → Zkontrolovat most, potom Zkusit u Poštovního Elzáčka na syntetickém zadání. Vydání webu schvaluje vlastník ve Strážci.

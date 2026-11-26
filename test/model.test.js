@@ -48,4 +48,15 @@ require('../katalog.js');require('../kontext.js');require('../ai.js');var A=wind
  global.__R=[];t(A.PV.L=='Lepší'&&A.PV.V=='Vyvážený'&&A.PV.U=='Levnější','tři předvolby');
  var nk=A.nakladyTab([{Title:'AG-POSTA',Kdy:new Date().toISOString(),Stav:'ok',Model:'opus · 100/50 tok · ekv. $0.500'},{Title:'Zkusit',Kdy:new Date().toISOString(),Stav:'ok',Model:'opus · 9/9 tok'}]);t(/Analýza pošty/.test(nk)&&/150/.test(nk)&&/0\.50/.test(nk)&&/5× limitu/.test(nk)&&!/Zkusit/.test(nk.replace(/Zkoušky tlačítkem Zkusit/,'')),'přehled nákladů: tokeny a ekvivalent z AI záznamu, zkoušky mimo, tip zlevnění');
  var pnl=A.tokPanel({pet:85,tyden:40});t(/Přepnout na levnější/.test(pnl)&&/data-aitok=on/.test(pnl)&&/Nic se nepřepíná samo/.test(pnl),'doporučení při limitu nad 80 % je jedním klepnutím a nic nepřepíná samo');
+ global.tok='test';global.m={acquireTokenSilent:async function(){throw new Error('bez oprávnění')}};
+ localStorage.setItem('elzaMostKod','test');
+ localStorage.setItem('elzaClaudeUsage:'+acc.username,JSON.stringify({pet:{pct:82,konec:za(1)},tyden:{pct:93,konec:za(-1)}}));
+ var reads=[];
+ global.fetch=async function(u){var cesta=new URL(u).pathname;reads.push(cesta);return {ok:true,json:async function(){
+  return {'/stav':{most:3,claude:'nalezen',codex:'nalezen'},'/limity':{ok:false},'/limity-codex':{ok:true,pet:{pct:55,okno:'5 h',konec:za(1)}}}[cesta];
+ }}};
+ await A.obnovLimity();var menu=A.prehledLimitu(true);
+ t(/82 %/.test(menu)&&/Ruční stav/.test(menu)&&!/93 %/.test(menu)&&/55 %/.test(menu)&&reads.length==3,'menu ukazuje platný odečet Claude a místní odečet Codexu');
+ await A.sada();A.prehledLimitu(true);t(reads.length==3,'vykreslení neobnovuje údaje');
+ await A.obnovLimity();t(reads.length==6,'obnova znovu načítá všechny zdroje');
  console.log(bad?'SELHALO':'model OK');process.exit(bad?1:0)})();

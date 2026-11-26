@@ -32,6 +32,8 @@ with sync_playwright() as p:
         n2 = len(pg.query_selector_all(".nt button"))
         chk(n2 > n1, f"{kanal}: Pokročilý režim nepřidal dlaždice ({n1} -> {n2})")
         # 3 menu bez duplicit: připnuté položky nejsou ve skupinách znovu
+        pg.locator("#limside").get_by_text("Claude", exact=True).wait_for()
+        chk(pg.locator("#limside .ai-track").count() == 4, f"{kanal}: AI limity v menu")
         dup = pg.evaluate("()=>[...document.querySelectorAll('aside .pins .nav')].map(e=>e.dataset.v).filter(v=>document.querySelector('aside .grp [data-v=\"'+v+'\"]'))")
         chk(not dup, f"{kanal}: položky jsou v menu dvakrát: {dup}")
         # 4 žádné plovoucí prvky

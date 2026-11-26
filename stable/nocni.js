@@ -17,7 +17,7 @@ function idZ(id){var m=/^nf(\d+)$/.exec(String(id));return m?+m[1]:0}
 async function pumpa(){if(!ok()||!LS('elzaMostKod'))return null;var s;try{s=await most('/stav')}catch(e){ST=null;return null}ST=s;var R=await rady(),mine=R.filter(function(r){return patri(r,s.pc)}),u=mine.map(ulohaZ).filter(Boolean);
  if(u.length){await most('/fronta',{ulohy:u});for(var i=0;i<u.length;i++)await SDL.write(L,idZ(u[i].id),{Title:u[i].id,Stav:'predano',Stanice:s.pc})}
  var v=(await most('/fronta/vysledky')).vysledky||[],ids=[];for(var k=0;k<v.length;k++){var x=v[k],id=idZ(x.id);if(!id)continue;var u2=x.usage?(' · '+x.usage.vstup+'/'+x.usage.vystup+' tok'):'';await SDL.write(L,id,{Title:x.id,Stav:x.stav=='hotovo'?'hotovo':'chyba',Vysledek:String(x.stav=='hotovo'?x.text:x.chyba||'chyba').slice(0,60000),Kdy:(x.konec||'')+u2});ids.push(x.id)}
- if(ids.length)await most('/fronta/potvrdit',{ids:ids});return s}
+ if(ids.length){if(window.AI)AI.obnovLimity();await most('/fronta/potvrdit',{ids:ids})}return s}
 function plan(){if(PUMPA)return;PUMPA=setInterval(function(){pumpa().catch(function(){})},600000)}
 function stanice(){var a=[];try{a=JSON.parse(LS('elzaStanice')||'[]')}catch(e){}if(ST&&ST.pc&&a.indexOf(ST.pc)<0){a.push(ST.pc);LS('elzaStanice',JSON.stringify(a))}return a}
 var ST_T={ceka:'čeká na stanici',predano:'předáno mostu',hotovo:'hotovo, čeká na schválení',chyba:'chyba',prijato:'přijato',zahozeno:'zahozeno'};

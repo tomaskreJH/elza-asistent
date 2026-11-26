@@ -97,36 +97,135 @@ async function diagMost(){
 async function claudeCli(c,q){var j=await most('/claude',{model:c.model,system:SYS,prompt:usr(q)},'Claude (předplatné)');c.uz=j.usage||null;return String(j.text||'').trim()}
 async function ollama(c,q){var j=await most('/ollama',{model:c.model,system:SYS,prompt:usr(q)},'Ollama');c.uz=j.usage||null;return String(j.text||'').trim()}
 /* 0.77.0 ChatGPT (Codex): oficiální Codex CLI přihlášený ChatGPT účtem (předplatné, žádné API); model se bere z nastavení Codexu, vlastní model se předá jen ve tvaru bezpečného názvu */
-async function codexCli(c,q){var j=await most('/codex',{model:c.model==CXM?'':c.model,system:SYS,prompt:usr(q)},CX);c.uz=j.usage||null;LS('elzaCodexPouzit','1');return String(j.text||'').trim()}
+async function codexCli(c,q){var j=await most('/codex',{model:c.model==CXM?'':c.model,system:SYS,prompt:usr(q)},CX);c.uz=j.usage||null;return String(j.text||'').trim()}
 var PROV={Copilot:copilot,'Claude (předplatné)':claudeCli,'ChatGPT (Codex)':codexCli,'Lokální (Ollama)':ollama,Claude:claude,ChatGPT:openai,Gemini:gemini};
 var BEZ_USD={Copilot:1,'Claude (předplatné)':1,'ChatGPT (Codex)':1,'Lokální (Ollama)':1};
 /* přehled předplatného: ruční údaje v tomto prohlížeči (služby neposkytují limity přes API) */
 var PRED=[['Claude','Max / Pro','5 h okno, týdenní limit'],['Copilot','M365 Copilot','podle licence'],['ChatGPT','Plus / Team','zprávy za 3 h, týden'],['Lokální (Ollama)','zdarma','jen výkon PC']];
-function predUi(){var d={};try{d=JSON.parse(LS('elzaPred')||'{}')}catch(e){}return '<div id=limkarta></div><h3>Předplatné jednotlivých AI (ruční záloha, hlavně Copilot a ChatGPT)</h3><p class=note>Služby limity přes rozhraní neposkytují, proto je vyplníte jednou ručně (zůstává jen v tomto prohlížeči). Obnova 5 h okna a týdne se dopočítá.</p><table><tr><th>AI<th>Plán<th>Limity<th>Obnova 5 h okna<th>Obnova týdne</tr>'+PRED.map(function(p,i){var x=d[p[0]]||{};return '<tr><td><b>'+esc(p[0])+'</b><td><input id="pp'+i+'" value="'+esc(x.plan||p[1])+'"><td class=note>'+esc(p[2])+'<td><input id="po'+i+'" type=time value="'+esc(x.okno||'')+'">'+zbyva(x.okno,5)+'<td><input id="pt'+i+'" type=date value="'+esc(x.tyden||'')+'">'+zbyvaD(x.tyden)+'</tr>'}).join('')+'</table><div class=bar><button class=g data-pred=1>Uložit předplatné</button></div>'}
+function predUi(){var d={};try{d=JSON.parse(LS('elzaPred')||'{}')}catch(e){}return '<h3>Připojení a limity</h3><div id=limkarta></div>'+claudeManualUi()+'<h3>Předplatné jednotlivých AI (ruční záloha, hlavně Copilot a ChatGPT)</h3><p class=note>Služby limity přes rozhraní neposkytují, proto je vyplníte jednou ručně (zůstává jen v tomto prohlížeči). Obnova 5 h okna a týdne se dopočítá.</p><table><tr><th>AI<th>Plán<th>Limity<th>Obnova 5 h okna<th>Obnova týdne</tr>'+PRED.map(function(p,i){var x=d[p[0]]||{};return '<tr><td><b>'+esc(p[0])+'</b><td><input id="pp'+i+'" value="'+esc(x.plan||p[1])+'"><td class=note>'+esc(p[2])+'<td><input id="po'+i+'" type=time value="'+esc(x.okno||'')+'">'+zbyva(x.okno,5)+'<td><input id="pt'+i+'" type=date value="'+esc(x.tyden||'')+'">'+zbyvaD(x.tyden)+'</tr>'}).join('')+'</table><div class=bar><button class=g data-pred=1>Uložit předplatné</button></div>'}
 function zbyva(h,n){if(!h)return '';var p=h.split(':'),t=new Date();t.setHours(+p[0],+p[1],0,0);var m=Math.round((t-new Date())/6e4);return m>0&&m<=n*60?' <span class=note>za '+Math.floor(m/60)+' h '+m%60+' min</span>':' <span class=note>volné</span>'}
 function zbyvaD(d){if(!d)return '';var n=new Date(d).setHours(23,59)-new Date();n=n/864e5;var dd2=Math.ceil(n);while(dd2<0)dd2+=7;return ' <span class=note>za '+dd2+' d</span>'}
 function mostUi(){return '<h3>Lokální most (Claude, Codex a Ollama)</h3><p class=note>Most běží jen na tomto počítači (127.0.0.1), přijme jen ELZA asistenta a jen s párovacím kódem. Claude používá vaše předplatné, žádný API klíč, žádná platba navíc. Instalace: Návod → Claude CLI v aplikaci.</p><div class=bar><input id=mkod type=password placeholder="párovací kód'+(LS('elzaMostKod')?' (uložen)':'')+'" autocomplete=off><button class=g data-most=ulozit>Spárovat</button><button class=g data-most=stav>Zkontrolovat most</button>'+(LS('elzaMostKod')?'<button class=g data-most=smazat>Zrušit párování</button>':'')+'</div><div id=mstav class=note></div>'}
-/* Most 3 odkazuje na /usage v Claude CLI. Starší mosty mohou vrátit údaje pro stávající měřák. */
-var LIM=null,LIMT=0;async function limity(f){if(!f&&LIM&&Date.now()-LIMT<(LIM.ok?60000:15000))return LIM;LIMT=Date.now();try{if(!LS('elzaMostKod'))throw new Error('most není spárovaný (AI nastavení → Lokální most).');var j=await most('/limity');LIM=j&&j.ok?j:{ok:false,duvod:(j&&j.duvod)||'most limity nevrátil.'}}catch(e){LIM={ok:false,duvod:String(e&&e.message||e)}}return LIM}
+var LIM=null,LIMX=null,pripojeni=null,refreshLimitu=null,limityZnovu=false;
+async function limity(){return LIM}
+async function limityCx(){return LIMX}
+function rucniClaude(){
+ try{return JSON.parse(LS('elzaClaudeUsage:'+me())||'{}')}catch(e){return {}}
+}
+function claudeOkna(L){
+ var r=rucniClaude();
+ return [['5 h','pet'],['7 dní','tyden']].map(function(x){
+  var z=L&&L.ok&&L[x[1]],m=r[x[1]];
+  if(z&&Number.isFinite(z.pct)&&(!z.konec||Date.parse(z.konec)>Date.now()))return {n:x[0],p:z.pct,k:z.konec};
+  if(m&&Number.isFinite(m.pct)&&Date.parse(m.konec)>Date.now())return {n:x[0],p:m.pct,k:m.konec,d:'Ruční stav'};
+  return {n:x[0],p:null,d:'Odečet je v Claude pod /usage'};
+ });
+}
+function poskytovatele(){
+ if(!pripojeni)return [];
+ var st=pripojeni.most||{},o=[];
+ if(st.claude||LS('elzaMostKod')||Object.keys(rucniClaude()).length)o.push({n:'Claude',s:st.claude?'CLI nalezeno':st.most?'CLI nenalezeno':'Ověřte most',w:claudeOkna(LIM)});
+ if(st.codex||LIMX&&LIMX.ok)o.push({n:'Codex',s:st.codex?'CLI nalezeno':'Ověřte most',w:LIMX&&LIMX.ok?LIMX.okna:[{n:'Limit',p:null,d:'Čeká na místní údaj'}]});
+ if(st.ollama&&st.ollama.length)o.push({n:'Ollama',s:'Lokální',w:[{n:'Bez předplatného',p:null}]});
+ if(pripojeni.copilot)o.push({n:'Copilot',s:'Microsoft 365',w:[{n:'Podle licence',p:null}]});
+ ['Claude','ChatGPT','Gemini'].forEach(function(n){if(key(n))o.push({n:n+' API',s:'Klíč uložen',w:[{n:'Měsíční strop ELZY',p:pripojeni.api}]})});
+ return o;
+}
+function malyLimit(o){
+ return '<span class=ai-meter><span>'+esc(o.n)+'</span><b>'+(Number.isFinite(o.p)?Math.round(o.p)+' %':'–')+'</b></span>'+
+ (Number.isFinite(o.p)?'<span class="ai-track'+(o.p>=95?' ai-red':o.p>=80?' ai-amber':'')+'" aria-hidden=true><i style="width:'+Math.max(0,Math.min(100,o.p))+'%"></i></span>':'')+
+ (o.d||o.k?'<small>'+esc([o.d,o.k&&konci(o.k)].filter(Boolean).join(' · '))+'</small>':'');
+}
+function prehledLimitu(menu){
+ var P=poskytovatele();
+ if(!P.length)return '<p class=note>'+(pripojeni?'Žádné ověřené připojení AI.':'Zjišťuji připojení…')+'</p>';
+ return '<div class=ai-signals'+(menu?' ai-signals-menu':'')+'>'+P.map(function(x){
+  return '<div class=ai-signal><div class=ai-signal-title><b>'+esc(x.n)+'</b><small>'+esc(x.s)+'</small></div><div class=ai-windows>'+x.w.map(function(o){return '<div>'+malyLimit(o)+'</div>'}).join('')+'</div></div>';
+ }).join('')+'</div>';
+}
+function vykresliLimity(){
+ if(typeof document=='undefined')return;
+ ['limt','limkarta','limside'].forEach(function(id){
+  var el=document.getElementById(id);
+  if(el)el.innerHTML=prehledLimitu(id=='limside');
+ });
+}
+async function nactiLimity(){
+ var st=null,L=null,X=null,api=null,active=false;
+ var u=me(),demo=typeof tok!='undefined'&&tok=='demo';
+ if(demo){
+  pripojeni={most:{claude:'nalezen',codex:'nalezen',ollama:['demo']},copilot:false,api:null};
+  LIM={ok:true,pet:{pct:26},tyden:{pct:81}};
+  LIMX={ok:true,okna:[{n:'5 h',p:38},{n:'7 dní',p:62}]};
+  vykresliLimity();
+  return;
+ }
+ await Promise.all([
+  gtok(false).then(function(){active=true},function(){}),
+  (async function(){
+   if(!LS('elzaMostKod'))return;
+   try{st=await most('/stav');if(st.most>=3)[L,X]=await Promise.all([most('/limity').catch(function(){return null}),most('/limity-codex').catch(function(){return null})])}catch(e){}
+  })(),
+  (async function(){
+   if(!['Claude','ChatGPT','Gemini'].some(function(n){return key(n)}))return;
+   try{
+    var now=mesic(new Date().toISOString()),sum=(await zazn(true)).reduce(function(a,r){return a+(String(r.Kdo||'').toLowerCase()==u&&mesic(r.Kdy)==now?(+r.OdhadUSD||0):0)},0);
+    api=Math.round(100*sum/limitUSD());
+   }catch(e){}
+  })()
+ ]);
+ if(me()!=u)return;
+ pripojeni={most:st,copilot:active,api:api};
+ LIM=L;
+ LIMX=X;
+ if(X&&X.ok)X.okna=[X.pet,X.tyden].filter(Boolean).map(function(w){
+  return {n:w.okno||'Okno',p:w.konec&&Date.parse(w.konec)<=Date.now()?null:w.pct,k:w.konec,d:X.stari?'Odečet '+X.stari:''};
+ });
+ vykresliLimity();
+}
+function obnovLimity(){
+ if(typeof tok=='undefined'||!tok)return Promise.resolve();
+ if(refreshLimitu){limityZnovu=true;return refreshLimitu}
+ refreshLimitu=(async function(){
+  do{limityZnovu=false;await nactiLimity()}while(limityZnovu)
+ })().catch(function(){}).finally(function(){refreshLimitu=null});
+ return refreshLimitu;
+}
+function claudeManualUi(){
+ var r=rucniClaude();
+ return '<details class=ai-manual><summary>Zadat odečet Claude</summary><p class=note>V Claude spusťte /usage. Zadejte využitá procenta a čas obnovy. Uložený odečet platí do obnovy okna.</p>'+
+ [['5 hodin','pet'],['7 dní','tyden']].map(function(x){
+  var m=r[x[1]]||{},k=m.konec&&new Date(m.konec),local=k&&!isNaN(k)?new Date(k.getTime()-k.getTimezoneOffset()*60000).toISOString().slice(0,16):'';
+  return '<div class=bar><label>'+x[0]+' · využito % <input id="claude-'+x[1]+'-pct" type=number min=0 max=100 value="'+(Number.isFinite(m.pct)?m.pct:'')+'"></label><label>Obnova <input id="claude-'+x[1]+'-reset" type=datetime-local value="'+esc(local||'')+'"></label></div>';
+ }).join('')+'<button class=g data-claudeusage=1>Uložit odečet</button> <a href="https://claude.ai/settings/usage" target=_blank rel=noopener>Využití v Claude ↗</a> <span class=note id=claude-usage-msg role=status></span></details>';
+}
+function ulozClaudeUsage(){
+ var r={},m=document.getElementById('claude-usage-msg'),valid=['pet','tyden'].every(function(x){
+  var p=document.getElementById('claude-'+x+'-pct').value,k=document.getElementById('claude-'+x+'-reset').value;
+  if(p===''&&!k)return true;
+  if(p===''||+p<0||+p>100||!(Date.parse(k)>Date.now()))return false;
+  r[x]={pct:+p,konec:new Date(k).toISOString()};return true;
+ });
+ if(!valid){m.textContent='Vyplňte procenta od 0 do 100 a budoucí čas obnovy.';return}
+ LS('elzaClaudeUsage:'+me(),JSON.stringify(r));vykresliLimity();m.textContent='Odečet uložen v tomto prohlížeči.';
+}
 /* 0.78.0 jednotné měřáky limitů: jeden malý prvek (.mr) a jedna sada (sada) pro Můj den, menu i AI nastavení; zobrazí vždy všechny napojené AI (Claude, a Codex je-li napojen), nedostupné jako pomlčka, nikdy nula */
 function mrCss(){if(typeof document=='undefined'||document.getElementById('mrcss'))return;var e=document.createElement('style');e.id='mrcss';e.textContent='.mrs{display:flex;flex-wrap:wrap;gap:6px;cursor:pointer}.mr{position:relative;overflow:hidden;min-width:96px;padding:4px 8px 8px;border-radius:8px;background:rgba(128,128,128,.18);font-size:11px;line-height:1.3;color:inherit}.mr b{float:right;font-size:12px;margin-left:8px}.mr em{display:block;font-style:normal;opacity:.7;font-size:10px}.mr i{position:absolute;left:0;bottom:0;height:3px;background:var(--lc,#2e8b57)}.mr.w{--lc:#d68910}.mr.e{--lc:#e03a28}.mr.n b{opacity:.6}';document.head.appendChild(e)}
 function meric(m){var ok=typeof m.p=='number'&&!isNaN(m.p),v=ok?Math.max(0,Math.min(100,Math.round(m.p))):0,c=!ok?'n':v>=95?'e':v>=80?'w':'',t=ok?v+' % využito'+(m.k?', '+konci(m.k):'')+(m.s?' (údaj z '+m.s+')':''):'nedostupné'+(m.d?': '+m.d:'');return '<span class="mr '+c+'" title="'+esc(t)+'"><b>'+(ok?v+' %':'–')+'</b>'+esc(m.n)+(ok&&m.k?'<em>'+esc(konci(m.k))+'</em>':'')+(ok?'<i style="width:'+v+'%"></i>':'')+'</span>'}
 function mericeHtml(M){mrCss();return '<div class=mrs data-vz=lim>'+M.map(meric).join('')+'</div>'}
 function mClaude(L){return L&&L.ok&&L.pet&&L.tyden?[{n:'Claude 5 h',p:L.pet.pct,k:L.pet.konec},{n:'Claude 7 dní',p:L.tyden.pct,k:L.tyden.konec}]:[{n:'Claude',p:null,d:(L&&L.duvod)||'most neběží'}]}
 function mCodex(X){if(X&&X.ok){var o=[];[X.pet,X.tyden].forEach(function(w){if(w&&(w.okno||typeof w.pct=='number'))o.push({n:'Codex '+(w.okno||'okno'),p:w.pct,k:w.konec,s:X.stari})});return o}return LS('elzaCodexPouzit')?[{n:'Codex',p:null,d:(X&&X.duvod)||'most neběží'}]:[]}
-async function sada(f){var L=await limity(f),X=await limityCx(f);return mClaude(L).concat(mCodex(X))}
+async function sada(){return mClaude(LIM).concat(mCodex(LIMX))}
 function konci(t){if(!t)return '';var m=Math.round((new Date(t)-new Date())/6e4);if(isNaN(m))return '';if(m<=0)return 'obnoveno';return m<120?'obnova za '+m+' min':m<2880?'obnova za '+Math.round(m/60)+' h':'obnova za '+Math.round(m/1440)+' d'}
 function limityHtml(L){if(L&&L.ok)return mericeHtml(mClaude(L));return '<p class=note>'+esc((L&&L.duvod)||'Skutečné limity Claude nejsou dostupné. Stav najdete v Claude CLI pod /usage.')+'</p>'}
-/* 0.77.0 limity Codexu: most je čte jen z místních záznamů Codex CLI (~/.codex/sessions), bez přihlašovacího tokenu a bez dotazu na cizí službu; formát není oficiálně zdokumentován, proto při nenalezení 'nedostupné', nikdy nula */
-var LIMX=null,LIMXT=0;async function limityCx(f){if(!f&&LIMX&&Date.now()-LIMXT<(LIMX.ok?60000:15000))return LIMX;LIMXT=Date.now();try{if(!LS('elzaMostKod'))throw new Error('most není spárovaný (AI nastavení → Lokální most).');var j=await most('/limity-codex');LIMX=j&&j.ok?j:{ok:false,duvod:(j&&j.duvod)||'most limity Codexu nevrátil.'}}catch(e){LIMX={ok:false,duvod:String(e&&e.message||e)}}return LIMX}
 async function setriCodex(c){
  if(c.tool!=CX||c.model==CXU||!LS('elzaMostKod'))return;
  var L=await limityCx(false);
- if(L.ok&&mCodex(L).some(function(w){return w.p>=95&&(!w.k||new Date(w.k)>Date.now())}))
+ if(L&&L.ok&&mCodex(L).some(function(w){return w.p>=95&&(!w.k||new Date(w.k)>Date.now())}))
   throw new Error('Codex má využito alespoň 95 % v dostupném okně. Zvolte úspornou Lunu, lokální model nebo počkejte na obnovu limitu.');
 }
 function limityCxHtml(L){if(!L||!L.ok)return '<p class=note>Limity ChatGPT (Codex) nejsou dostupné ('+esc((L&&L.duvod)||'most neběží nebo Codex CLI ještě nic nespustil')+'). Nic se neomezuje; platí ruční tabulka níže.</p>';var M=mCodex(L),mx=0;M.forEach(function(m){if(typeof m.p=='number')mx=Math.max(mx,m.p)});return mericeHtml(M)+(mx>=80?'<div class=wait>Limit Codexu je nad 80 %. Doporučuji pro méně náročné úlohy Lunu nebo Lokální (Ollama); při 95 % aplikace pozastaví ostatní modely Codexu, volbu u Elzáčka lze kdykoli vrátit tlačítkem Zpět.</div>':'')+(L.stari?'<p class=note>Údaj je z '+esc(L.stari)+', ne z dneška.</p>':'')}
-async function limityKarta(id){var el=document.getElementById(id);if(!el)return;var L=await limity(true),X=await limityCx(true),M=mClaude(L).concat(mCodex(X)),mx=0;M.forEach(function(m){if(typeof m.p=='number')mx=Math.max(mx,m.p)});el.innerHTML='<h3>Limity předplatných AI</h3>'+mericeHtml(M)+(L&&L.ok?'':'<p class=note>Limity Claude nejsou dostupné: '+esc((L&&L.duvod)||'most neběží')+'</p>')+(X&&X.ok&&X.stari?'<p class=note>Údaj Codexu je z '+esc(X.stari)+', ne z dneška.</p>':'')+(mx>=80?'<div class=wait>Některý limit je nad 80 %. Doporučuji pro méně důležité úlohy levnější nástroj (Claude Haiku nebo Ollama); nic se nepřepíná samo, volbu u Elzáčka lze vrátit tlačítkem Zpět.</div>':'')}
+function limityKarta(){vykresliLimity()}
 var OLM=function(){return LS('elzaOllamaModel')||'qwen3.5:4b'};
 /* 0.69.8: prahy podle skutečných čísel: 5 h okno 80/95 %; týden 85/97 %, ale dřív (od 60 %), když spotřeba předbíhá uplynulý čas týdne o 30 b. (týdenní strop se tak nevyčerpá před koncem týdne) */
 function prah(L){var a=L.pet.pct||0,b=L.tyden.pct||0,t=0;try{var z=(new Date(L.tyden.konec)-new Date())/6048e5;if(z>=0&&z<=1)t=(1-z)*100}catch(e){}var w=b>=97?97:b>=85?85:(b>=60&&t&&b-t>=30)?80:0;return Math.max(a>=95?95:a>=80?80:0,w)}
@@ -146,8 +245,8 @@ var SELA='Id,Title,Nastroj,Model,Zadani,Kdo,Kdy,VstupZnaku,VystupZnaku,OdhadUSD,
 async function zazn(force){if(force)delete cache['AIZaznam'+SELA];try{return await list('AIZaznam',SELA)}catch(e){return []}}
 function limitUSD(){var v=parseFloat(LS('elzaLimitUSD'));return isNaN(v)?10:v}
 async function kontrolaLimitu(tool){if(BEZ_USD[tool])return;var m0=mesic(new Date().toISOString()),s=0;(await zazn(true)).forEach(function(r){if(String(r.Kdo||'').toLowerCase()==me()&&mesic(r.Kdy)==m0)s+=+r.OdhadUSD||0});if(s>=0.8*limitUSD()&&s<limitUSD()){try{var bn=document.getElementById('aiwarn');if(!bn){bn=document.createElement('div');bn.id='aiwarn';bn.className='wait';bn.style.borderLeftColor='var(--w)';var mm=document.getElementById('main');if(mm)mm.insertBefore(bn,mm.firstChild);else document.body.appendChild(bn)}bn.textContent='Pozor: spotřeba AI dosáhla '+Math.round(100*s/limitUSD())+' % měsíčního stropu ('+s.toFixed(2)+' z '+limitUSD()+' USD).'}catch(e){}}if(s>=limitUSD())throw new Error('Měsíční strop AI nástrojů s API ('+limitUSD()+' USD, odhad) je vyčerpán. Změníte ho v menu AI záznam a náklady.')}
-function zapis(id,c,q,out,err){try{var tx=String(q&&q.task||'').slice(0,250),i=tx.length+String(q&&q.data||'').length,o=String(out||'').length;sp("lists/getbytitle('AIZaznam')/items",{Title:id,Nastroj:c.tool,Model:(c.model||'')+(c.uz?' · '+c.uz.vstup+'/'+c.uz.vystup+' tok'+(c.uz.rezim?' · '+c.uz.rezim:'')+(c.uz.usd?' · ekv. $'+(+c.uz.usd).toFixed(3):''):''),Zadani:tx,Kdo:me(),Kdy:new Date().toISOString(),VstupZnaku:i,VystupZnaku:o,OdhadUSD:usd(c.tool,i,o),Stav:err?'chyba':'ok',Chyba:err?String(err.message||err).slice(0,200):''}).catch(function(){})}catch(e){}}
-async function ask(id,q){if(window.aiRefresh)await window.aiRefresh();if(window.aiOk&&!window.aiOk())throw new Error('Nejdřív potvrďte Pravidla AI (menu Pravidla AI).');if(window.OCHRANA)q=zaruc(q);await nacti();var ag=agent(id),t0=q.task;if(ag.c&&ag.id==id){q=Object.assign({},q,{task:blok(ag,t0)+q.task})}if(window.KTX&&!q.bezProfilu){try{await KTX.nacti();q=Object.assign({},q,{task:KTX.blok(ag.id,t0)+q.task})}catch(e){}}var c=await pojistka(await cfg(id,q.narocnost)),f=PROV[c.tool];if(!f)throw new Error('Nástroj '+c.tool+' zatím nemá napojení.');await setriCodex(c);await kontrolaLimitu(c.tool);if(q.vzdyNahled&&(!window.KTX||!KTX.nahled))throw new Error('Náhled zadání není dostupný.');if(window.KTX&&(q.vzdyNahled||KTX.potreba(ag.id))){var cp=c.tool=='Copilot';if(!(await KTX.nahled({id:ag.id,agent:ag.n,always:q.vzdyNahled,tool:c.tool,model:c.model,sys:cp?'':SYS,user:cp?SYS+'\n\n'+q.task:usr(q),data:cp&&q.data?'<data>'+dd(q.data)+'</data>':''})))throw new Error('Odeslání zamítnuto v náhledu, nic neodešlo.')}var out,err=null;try{out=await f(c,q)}catch(e){err=e}zapis(id,c,q,out,err);if(err)throw err;if(!out)throw new Error(c.tool+' nevrátil odpověď.');return out}
+function zapis(id,c,q,out,err){try{var tx=String(q&&q.task||'').slice(0,250),i=tx.length+String(q&&q.data||'').length,o=String(out||'').length;return sp("lists/getbytitle('AIZaznam')/items",{Title:id,Nastroj:c.tool,Model:(c.model||'')+(c.uz?' · '+c.uz.vstup+'/'+c.uz.vystup+' tok'+(c.uz.rezim?' · '+c.uz.rezim:'')+(c.uz.usd?' · ekv. $'+(+c.uz.usd).toFixed(3):''):''),Zadani:tx,Kdo:me(),Kdy:new Date().toISOString(),VstupZnaku:i,VystupZnaku:o,OdhadUSD:usd(c.tool,i,o),Stav:err?'chyba':'ok',Chyba:err?String(err.message||err).slice(0,200):''}).catch(function(){})}catch(e){}}
+async function ask(id,q){if(window.aiRefresh)await window.aiRefresh();if(window.aiOk&&!window.aiOk())throw new Error('Nejdřív potvrďte Pravidla AI (menu Pravidla AI).');if(window.OCHRANA)q=zaruc(q);await nacti();var ag=agent(id),t0=q.task;if(ag.c&&ag.id==id){q=Object.assign({},q,{task:blok(ag,t0)+q.task})}if(window.KTX&&!q.bezProfilu){try{await KTX.nacti();q=Object.assign({},q,{task:KTX.blok(ag.id,t0)+q.task})}catch(e){}}var c=await pojistka(await cfg(id,q.narocnost)),f=PROV[c.tool];if(!f)throw new Error('Nástroj '+c.tool+' zatím nemá napojení.');await setriCodex(c);await kontrolaLimitu(c.tool);if(q.vzdyNahled&&(!window.KTX||!KTX.nahled))throw new Error('Náhled zadání není dostupný.');if(window.KTX&&(q.vzdyNahled||KTX.potreba(ag.id))){var cp=c.tool=='Copilot';if(!(await KTX.nahled({id:ag.id,agent:ag.n,always:q.vzdyNahled,tool:c.tool,model:c.model,sys:cp?'':SYS,user:cp?SYS+'\n\n'+q.task:usr(q),data:cp&&q.data?'<data>'+dd(q.data)+'</data>':''})))throw new Error('Odeslání zamítnuto v náhledu, nic neodešlo.')}var out,err=null;try{out=await f(c,q)}catch(e){err=e}Promise.resolve(zapis(id,c,q,out,err)).finally(obnovLimity);if(err)throw err;if(!out)throw new Error(c.tool+' nevrátil odpověď.');return out}
 
 /* Elzáčci podle rolí (0.58.0, B11–B14 z docs/INSPIRACE-SYNIRU.md): galerie, agent jednou větou, balíček role (Elzáček + postupy s popisem „kdy“), líné načítání postupů.
    Vlastní Elzáčky ukládá seznam ElzacekDef (Správa → Seznamy), do jeho založení jen tento prohlížeč. Nový Elzáček je vždy v režimu schvalování akcí (ochrana.js). */
@@ -221,7 +320,7 @@ function stat(R,now,nm){now=now||Date.now();var D=[7,30,90],o={};(R||[]).forEach
  return Object.keys(o).map(function(k){return o[k]}).filter(function(x){return x.d[2].v>0}).sort(function(a,b){return b.d[2].v-a.d[2].v})}
 function statTab(R){var nm=function(k){var a=agent(k);return a&&a.n||k};var S=stat(R,Date.now(),nm);
  return '<h3>Úspěšnost a znaky po Elzáčcích (7 / 30 / 90 dní)</h3><p class=note>Úspěšnost = volání bez chyby. Znaky = vstup + výstup; čím méně znaků na volání, tím levnější běh.</p><table><tr><th>Elzáček<th>7 dní<th>30 dní<th>90 dní</tr>'+(S.length?S.map(function(x){return '<tr><td>'+esc(x.n)+x.d.map(function(c){return '<td>'+(c.v?c.v+'× · '+Math.round(100*c.ok/c.v)+' % · '+c.z+' zn.':'–')}).join('')+'</tr>'}).join(''):'<tr><td colspan=4 class=note>Zatím žádné volání.</tr>')+'</table>'}
-window.AI={setriCodex:setriCodex,sada:sada,meric:meric,mericeHtml:mericeHtml,CX:CX,limityCxHtml:limityCxHtml,limityCx:limityCx,MODELY:modely,PV:PV,vaha:vaha,pvVyber:pvVyber,doporuc:doporuc,tokRezim:tokRezim,nakladyTab:nakladyTab,tokPanel:tokPanel,prah:prah,konci:konci,priprav:priprav,zapis:zapis,olm:OLM,limity:limity,limityHtml:limityHtml,limityKarta:limityKarta,modelPodle:modelPodle,MDL:MDL,EF:EF,SM:SM,hlavicka:hlavicka,rezimZ:rezimZ,eskalace:eskalace,poznatek:poznatek,bezH:bezH,stat:stat,statTab:statTab,recepce:recepce,revize:revize,shrn:shrn,tym:tym,planTymu:planTymu,ask:ask,cfg:cfg,agents:AGENTS,nacti:nacti,blok:blok,vyber:vyber,presets:PRE,moji:function(){return MOJI},uloz:uloz,odeber:odeber,pridejPre:pridejPre,parseNavrh:parseNavrh};
+window.AI={obnovLimity:obnovLimity,vykresliLimity:vykresliLimity,prehledLimitu:prehledLimitu,setriCodex:setriCodex,sada:sada,meric:meric,mericeHtml:mericeHtml,CX:CX,limityCxHtml:limityCxHtml,limityCx:limityCx,MODELY:modely,PV:PV,vaha:vaha,pvVyber:pvVyber,doporuc:doporuc,tokRezim:tokRezim,nakladyTab:nakladyTab,tokPanel:tokPanel,prah:prah,konci:konci,priprav:priprav,zapis:zapis,olm:OLM,limity:limity,limityHtml:limityHtml,limityKarta:limityKarta,modelPodle:modelPodle,MDL:MDL,EF:EF,SM:SM,hlavicka:hlavicka,rezimZ:rezimZ,eskalace:eskalace,poznatek:poznatek,bezH:bezH,stat:stat,statTab:statTab,recepce:recepce,revize:revize,shrn:shrn,tym:tym,planTymu:planTymu,ask:ask,cfg:cfg,agents:AGENTS,nacti:nacti,blok:blok,vyber:vyber,presets:PRE,moji:function(){return MOJI},uloz:uloz,odeber:odeber,pridejPre:pridejPre,parseNavrh:parseNavrh};
 /* UI */
 function css(){if(document.getElementById('aicss'))return;var s=document.createElement('style');s.id='aicss';s.textContent='.aiw{background:var(--p);border:1px solid var(--l);border-radius:12px;padding:10px 12px;margin:10px 0;white-space:pre-wrap}.ai-t input{min-width:140px}.gc{display:inline-block;vertical-align:top;width:290px;max-width:100%;box-sizing:border-box;margin:4px;padding:8px 10px;background:var(--p);border:1px solid var(--l);border-radius:12px}.gc .note{display:block;margin:3px 0}button.g{cursor:pointer;background:none;color:var(--f);border:1px solid var(--l);border-radius:9px;padding:6px 10px;font:inherit}';document.head.appendChild(s)}
 var ST={};
@@ -256,18 +355,19 @@ function gal(){var mine={};MOJI.forEach(function(a){mine[a.id]=1});var o='<h3>Ga
  return o}
 function nastM(){var mn=document.getElementById('main');limityKarta('limkarta');function msg(t){var s=document.getElementById('ps');if(s)s.textContent=t}
  mn.onchange=function(e){var el=e.target,id=el.id||'',m1=/^at(\d+)$/.exec(id),m2=/^am(\d+)$/.exec(id);if(m1){var sm=document.getElementById('am'+m1[1]),vv=document.getElementById('av'+m1[1]);if(sm){sm.innerHTML=modOpt(el.value,'__auto')}if(vv)vv.style.display='none'}else if(m2){var v2=document.getElementById('av'+m2[1]);if(v2)v2.style.display=el.value=='__vl'?'block':'none'}};
- mn.onclick=async function(e){var el=e.target.closest('[data-aisv],[data-aitest],[data-aitp],[data-aipv],[data-aizr],[data-aitok],[data-aiundo],[data-most],[data-pred],[data-aikey],[data-aidel],[data-aicp],[data-galadd],[data-galdel],[data-agef],[data-agsm],[data-vet],[data-vetsv],[data-rcp],[data-tym]');if(!el)return;var d=el.dataset;try{
+ mn.onclick=async function(e){var el=e.target.closest('[data-aisv],[data-aitest],[data-aitp],[data-aipv],[data-aizr],[data-aitok],[data-aiundo],[data-most],[data-claudeusage],[data-pred],[data-aikey],[data-aidel],[data-aicp],[data-galadd],[data-galdel],[data-agef],[data-agsm],[data-vet],[data-vetsv],[data-rcp],[data-tym]');if(!el)return;var d=el.dataset;try{
  if(d.aisv!=null){var i=+d.aisv,a=AGENTS[i],t=document.getElementById('at'+i).value,sv=document.getElementById('am'+i).value,md='auto';if(sv=='__vl'){md=document.getElementById('avt'+i).value.trim();if(!md){msg('Vlastní model je prázdný. Napište název modelu, nebo zvolte Automaticky.');return}}else if(sv!='__auto')md=sv;var c0=await cfg(a.id);await ulozAI(a,t,md,c0.pv);POSL='Uloženo: '+a.n+' → '+t+(md=='auto'?' (automaticky)':' · '+md)+'. Lze vrátit tlačítkem Zpět.';return go('ainast')}
  if(d.aipv!=null){var pp0=d.aipv.split('|'),ia=+pp0[0],a3=AGENTS[ia];await ulozAI(a3,document.getElementById('at'+ia).value,'auto',pp0[1]);POSL='Předvolba '+PV[pp0[1]]+': '+a3.n+'. Lze vrátit tlačítkem Zpět.';return go('ainast')}
  if(d.aizr!=null){var ib=+d.aizr,a4=AGENTS[ib],c4=await cfg(a4.id);await ulozAI(a4,c4.row&&c4.row.Nastroj||a4.t,'auto',c4.pv);POSL='Vlastní text zrušen, platí automatika: '+a4.n+'. Lze vrátit tlačítkem Zpět.';return go('ainast')}
  if(d.aitok){LS('elzaTok',d.aitok=='on'?JSON.stringify({p:'U',ts:Date.now()}):null);POSL=d.aitok=='on'?'Dočasně levnější tok zapnut (Claude předplatné → Haiku).':'Vráceno původní nastavení.';return go('ainast')}
  if(d.aiundo){var ul2=undoL(),x=ul2.pop();if(!x)return;LS('elzaAIUndo',JSON.stringify(ul2));var R3=await rows(true),ex3=R3.filter(function(r){return r.Agent==x.a&&String(r.Upn||'').toLowerCase()==me()})[0];if(ex3){await sp("lists/getbytitle('NastaveniAI')/items("+ex3.Id+")",x.prev||{Nastroj:agent(x.a).t,Model:'auto',Poznamka:'Osobní volba uživatele (vráceno)'},'MERGE');delete cache['NastaveniAI'+SEL_]}POSL='Vráceno: '+agent(x.a).n+'.';return go('ainast')}
  if(d.aitest!=null||d.aitp!=null){var pa=d.aitest!=null?[d.aitest]:d.aitp.split('|'),i2=+pa[0],a2=AGENTS[i2],box=document.getElementById('ar'+i2);box.textContent='AI pracuje…';var t2=document.getElementById('at'+i2).value,cc;if(pa[1]){cc=pvVyber(t2,a2,pa[1])}else{var sv2=document.getElementById('am'+i2).value,saved=await cfg(a2.id);cc=sv2=='__auto'&&t2==(saved.row&&saved.row.Nastroj||a2.t)?saved:{tool:t2,model:sv2=='__vl'?document.getElementById('avt'+i2).value.trim():sv2=='__auto'?autoModel(t2,a2):sv2}}
-  if(!cc.model){box.textContent='Vlastní model je prázdný.';return}var qq={task:'Odpověz jednou větou: kdo jsi a čím můžeš ELZE pomoci?',max:200},old=PROV[cc.tool];try{await setriCodex(cc);await kontrolaLimitu(cc.tool);var r=await old(cc,qq);zapis('Zkusit',cc,qq,r,null);box.textContent=r+' ['+cc.tool+' · '+cc.model+(cc.uz?' · '+cc.uz.vstup+'/'+cc.uz.vystup+' tok'+(cc.uz.rezim?', '+cc.uz.rezim:''):'')+']'}catch(er){zapis('Zkusit',cc,qq,'',er);box.innerHTML='<span class=r>'+esc(er.message)+'</span>'}return}
- if(d.most){var ms=document.getElementById('mstav');if(d.most=='ulozit'){var v0=document.getElementById('mkod').value.trim();if(v0.length<16){msg('Vložte celý párovací kód.');return}LS('elzaMostKod',v0);return go('ainast')}if(d.most=='smazat'){try{localStorage.removeItem('elzaMostKod')}catch(x){}return go('ainast')}ms.textContent='Zjišťuji…';try{ms.textContent=await diagMost()}catch(er){ms.textContent=er.message}return}
+  if(!cc.model){box.textContent='Vlastní model je prázdný.';return}var qq={task:'Odpověz jednou větou: kdo jsi a čím můžeš ELZE pomoci?',max:200},old=PROV[cc.tool];try{await setriCodex(cc);await kontrolaLimitu(cc.tool);var r=await old(cc,qq);Promise.resolve(zapis('Zkusit',cc,qq,r,null)).finally(obnovLimity);box.textContent=r+' ['+cc.tool+' · '+cc.model+(cc.uz?' · '+cc.uz.vstup+'/'+cc.uz.vystup+' tok'+(cc.uz.rezim?', '+cc.uz.rezim:''):'')+']'}catch(er){Promise.resolve(zapis('Zkusit',cc,qq,'',er)).finally(obnovLimity);box.innerHTML='<span class=r>'+esc(er.message)+'</span>'}return}
+ if(d.most){var ms=document.getElementById('mstav');if(d.most=='ulozit'){var v0=document.getElementById('mkod').value.trim();if(v0.length<16){msg('Vložte celý párovací kód.');return}LS('elzaMostKod',v0);obnovLimity();return go('ainast')}if(d.most=='smazat'){try{localStorage.removeItem('elzaMostKod')}catch(x){}obnovLimity();return go('ainast')}ms.textContent='Zjišťuji…';try{ms.textContent=await diagMost()}catch(er){ms.textContent=er.message}return}
+ if(d.claudeusage){ulozClaudeUsage();return}
  if(d.pred){var dt={};PRED.forEach(function(p,i){dt[p[0]]={plan:document.getElementById('pp'+i).value.trim(),okno:document.getElementById('po'+i).value,tyden:document.getElementById('pt'+i).value}});LS('elzaPred',JSON.stringify(dt));msg('Předplatné uloženo v tomto prohlížeči.');return go('ainast')}
- if(d.aikey){var v=document.getElementById('ak'+d.aikey).value.trim();if(v.length<10){msg('Vložte celý klíč.');return}LS('elzaKey_'+d.aikey,v);return go('ainast')}
- if(d.aidel){LS('elzaKey_'+d.aidel,null);return go('ainast')}
+ if(d.aikey){var v=document.getElementById('ak'+d.aikey).value.trim();if(v.length<10){msg('Vložte celý klíč.');return}LS('elzaKey_'+d.aikey,v);obnovLimity();return go('ainast')}
+ if(d.aidel){LS('elzaKey_'+d.aidel,null);obnovLimity();return go('ainast')}
  if(d.galadd){await pridejPre(d.galadd);return go('ainast')}
  if(d.galdel){await odeber(d.galdel);return go('ainast')}
  if(d.agef){var ag=MOJI.filter(function(x){return x.id==d.agef})[0];if(ag){var ord=['n','s','v'];await zmen(ag.id,'e',ord[(ord.indexOf(ag.e||'s')+1)%3])}return go('ainast')}
@@ -277,7 +377,7 @@ function nastM(){var mn=document.getElementById('main');limityKarta('limkarta');
  if(d.vetsv){var n2=ST.nav;if(!n2)return;var nm=document.getElementById('vn1').value.trim();if(!nm){msg('Doplňte jméno.');return}await uloz({id:'AG-X'+Date.now().toString(36),g:document.getElementById('vn2').value,n:nm.slice(0,40),d:document.getElementById('vn3').value.trim().slice(0,120),p:document.getElementById('vn4').value.trim().slice(0,600),t:CP,e:document.getElementById('vn5').value,m:SM.filter(function(x){return document.getElementById('vm_'+x[0]).checked}).map(function(x){return x[0]}),sk:n2.sk.filter(function(x,i){var c=document.getElementById('vs'+i);return c&&c.checked})});ST.nav=null;return go('ainast')}
 if(d.rcp){var rq=document.getElementById('rcq').value.trim(),r0=recepce(rq);document.getElementById('rco').textContent=r0?('Vezme to: '+r0.n+' (shoda témat: '+r0.skore+'). Přidejte ho z galerie, pokud ho ještě nemáte.'):'Žádný Elzáček nemá toto téma; vezme to ELZA (obecný dotaz).';return}
  if(d.tym){var ty=document.getElementById('tyo'),pr=['ty1','ty2','ty3'].map(function(x){return document.getElementById(x).value}).filter(Boolean);ty.innerHTML='<p class=note>Tým pracuje…</p>';var R2=await tym(document.getElementById('tyv').value,pr,document.getElementById('tyc').value.trim());ty.innerHTML='<div class=aiw>'+esc(R2.vysledek)+'</div><p class=note>Rozdělení: '+esc(R2.plan.map(function(x){return x.agentId+': '+x.task.slice(0,80)}).join(' | '))+'</p>';return}
-  if(d.aicp){await gtok(true);msg('Copilot povolen.')}
+  if(d.aicp){await gtok(true);obnovLimity();msg('Copilot povolen.')}
  }catch(er){msg('Chyba: '+er.message)}}}
 async function sp(path,body,method){var sc=[SP+'/AllSites.Write'],t;try{t=(await m.acquireTokenSilent({scopes:sc,account:acc})).accessToken}catch(e){t=(await m.acquireTokenPopup({scopes:sc,account:acc})).accessToken}var h={Authorization:'Bearer '+t,Accept:'application/json;odata=nometadata','Content-Type':'application/json;odata=nometadata'};if(method=='MERGE'){h['X-HTTP-Method']='MERGE';h['IF-MATCH']='*'}var r=await fetch(SP+SITE+'/_api/web/'+path,{method:'POST',headers:h,body:JSON.stringify(body)});if(!r.ok)throw new Error('SharePoint HTTP '+r.status)}
 
