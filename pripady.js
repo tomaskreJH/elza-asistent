@@ -53,12 +53,34 @@ async function autoLink(){
 window.pripadNovy=async function(x){var id=await newCase(x);try{await loadCases(true)}catch(e){}return id};window.pripadPrirad=async function(c,w,subj,shoda){await link(c,w,subj,'potvrzeno v ranní kontrole',shoda,true);try{await loadPP(true)}catch(e){}};window.pripadyZnamy=async function(){await loadPP(true);return window.PCASE};window.pripadOtevri=function(id){SEL=+id;go('pripady')};
 window.pripadySeznam=async function(){if(!CS.length){try{await loadCases(false)}catch(e){}}return CS.map(function(x){return{id:wid(x),zak:x.ZakazkaCode||'',espo:x.EspoId||'',uzavreny:vy(x)!==VY[0],nazev:x.Title||'',klice:String(x.Klice||'')}})};window.kontextPripaduProPostu=async function(){
  await Promise.all([loadCases(false),loadPP(false,true)]);
- return {vazby:window.PCASE,pripady:CS.map(dataProVazbu)};
+ await loadAK(false);
+ var aliasy=new Map();
+ for(var a of AK){
+  var m=/^CRM Espo \(jen čteno\): případ (PR\d{6}) „([^“]+)“/i.exec(a.Popis||"");
+  if(!m)continue;
+  if(!aliasy.has(a.WorkId))aliasy.set(a.WorkId,[]);
+  aliasy.get(a.WorkId).push({kod:m[1].toUpperCase(),nazev:m[2]});
+ }
+ return {vazby:window.PCASE,pripady:CS.map(function(c){
+  var data=dataProVazbu(c);
+  data.aliasy=(aliasy.get(data.id)||[]).filter(function(a){return a.kod===String(data.espo||"").toUpperCase()}).map(function(a){return a.nazev});
+  return data;
+ })};
 };
 window.pripadySet=function(id,o){return spw(FP+'('+(+id)+')',o,'MERGE')};window.pripadyAkt=function(w,typ,min,popis,zdroj){return addAk(w,typ,min,popis,zdroj)};
 window.pripadyAutoLink=async function(f){if(f)LAST=0;await loadPP(!!f);await loadCases(!!f);return autoLink()};
 async function prep(force){await loadPP(force);await loadCases(force);await loadAK(force);try{await autoLink()}catch(e){}}
-async function kalDnes(){try{var s=new Date();s.setHours(0,0,0,0);var e=new Date(s.getTime()+864e5);var r=await gg(['Calendars.Read'],'/me/calendarView?startDateTime='+s.toISOString()+'&endDateTime='+e.toISOString()+'&$orderby=start/dateTime&$select=subject,start,end,location,isAllDay',{Prefer:'outlook.timezone="Europe/Prague"'});return '<h3>Dnes v kalendáři</h3>'+(r.length?'<table>'+r.map(function(x){return '<tr><td style=width:120px>'+(x.isAllDay?'celý den':cas(x.start.dateTime)+' – '+cas(x.end.dateTime))+'<td>'+esc(x.subject)+'<td>'+esc(x.location&&x.location.displayName)+'</tr>'}).join('')+'</table>':'<p class=note>Dnes nemáte žádné události.</p>')}catch(e){return '<h3>Dnes v kalendáři</h3><p class=a>Kalendář se nepodařilo načíst: '+esc(e.message)+'</p>'}}
+async function kalDnes(){
+ try{
+  var s=new Date();s.setHours(0,0,0,0);var end=new Date(s);end.setDate(end.getDate()+1);
+  var r=await gg(['Calendars.Read'],'/me/calendarView?startDateTime='+s.toISOString()+'&endDateTime='+end.toISOString()+'&$orderby=start/dateTime&$select=subject,start,end,location,isAllDay,showAs,isCancelled',{Prefer:'outlook.timezone="Europe/Prague"'});
+  var navrh=window.RANO&&RANO.oknoPosty(r,new Date());
+  return '<h3>Dnes v kalendáři</h3>'+
+   (navrh?'<p><b>Navržené okno na poštu:</b> '+esc(navrh.start.toTimeString().slice(0,5)+' – '+navrh.end.toTimeString().slice(0,5))+' <span class=note>25 minut · návrh</span></p>':'<p class=note>V pracovní době 8–17 h se už nenašlo volných 25 minut.</p>')+
+   (r.length?'<table>'+r.map(function(x){return '<tr><td style=width:120px>'+(x.isAllDay?'celý den':cas(x.start.dateTime)+' – '+cas(x.end.dateTime))+'<td>'+esc(x.subject)+'<td>'+esc(x.location&&x.location.displayName)+'</tr>'}).join('')+'</table>':'<p class=note>Dnes nemáte žádné události.</p>');
+ }catch(e){return '<h3>Dnes v kalendáři</h3><p class=a>Kalendář se nepodařilo načíst: '+esc(e.message)+'</p>'}
+}
+
 function cntP(){var c={};PP.forEach(function(p){c[p.WorkId]=(c[p.WorkId]||0)+1});return c}
 function minW(){var m={};AK.forEach(function(a){m[a.WorkId]=(m[a.WorkId]||0)+(+a.Minuty||0)});return m}
 function myMin(since){var t=0,by={};AK.forEach(function(a){if(norm(a.Kdo)==me()&&new Date(a.Kdy)>=since){t+=(+a.Minuty||0);by[a.WorkId]=(by[a.WorkId]||0)+(+a.Minuty||0)}});return {t:t,by:by}}

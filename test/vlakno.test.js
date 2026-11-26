@@ -19,3 +19,7 @@ a.equal(V.vazbaPripadu({text:'OBJ02666'},cases).stav,'mozna');
 a.equal(V.vazbaPripadu({text:'porucha',adresa:'x@makro.cz'},cases).moznosti.length,2);
 a.equal(V.vazbaPripadu({text:'PR0014011'},cases).stav,'bez');
 a.equal(V.vazbaPripadu({text:'porucha'},null).stav,'nedostupne');
+const espoSubject='Byli jste zmíněni ve streamu případu ZDP Makro ČB';
+a.equal(V.vazbaPripadu({predmet:espoSubject},[{id:'W1',aliasy:['ZDP Makro CB']}]).id,'W1');
+a.equal(V.vazbaPripadu({predmet:espoSubject},[{id:'W1',aliasy:['ZDP Makro CB']}]).stav,'mozna');
+a.equal(V.vazbaPripadu({predmet:espoSubject},[]).stav,'espo');

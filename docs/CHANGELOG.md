@@ -1,3 +1,7 @@
+## 0.81.2 (2026-11-26) – Pilot starší pošty a pracovní okno
+
+Pošta umožňuje procházet sedmidenní dávky s uloženým obdobím. Oznámení z Espa navrhnou případ podle doloženého názvu. Můj den při otevření a průběžně během zobrazení ukazuje prioritní doručené zprávy a nabídne 25 minut podle kalendáře.
+
 ## 0.81.1 (2026-11-26) – Pošta nejdřív ověřuje vazbu k případu
 
 Přehled u každého vlákna ukáže stav vazby a důvod. Jednoznačný kód případu nebo zakázky umožňuje automatické přiřazení. Shoda kontaktu či objektu je návrh k posouzení. Po otevření zákaznické zprávy lze přes Elzáčka připravit návrh odpovědi s ohledem na potvrzenou vazbu.

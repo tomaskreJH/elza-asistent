@@ -67,7 +67,7 @@ async function loadList(more){
     path=base+"?$search="+enc('"'+k.join(" AND ")+'"')+"&$top=50&$select="+SEL;
   }else{
     var fl=[df+" ge "+(S.dod?S.dod+"T00:00:00Z":"1900-01-01T00:00:00Z")];
-    if(S.ddo)fl.push(df+" le "+S.ddo+"T23:59:59Z");
+    if(S.ddo){var konec=new Date(S.ddo+"T00:00:00Z");konec.setUTCDate(konec.getUTCDate()+1);fl.push(df+" lt "+konec.toISOString())}
     if(S.f=="nepr")fl.push("isRead eq false");
     if(S.f=="priloha")fl.push("hasAttachments eq true");
     if(S.f=="oznac")fl.push("flag/flagStatus eq 'flagged'");
@@ -123,7 +123,7 @@ function tb(){
   return '<div class=mp-tb><div class=row><input id=mq placeholder="Hledat (Enter)" value="'+esc(S.q)+'"><select id=mpo>'+po.map(function(p){return '<option value="'+p[0]+'"'+(S.pole==p[0]?" selected":"")+'>'+p[1]+'</option>'}).join("")+'</select><button class=g data-a=go>Hledat</button></div>'+
   '<div class=row><select id=mf>'+[["vse","Všechny"],["nepr","Nepřečtené"],["priloha","S přílohou"],["oznac","Označené"]].map(function(p){return '<option value='+p[0]+(S.f==p[0]?" selected":"")+'>'+p[1]+'</option>'}).join("")+'</select><input id=mod placeholder="Odesílatel" value="'+esc(S.od)+'"><select id=mpc><option value="">Všechny případy</option><option value="_bez"'+(S.pc=="_bez"?" selected":"")+'>Bez případu</option><option value="_s"'+(S.pc=="_s"?" selected":"")+'>Jen přiřazená</option>'+pcs().map(function(c){return '<option'+(S.pc==c?" selected":"")+'>'+esc(c)+'</option>'}).join("")+'</select><select id=mk><option value="">Štítek</option>'+cats().map(function(c){return '<option'+(S.kat==c?" selected":"")+'>'+esc(c)+'</option>'}).join("")+'</select></div>'+
   '<div class=row><input type=date id=md1 value="'+esc(S.dod)+'" title="Od data" ><input type=date id=md2 value="'+esc(S.ddo)+'" title="Do data" ><button class="g'+(S.view=="vlakna"?" on":"")+'" data-a=vw data-w=vlakna>Vlákna</button><button class="g'+(S.view=="zpravy"?" on":"")+'" data-a=vw data-w=zpravy>Zprávy</button><select id=mlord title="Řazení seznamu">'+[["nove","Nejnovější nahoře"],["stare","Nejstarší nahoře"],["nepr","Nepřečtené první"]].map(function(p){return '<option value='+p[0]+(S.lord==p[0]?" selected":"")+'>'+p[1]+'</option>'}).join("")+'</select><label style="font-size:12px"><input type=checkbox id=mall'+(S.all?" checked":"")+' style="min-width:0"> všechny složky</label></div>'+
-  '<div class=row><button class=b data-a=new>Nová zpráva</button><button class=g data-a=refresh>Obnovit</button><button class=g data-a=triage>Rozebrat přehled</button><button class=g data-a=sig>Podpis</button></div></div>';
+  '<div class=row><button class=b data-a=new>Nová zpráva</button><button class=g data-a=refresh>Obnovit</button><button class=g data-a=triage>Rozebrat přehled</button><button class=g data-a=pilot>Starší pošta po dávkách</button><button class=g data-a=sig>Podpis</button></div></div>';
 }
 
 /* ČTENÍ */
@@ -177,17 +177,33 @@ function klasifikacePosty(input){
   kody:[k.obj,k.pr].filter(Boolean),
   krok:k.druhy.length&&n.postup.kroky.length?n.postup.kroky[0].text:"Potvrdit účel zprávy a rozhodnout, zda patří k případu."};
 }
-var stavyVazeb={prirazeno:"Přiřazený případ",kod:"Shoda kódu",mozna:"Vazba k ověření",vice:"Více možných případů",bez:"Vazba nenalezena",nedostupne:"Vazbu nelze ověřit"};
+var stavyVazeb={prirazeno:"Přiřazený případ",kod:"Shoda kódu",mozna:"Vazba k ověření",vice:"Více možných případů",bez:"Vazba nenalezena",espo:"Aktualizace z Espa",nedostupne:"Vazbu nelze ověřit"};
 function vazbaPosty(parts,messages,kontext,linked){
  var text=parts.map(function(p){return p.subject+" "+p.text}).join("\n");
  var adresa=VLAKNO.prvniExterniOdesilatel(messages);
- return VLAKNO.vazbaPripadu({text:text,adresa:adresa},kontext&&kontext.pripady,linked);
+ var predmet=parts.map(function(p){return p.subject}).find(VLAKNO.nazevEspo)||"";
+ return VLAKNO.vazbaPripadu({text:text,adresa:adresa,predmet:predmet},kontext&&kontext.pripady,linked);
 }
 function popisVazby(v){
  return '<b>'+esc(stavyVazeb[v.stav]+(v.id?" "+v.id:""))+'</b> · '+esc(v.duvod)+
   (v.moznosti?' '+esc(v.moznosti.slice(0,5).join(", ")):'');
 }
-async function rozebratPrehled(){
+function pilotKlic(){return "elzaPilotDo:"+String(typeof acc!=="undefined"&&acc&&acc.username||"demo").toLowerCase()}
+function datumPilotu(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+async function otevriPilot(starsi){
+ var doData=GR.ls(pilotKlic());
+ var end=/^\d{4}-\d{2}-\d{2}$/.test(doData||"")?new Date(doData+"T12:00:00"):new Date();
+ if(starsi)end.setDate(end.getDate()-7);
+ var start=new Date(end);start.setDate(start.getDate()-6);
+ Object.assign(S,{cur:"inbox",alias:"inbox",name:"Doručená pošta",all:false,q:"",od:"",pole:"",f:"vse",kat:"",pc:"",view:"vlakna",dod:datumPilotu(start),ddo:datumPilotu(end),sel:null,thr:[]});
+ var toolbar=document.querySelector(".mp-tb");if(toolbar)toolbar.outerHTML=tb();
+ rf();renderRead();
+ await reloadList();
+ if(S.err)return;
+ GR.ls(pilotKlic(),S.ddo);
+ await rozebratPrehled(true);
+}
+async function rozebratPrehled(pilot){
  var box=document.getElementById("mpr"),mp=document.getElementById("mp");
  if(!box||!window.ANALYZA)return;
  if(mp)mp.dataset.mv="r";
@@ -201,6 +217,7 @@ async function rozebratPrehled(){
  rl();
  var vlakna=groups();
  box.innerHTML='<h2>Rozbor přehledu pošty</h2><p class=note>Načtená vlákna podle aktuálních filtrů. Rozbor vychází z předmětů a náhledů. Pro plné znění otevřete vlákno.</p>'+
+  (pilot?'<p><b>Dávka:</b> '+esc(S.dod+' – '+S.ddo)+'</p><p class=note>Období je uložené pro tento účet v prohlížeči. '+(S.next?'Nejdřív použijte Načíst další v seznamu zpráv.':'Načtena celá dávka podle tohoto filtru.')+'</p><button class=g data-a=pilotnext'+(S.next?' disabled':'')+'>Přejít o týden zpět</button>':'')+
   (vlakna.length?'<p>Vláken v přehledu: '+vlakna.length+'</p><ol>'+vlakna.map(function(g){
    var parts=threadInput(g.m.map(function(m){return {m:m}}));
    if(!parts.length)return '<li>Vlákno vynecháno ochrannou kontrolou.</li>';
@@ -510,7 +527,12 @@ async function onClick(e){
   if(a=="ex"){e.stopPropagation();return toggleFolder(el.dataset.id)}
   if(a=="fo"){S.cur=el.dataset.id;S.name=el.dataset.n;S.alias=el.dataset.al||"";S.sel=null;S.thr=[];renderRead();rf();if(mpx)mpx.dataset.mv="l";return reloadList()}
   if(a=="sel"){if(mpx)mpx.dataset.mv="r";return openThread(el.dataset.k)}
-  if(a=="more")return reloadList(true);
+  if(a=="more"){
+    var pilot=!!document.querySelector("[data-a=pilotnext]");
+    await reloadList(true);
+    if(pilot&&!S.err)return rozebratPrehled(true);
+    return;
+  }
   if(a=="go"){readTb();return reloadList()}
   if(a=="refresh"){readTb();try{await loadFolders();rf()}catch(x){}return reloadList()}
   if(a=="vw"){S.view=el.dataset.w;document.querySelectorAll("[data-a=vw]").forEach(function(b){b.classList.toggle("on",b.dataset.w==S.view)});return rl()}
@@ -521,6 +543,11 @@ async function onClick(e){
   if(a=="img"){S.thr[i].img=true;document.getElementById("mm"+i).innerHTML=blk(S.thr[i],i);frame(i);return}
   if(a=="zopen")return window.pripadOtevri(el.dataset.id);
   if(a=="triage")return rozebratPrehled();
+  if(a=="pilot"||a=="pilotnext"){
+    el.disabled=true;
+    try{return await otevriPilot(a=="pilotnext")}
+    finally{el.disabled=false}
+  }
   if(a=="anv")return analyzeThread();
   if(a=="zquestions")return saveThreadQuestions(el);
   if(a=="aiv"||a=="aidraft")return analyzeWithAgent(el,a=="aidraft");

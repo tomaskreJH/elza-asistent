@@ -19,6 +19,11 @@ function prvniExterniOdesilatel(messages){
  }
  return "";
 }
+function nazevEspo(subject){
+ var m=/^\s*(?:(?:re|fw|fwd):\s*)*byli jste zmíněni ve streamu případu\s+(.+)$/i.exec(String(subject||""));
+ return m?m[1].trim():"";
+}
+function klicNazvu(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim()}
 function vazbaPripadu(input,cases,linked){
  if(linked)return {stav:"prirazeno",id:linked,duvod:"Vlákno už je přiřazené."};
  if(!Array.isArray(cases))return {stav:"nedostupne",duvod:"Případy se nepodařilo načíst."};
@@ -27,6 +32,13 @@ function vazbaPripadu(input,cases,linked){
  var exact=cases.filter(function(c){return [c.id,c.espo,c.zak].some(function(k){return k&&codes.has(String(k).toUpperCase())})});
  if(exact.length===1)return {stav:"kod",id:exact[0].id,duvod:"Shoduje se kód případu nebo zakázky v textu."};
  if(exact.length>1)return {stav:"vice",duvod:"Text odkazuje na více případů.",moznosti:exact.map(function(c){return c.id})};
+ var espo=nazevEspo(input.predmet);
+ if(espo){
+  var matches=cases.filter(function(c){return [c.nazev].concat(c.aliasy||[]).some(function(n){return klicNazvu(n)===klicNazvu(espo)})});
+  if(matches.length===1)return {stav:"mozna",id:matches[0].id,duvod:"Název případu v oznámení z Espa odpovídá evidenci. Ověřte vazbu."};
+  if(matches.length>1)return {stav:"vice",duvod:"Název z oznámení odpovídá více případům.",moznosti:matches.map(function(c){return c.id})};
+  return {stav:"espo",duvod:"Oznámení z Espa o existujícím případu. Vazbu v ELZE je potřeba dohledat."};
+ }
  var address=String(input.adresa||"").trim().toLowerCase(),domain=address.split("@")[1];
  var broad=/^(?:gmail|seznam|email|centrum|outlook|post|volny|icloud|hotmail|atlas|tiscali)\./i;
  var weak=cases.filter(function(c){
@@ -40,6 +52,6 @@ function vazbaPripadu(input,cases,linked){
  if(weak.length>1)return {stav:"vice",duvod:"Kontaktu nebo objektu odpovídá více otevřených případů.",moznosti:weak.map(function(c){return c.id})};
  return {stav:"bez",duvod:"V načtených podkladech se nenašla vazba. Může jít o novou věc."};
 }
-W.VLAKNO={vazbaPripadu:vazbaPripadu,ROLE:ROLE,role:role,prvniExterniOdesilatel:prvniExterniOdesilatel,radek:radek,prehled:prehled,souhrn:souhrn};
+W.VLAKNO={nazevEspo:nazevEspo,vazbaPripadu:vazbaPripadu,ROLE:ROLE,role:role,prvniExterniOdesilatel:prvniExterniOdesilatel,radek:radek,prehled:prehled,souhrn:souhrn};
 if(typeof module!="undefined")module.exports=W.VLAKNO;
 })();

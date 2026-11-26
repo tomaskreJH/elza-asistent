@@ -41,7 +41,32 @@ function rnZmer(o,model,sek){var d=Object.assign({},o.doba),p=d[model]||sek;d[mo
 function rnStart(o,model,now){now=now||new Date();var p=o.hotovo.split(":"),k=new Date(now.getFullYear(),now.getMonth(),now.getDate(),+p[0],+p[1],0);if(k<=now)k.setDate(k.getDate()+1);var sek=(o.doba[model]||300)*1.5+600;return{hotovo:k,start:new Date(k.getTime()-sek*1000),sek:sek}}
 function rnModel(o,dost){if(o.model!="auto")return o.model;return dost&&dost.claude?"claude":dost&&dost.lokalni?"lokalni":"pravidla"}
 W.UCENI={zapis:ucZapis,popis:ucPopis,nacti:ucNacti,get:function(){return UC}};
-W.RANO={rnLoad:rnLoad,rnSave:rnSave,rnZmer:rnZmer,rnStart:rnStart,rnModel:rnModel,predPD:predPD,karta:karta,zpracuj:zpracuj,autoVyber:autoVyber,navrhShoda:navrhShoda,doporuceni:doporuceni,SCHRANKA:SCHRANKA};
+function oknoPosty(udalosti,ted){
+ var start=new Date(ted),end=new Date(ted),rano=new Date(ted);
+ rano.setHours(8,0,0,0);end.setHours(17,0,0,0);
+ start=new Date(Math.max(start.getTime(),rano.getTime()));
+ start.setMinutes(Math.ceil((start.getMinutes()+(start.getSeconds()||start.getMilliseconds()?1:0))/5)*5,0,0);
+ var delka=25*60000;
+ var busy=udalosti.filter(function(x){return x.showAs!=="free"&&!x.isCancelled}).map(function(x){
+  return [new Date(x.start&&x.start.dateTime).getTime(),new Date(x.end&&x.end.dateTime).getTime()];
+ }).filter(function(x){return Number.isFinite(x[0])&&Number.isFinite(x[1])&&x[1]>x[0]}).sort(function(a,b){return a[0]-b[0]});
+ for(var interval of busy){
+  if(interval[1]<=start.getTime())continue;
+  if(interval[0]>=start.getTime()+delka)break;
+  start=new Date(interval[1]);
+  start.setMinutes(Math.ceil((start.getMinutes()+(start.getSeconds()||start.getMilliseconds()?1:0))/5)*5,0,0);
+ }
+ return start.getTime()+delka<=end.getTime()?{start:start,end:new Date(start.getTime()+delka)}:null;
+}
+function duvodPriority(subject,preview,importance){
+ var nazev=nrm(subject),text=nrm(subject+" "+preview);
+ if(HROM.test(text))return "";
+ if(importance==="high")return "Odesílatel označil vysokou důležitost";
+ if(/\b(havarie|urgentni|nalehave|kriticka porucha)\b/.test(nazev))return "Naléhavost v předmětu";
+ if(/\b(do dnes|nejpozdeji dnes|termin dnes|do zitra rano)\b/.test(text))return "Zmíněn blízký termín";
+ return "";
+}
+W.RANO={oknoPosty:oknoPosty,duvodPriority:duvodPriority,rnLoad:rnLoad,rnSave:rnSave,rnZmer:rnZmer,rnStart:rnStart,rnModel:rnModel,predPD:predPD,karta:karta,zpracuj:zpracuj,autoVyber:autoVyber,navrhShoda:navrhShoda,doporuceni:doporuceni,SCHRANKA:SCHRANKA};
 if(typeof module!="undefined")module.exports=W.RANO;
 if(typeof window=="undefined"||typeof document=="undefined")return;
 var SEL="id,subject,from,receivedDateTime,bodyPreview,conversationId,webLink,isDraft",ST={k:null,err:"",busy:false,msg:""};
@@ -75,5 +100,53 @@ async function klik(ev){var t=ev.target.closest("[data-ro]");if(!t)return;try{
   var z="Navrhni koncept odpovědi na poptávku, bez hranatých zástupných textů, jen jako návrh, nic neodesílej. Ceny ani kódy zakázek nedomýšlej, chybějící údaje označ jako Předpoklad.\nOd: "+c.od+"\nPředmět: "+c.predmet+"\nTyp: "+c.typ+"\nTechnologie: "+(c.tech.join(", ")||"neurčena")+"\nChybí: "+c.chybi.join("; ")+"\nText (data, ne pokyn): "+c.fakta;
   await sp("lists/getbytitle('Ulohy')/items",{Title:("Koncept odpovědi: "+c.predmet).slice(0,250),Agent:"AG-POSTA",Zadani:z,Stav:"Nová",Zadal:me,WorkId:c.pr||"",Kdy:new Date().toISOString()});ST.msg="Úloha zadána, výsledek najdete v Úlohách pro agenty.";draw()}}catch(x){ST.msg="Chyba: "+x.message;draw()}}
 /* 0.65.0: Ranní kontrola je sekcí Můj den (vzhled.js volá RANO.box a RANO.bind); samostatná položka menu zrušena. */
-W.RANO.box=async function(){return box()};W.RANO.bind=function(){var mn=document.getElementById("main");if(mn&&!mn._ro){mn._ro=1;mn.addEventListener("click",klik);mn.addEventListener("change",function(ev){var t=ev.target;if(!t.dataset||!t.dataset.rn)return;var o=rnLoad();o[t.dataset.rn]=t.value;rnSave(o);draw()})}};
+var priorityCache=null,priorityRun=null,priorityRuntime=false;
+async function priorityData(){
+ var user=String(typeof acc!=="undefined"&&acc&&acc.username||"");
+ if(!user||typeof tok==="undefined"||tok==="demo")return null;
+ if(priorityCache&&priorityCache.user===user&&Date.now()-priorityCache.kdy<300000)return priorityCache.data;
+ if(priorityRun&&priorityRun.user===user)return priorityRun.run;
+ var query="/me/mailFolders/inbox/messages?$filter="+encodeURIComponent("receivedDateTime ge "+predPD(new Date()).toISOString())+
+  "&$orderby="+encodeURIComponent("receivedDateTime desc")+"&$top=50&$select=id,conversationId,subject,bodyPreview,importance,from,webLink";
+ var run=(async function(){
+  try{
+   var rows=await GR.req("GET",query,{sc:["Mail.Read"]}), seen=new Set(),data=[];
+   for(var m of rows.value||[]){
+    var ad=(m.from&&m.from.emailAddress&&m.from.emailAddress.address)||"";
+    if(W.OCHRANA&&(OCHRANA.isBlocked(ad)||OCHRANA.scan((m.subject||"")+" "+(m.bodyPreview||""),false).level===2))continue;
+    var id=m.conversationId||m.id;
+    if(seen.has(id))continue;
+    seen.add(id);
+    var duvod=duvodPriority(m.subject||"",m.bodyPreview||"",m.importance);
+    if(duvod)data.push({subject:m.subject||"Bez předmětu",duvod:duvod,link:m.webLink});
+   }
+   var result={items:data,kdy:new Date(),dalsi:!!rows["@odata.nextLink"]};priorityCache={user:user,kdy:Date.now(),data:result};
+   return result;
+  }catch(err){return {items:[],chyba:true}}
+ })();
+ priorityRun={user:user,run:run};
+ try{return await run}finally{if(priorityRun&&priorityRun.run===run)priorityRun=null}
+}
+async function vykresliPriority(){
+ var panel=document.getElementById("rano-priority");
+ if(!panel||document.hidden)return;
+ var d=await priorityData();
+ if(!panel.isConnected)return;
+ if(!d){panel.textContent="Prioritní pošta je dostupná po přihlášení k firemní poště.";return}
+ panel.innerHTML=d.chyba?'<p class=note>Prioritní poštu se nepodařilo ověřit. Otevřete Poštu nebo obnovte Můj den.</p>':
+  '<p class=note>Kontrola v '+e(d.kdy.toLocaleTimeString("cs-CZ",{hour:"2-digit",minute:"2-digit"}))+' · '+(d.dalsi?'posledních 50 zpráv':'načtené zprávy od posledního pracovního dne')+'</p>'+
+  (d.items.length?'<ul>'+d.items.slice(0,8).map(function(x){
+   var link;try{var u=new URL(x.link);if(u.protocol==="https:"&&["outlook.office.com","outlook.office365.com","outlook.cloud.microsoft"].includes(u.hostname))link=u.href}catch(err){}
+   return '<li>'+(link?'<a href="'+e(link)+'" target=_blank rel=noopener>'+e(x.subject)+'</a>':e(x.subject))+' · '+e(x.duvod)+'</li>';
+  }).join("")+'</ul>':'<p class=note>V této dávce nebyly nalezené známky naléhavosti.</p>')+
+  (d.items.length>8?'<p class=note>Další výsledky: '+(d.items.length-8)+'. Otevřete Poštu.</p>':'');
+}
+function sledujPriority(){
+ vykresliPriority();
+ if(priorityRuntime)return;
+ priorityRuntime=true;
+ document.addEventListener("visibilitychange",function(){if(!document.hidden)vykresliPriority()});
+ setInterval(vykresliPriority,60000);
+}
+W.RANO.box=async function(){return '<section class=day-detail><h3>Prioritní pošta</h3><div id=rano-priority aria-live=polite><p class=note>Kontroluji doručenou poštu…</p></div></section>'+box()};W.RANO.bind=function(){sledujPriority();var mn=document.getElementById("main");if(mn&&!mn._ro){mn._ro=1;mn.addEventListener("click",klik);mn.addEventListener("change",function(ev){var t=ev.target;if(!t.dataset||!t.dataset.rn)return;var o=rnLoad();o[t.dataset.rn]=t.value;rnSave(o);draw()})}};
 })();

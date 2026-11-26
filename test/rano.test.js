@@ -25,3 +25,12 @@ t(r.hotovo.getDate()==25&&r.hotovo.getHours()==7&&r.hotovo.getMinutes()==30,'hot
 t(R.rnStart(o,'claude',new Date(2026,10,25,6,0)).hotovo.getDate()==25,'před 7:30 platí dnešek');
 t(R.rnZmer({doba:{claude:240}},'claude',480).doba.claude==320,'doba se průměruje');
 t(R.rnModel({model:'auto'},{claude:1})=='claude'&&R.rnModel({model:'auto'},{lokalni:1})=='lokalni'&&R.rnModel({model:'auto'},{})=='pravidla'&&R.rnModel({model:'lokalni'},{})=='lokalni','výběr modelu');console.log('rano nastavení OK')})();
+{
+ const assert=require('node:assert/strict'), R=require('../rano.js');
+ const den=(h,m)=>new Date(2026,10,26,h,m,0);
+ const event=(h1,m1,h2,m2,showAs)=>({start:{dateTime:den(h1,m1).toISOString()},end:{dateTime:den(h2,m2).toISOString()},showAs});
+ assert.equal(R.oknoPosty([event(8,0,9,17,'busy'),event(9,0,11,0,'free')],den(8,12)).start.getTime(),den(9,20).getTime());
+ assert.equal(R.oknoPosty([],den(16,36)),null);
+ assert.match(R.duvodPriority('Havárie v objektu','','normal'),/Naléhavost/);
+ assert.equal(R.duvodPriority('Newsletter','', 'high'),'');
+}
