@@ -2,7 +2,7 @@
 
 - Ostrý Gantt 26. 11. zobrazil časovou osu, úkoly a filtry na existujících datech. Ověření sloupců ZavisiNa a Milnik v produkčním schématu zůstává otevřené.
 
-- Při přeposlání používá rozbor načtené zprávy prvního externího odesílatele. Zkontrolovat návrh otázek na pilotním vlákně a produkční zápis při běžné práci.
+- Při přeposlání používá rozbor načtené zprávy prvního externího odesílatele. Ostré ověření 26. 11.: na vlákně MAKRO po otevření plné zákaznické zprávy návrh zobrazil šest otázek a tlačítko k přidání. Produkční zápis čeká na ověření při běžné práci.
 
 - Pošta nabízí kontrolu a zápis otázek z načtených plných zpráv prvního externího odesílatele. Detail případu ukládá hovor do Aktivit. Ověřit ostré zápisy při běžné práci.
 
