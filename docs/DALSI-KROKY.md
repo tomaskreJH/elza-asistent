@@ -3,7 +3,10 @@
 - Most 2 mohl zablokovat celou obsluhu i při běžném dotazu na stav nebo limity. Most 3 odděluje požadavky a model. Instalátor zkouší autentizované HTTP a návod popisuje nové stavové zprávy.
 - Na každé stanici spusťte ze sdílené složky elza-most-instalace.cmd a potom elza-most-overeni.cmd. V konkrétním prohlížeči ověřte AI nastavení → Lokální most → Zkontrolovat most, potom Zkusit u Poštovního Elzáčka na syntetickém zadání. Vydání webu schvaluje vlastník ve Strážci.
 - Bezpečnost sledujte v místních událostech a v tenantovi. Pokud se stanice ohlásí s blokací, bezpečnosti předejte overeni.txt a čas závady. Vydání nemění zásady Defenderu.
-- DODAT DO SDÍLENÉ SLOŽKY: elza-most*.ps1 a elza-most*.cmd.
+- Pět souborů elza-most*.ps1 a elza-most*.cmd je od 26. 11. 2026 ve sdílené složce. Všech pět kopií má shodný SHA-256.
+- TOM-TABLET: most 3 nainstalován přes RemoteSigned. overeni.txt potvrzuje jeden proces, 401 bez kódu, 200 s kódem a 403 pro cizí původ. Místní záznamy Defenderu za 24 hodin neobsahují odpovídající událost mostu. Centrální záznamy tenantu neověřeny.
+- Dvě syntetické odpovědi přes nainstalovaný most: Codex Luna 11,2 s (20 310 vstupních tokenů hlášených CLI), Claude Haiku 13,0 s (661 vstupních tokenů hlášených CLI). Kontrola stavu během obou běhů odpovídala nejdéle za 203 ms. Zkoušky nepoužily firemní data ani poštu.
+- Prošlo 23 sad Node, tři testy Chrome ve vydávané kopii a izolovaný test Windows s časovým limitem, souběhem a restartem fronty. Zbývá schválení verze 0.80.2 ve Strážci a ostrý test Poštovního Elzáčka v provozním prohlížeči.
 
 ## Provozní ověření 0.80.1
 - Instalovaný most odpovídá skriptu v repozitáři. Proces běžel a port naslouchal, ale HTTP neodpovídalo. Po standardním restartu s RemoteSigned most odpověděl 401 bez kódu a 200 s místním kódem, cizí původ vrátil 403. Codex Luna vrátil přes most očekávanou syntetickou odpověď.
