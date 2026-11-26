@@ -1,5 +1,9 @@
-# Další kroky (po 0.79.0)
+# Další kroky (po 0.79.1)
 ## Uvedení do práce
+- První pilot začíná v Poště tlačítkem Analyzovat vlákno a kontrolou zařazení k případu. Základní výsledek nevyžaduje model. Před pilotem shrnutí Elzáčkem ověřit zvolený nástroj na syntetické zprávě, spojení mostu v konkrétním prohlížeči, pravidla AI a náhled. Bez funkčního nástroje pokračovat pravidlovou cestou.
+- Kontrola dokumentace v Analýze vstupu dnes eviduje dostupnost podkladů v otevřeném přehledu. Pro pilot technické kontroly vybrat jednu dokumentaci a odborně potvrzené požadavky, zapsat druh a datum vydání, článek, důkaz v dokumentu a odpovědného. Platnost dohledávat v [ČSN online](https://csnonline.agentura-cas.cz/podrobne.aspx) a [e-Sbírce](https://www.e-sbirka.cz/).
+- Před předáním kolegům ověřit jeden reálný průchod, oprávnění pracovníka mimo roli vlastníka a zvolený postup řešení výpadku. Pilotní ověření není plošné zapnutí modulů.
+
 1. Pilot jedné skutečné poptávky od Pošty přes Případ a Nabídku po Zakázku. Obchod třídí, odborník rozhoduje, technik zapisuje práci z místa a vedoucí vidí termíny. U každého předání ověřit, kdo pokračuje, co potřebuje a kde výsledek najde. Změřit čas, přepisy a počet návratů pro chybějící údaje.
 2. Doplnit v detailu případu jednu další akci podle stavu a přímou vazbu na související záznam. Skripty mají řešit ověření údajů, párování podle kódu, termíny a přesuny stavu. Elzáček je určen pro nejasné podklady, návrhy a odborné otázky.
 3. Navázat na stávající volič nástroje a modelu, Úlohy a Postupy se schválením. Krok popsat vstupem a výsledkem nezávisle na poskytovateli. Pro každý krok ukázat zvolený model, proč byl vybrán a dostupný rozpočet či limit. Nabídnout úspornou volbu nebo odklad. Souběžně pouštět jen nezávislé úlohy s jasným výsledkem, který jde zkontrolovat. Porovnávat čas, přesnost a spotřebu na stejném případu.

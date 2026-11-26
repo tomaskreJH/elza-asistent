@@ -1,3 +1,8 @@
+## 0.79.1 (2026-11-26) – Použitelná analýza pošty a klidnější Můj den
+- Pošta nabízí základní analýzu vlákna bez modelu s návrhem dalšího kroku a s rozsahem podkladů. Shrnutí Elzáčkem vždy ukáže náhled s nástrojem před předáním obsahu.
+- Analýza vstupu přidává kontrolu dostupnosti podkladů a seznam požadavků se stavem zdroje. Odborná kontrola obsahu a platnosti norem zůstává samostatným krokem.
+- Můj den má další kroky nahoře a podrobnosti v rozbalovacích částech. V menu je jeden vstup k Návodu, kratší názvy Nabídek a Úvodního nastavení. Sjednoceny hlavní nadpisy, řady ovládacích prvků a okraje.
+
 ## 0.79.0 (2026-11-26) – Můj den a čitelné procesy
 - Můj den vede po schválení přímo k poště, případům, zakázkám a práci na místě podle dostupných modulů. Chat a zadání úlohy mají společné rozbalovací místo.
 - Procesy řadí kroky podle závislostí do etap. U kroku uvádějí stav, roli, nástroj a předpoklady. Smyčky a chybějící vazby jsou viditelné. Aktualizován Návod a Průvodce.

@@ -68,13 +68,35 @@ async function pushZ(arr){if(SH.stav!="ok")return;try{for(var i=0;i<arr.length;i
 async function pushV(p){if(SH.stav!="ok")return;try{var ex=(await SDL.read("PostupVerze","Title eq '"+(p.id+"@v"+p.verze).replace(/'/g,"''")+"'"))||[];await SDL.write("PostupVerze",ex[0]&&ex[0].Id,{Title:p.id+"@v"+p.verze,Postup:p.id,Verze:p.verze,Data:JSON.stringify(p),Stav:"aktivni",Schvalil:(window.acc&&acc.username)||""})}catch(e){SH.msg="Sdílení verze selhalo: "+e.message}}
 async function consume(pid,krok){if(SH.stav!="ok")return;try{var r=await SDL.read("PostupZaznam","Postup eq '"+pid+"'");for(var i=0;i<(r||[]).length;i++)if((r[i].Krok||"")==(krok||"")&&r[i].Stav!="zpracovano")await SDL.write("PostupZaznam",r[i].Id,{Stav:"zpracovano"})}catch(e){SH.msg="Označení zpracovaných selhalo: "+e.message}}
 function es(s){return typeof esc=="function"?esc(s):String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function dokumentace(N){
+ var required=N.chybi, requirements=N.postup.pozadavky||[];
+ return '<section class="card doc-check"><h3>Kontrola dokumentace</h3>'+
+  '<p>Zaškrtněte dokumenty, které jste skutečně našli. Kontrolní výsledek platí pro tento otevřený přehled.</p>'+
+  (required.length?required.map(function(d){
+    return '<label><input type=checkbox data-doc="'+es(d.typ)+'"> '+es(d.popis)+'</label>';
+  }).join(""):'<p>Pro vybraný typ není připraven seznam povinných podkladů.</p>')+
+  '<output class=note id=anDocStav></output><h3>Normy a předpisy k ověření</h3>'+
+  (requirements.length?'<ul>'+requirements.map(function(q){
+    return '<li>'+es(q.text)+'<span class=note>'+(q.zdroj?'Zadaný zdroj: '+es(q.zdroj)+' · ověřit vydání, článek a použitelnost':'Chybí zdroj · doplňte jej u postupu')+'</span></li>';
+  }).join("")+'</ul>':'<p>Pro tento postup zatím nejsou zadané požadavky s odkazy k ověření.</p>')+
+  '<p>Obsah dokumentace a použitelnost požadavků potvrzuje odborně vedoucí.</p></section>';
+}
 function draw(){var el=document.getElementById("anr");if(!el)return;if(!CUR){el.innerHTML="";return}var N=CUR,k=N.klas,p=N.postup;
  var h='<div class=card><h3>Rozpoznání</h3><p>'+es(k.stav)+(k.obj?" · objekt "+es(k.obj):"")+(k.pr?" · zakázka "+es(k.pr):"")+'</p><p>Druh: <b>'+es(p.nazev)+'</b> · technologie: <b>'+(k.tech.length?k.tech.map(function(x){return es(x.kod)}).join(", "):"nerozpoznána")+'</b> · jistota: '+es(k.jistota)+'</p></div>';
  h+='<div class=card><h3>Navržený postup (verze '+p.verze+(p.schvaleno?", schváleno":", návrh")+')</h3><table><tr><th>Krok<th>Zpětná vazba<th>Úprava</tr>'+p.kroky.map(function(s,i){return '<tr><td>'+es(s.text)+(s.nepovinny?' <small>(nepovinný)</small>':'')+'<td><select data-k="'+i+'"><option value=ok>sedí<option value=upraveno>upravit<option value=vynechano>vynechat</select><td><input data-t="'+i+'" placeholder="jak by to mělo být" style="width:100%"></tr>'}).join("")+'</table>'+(p.schvaleno?'':'<p><button class=b id=anvs>Schválit postup (odborně vedoucí)</button></p>')+(p.pozadavky&&p.pozadavky.length?'<h4>Požadavky a jejich zdroj</h4>'+p.pozadavky.map(function(q){return '<p>'+es(q.text)+' · zdroj: '+(q.zdroj?'<b>'+es(q.zdroj)+'</b>':'<i>chybí</i>')+'<br><input data-zi="'+es(q.id)+'" placeholder="předpis, vyhláška nebo norma" style="width:60%"> <button class=b data-zd="'+es(q.id)+'">Doplnit zdroj</button></p>'}).join(""):'')+'<p><input id=anp placeholder="Krok navíc, který chybí (volitelně)" style="width:70%"> <button class=b id=ang>Uložit zpětnou vazbu</button></p></div>';
- h+='<div class=card><h3>Dokumenty a složky (nová struktura)</h3>'+(N.dokumenty.length?'<table><tr><th>Dokument<th>Role<th>Složka</tr>'+N.dokumenty.map(function(d){return '<tr><td>'+es(d.popis)+'<td>'+es(d.role)+'<td><code>'+es(d.slozka)+'</code></tr>'}).join("")+'</table>':'<p>Pro tento postup nejsou povinné dokumenty.</p>')+(N.klas.obj&&N.klas.pr?'<p><button class=b id=ansl>Založit složky zakázky</button></p>':'<p class=note>Až bude znám objekt (OBJ) a zakázka (PR), nabídnu založení složek.</p>')+(N.chybi.length?'<p class=note>K předání zatím chybí: '+N.chybi.map(function(x){return es(x.popis)}).join(", ")+'</p>':'')+'</div>';
+ h+='<div class=card><h3>Dokumenty a složky (nová struktura)</h3>'+(N.dokumenty.length?'<table><tr><th>Dokument<th>Role<th>Složka</tr>'+N.dokumenty.map(function(d){return '<tr><td>'+es(d.popis)+'<td>'+es(d.role)+'<td><code>'+es(d.slozka)+'</code></tr>'}).join("")+'</table>':'<p>Pro tento postup nejsou povinné dokumenty.</p>')+(N.klas.obj&&N.klas.pr?'<p><button class=b id=ansl>Založit složky zakázky</button></p>':'<p class=note>Až bude znám objekt (OBJ) a zakázka (PR), nabídnu založení složek.</p>')+'</div>'+dokumentace(N);
  if(N.kval.length)h+='<div class=card><h3>Kvalifikace</h3>'+N.kval.map(function(q){return '<p>'+es(q.krok)+': <b>'+es(q.kval)+'</b>'+(q.kdo.length?' · mají: '+es(q.kdo.join(", ")):' · kdo ji má, ověřte v Plánu fází')+'</p>'}).join("")+'</div>';
  if(N.varovani.length)h+='<div class=card><h3>Upozornění</h3>'+N.varovani.map(function(v){return '<p class=note>'+es(v)+'</p>'}).join("")+'</div>';
  el.innerHTML=h;
+ var check=el.querySelector(".doc-check");
+ function docStav(){
+  var unchecked=[].slice.call(check.querySelectorAll("input[data-doc]:not(:checked)"));
+  var status=check.querySelector("#anDocStav");
+  status.textContent=unchecked.length?"Zbývá doložit podkladů: "+unchecked.length+".":N.chybi.length?"Dostupnost podkladů potvrzena. Obsah čeká na odbornou kontrolu.":"";
+ }
+ check.onchange=docStav;
+ docStav();
+
  el.querySelector("#ang").onclick=function(){var Z=ld(LZ),n=0;el.querySelectorAll("select[data-k]").forEach(function(s){var i=+s.dataset.k,st=p.kroky[i],tx=el.querySelector('input[data-t="'+i+'"]').value.trim();var ak=s.value;if(ak=="upraveno"&&!tx)return;Z.push({postup:p.id,verze:p.verze,krok:st.id,akce:ak,text:tx,kdy:new Date().toISOString()});n++});var pl=el.querySelector("#anp").value.trim();if(pl){Z.push({postup:p.id,verze:p.verze,krok:"",akce:"pridano",text:pl,kdy:new Date().toISOString()});n++}sv(LZ,Z);var nove=Z.slice(Z.length-n);pushZ(nove);this.textContent="Uloženo ("+n+")"+(SH.stav=="ok"?" a sdíleno":"");uc()}
  var sl=el.querySelector("#ansl");if(sl)sl.onclick=function(){window.SLOZ_PRE={obj:k.obj,pr:k.pr,druh:k.druh};go("slozky")};var q=el.querySelector("#anvs");if(q)q.onclick=function(){var np=schvalPostup(p,(window.acc&&acc.name)||"");var st=ld(LS).filter(function(x){return x.id!=np.id});st.push(np);sv(LS,st);pushV(np);CUR.postup=np;draw()};
  el.querySelectorAll("[data-zd]").forEach(function(b){b.onclick=function(){var pid=b.dataset.zd,v=el.querySelector('input[data-zi="'+pid+'"]').value.trim();if(!v)return;var np=doplnZdroj(p,pid,v,(window.acc&&acc.name)||"");var st=ld(LS).filter(function(x){return x.id!=np.id});st.push(np);sv(LS,st);pushV(np);CUR.postup=np;draw()}})}

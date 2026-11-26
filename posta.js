@@ -145,11 +145,62 @@ async function openThread(k){
 function renderRead(){
   var r=$("#mpr");if(!r)return;
   if(!S.thr.length){r.innerHTML='<p class=note>Vyberte zprávu.</p>';return}
-  r.innerHTML='<h2 style="margin:0 0 10px">'+esc(S.thr[0].m.subject||"(bez předmětu)")+'</h2>'+'<div class=mp-a><button class=g data-a=aiv>AI analýza vlákna</button><button class=g data-a=tord title="Změnit řazení zpráv ve vlákně">Řazení: '+(S.tord=="nove"?"nejnovější nahoře":"nejstarší nahoře")+' ⇅</button><span id=mpz class=mp-z></span></div><div id=mpzb class=mp-z></div><div id=mpai class=note></div>'+S.thr.map(function(t,i){return '<div class=mp-m id=mm'+i+'>'+blk(t,i)+'</div>'}).join("");
+  r.innerHTML='<h2 style="margin:0 0 10px">'+esc(S.thr[0].m.subject||"(bez předmětu)")+'</h2>'+'<div class=mp-a><button class=b data-a=anv>Analyzovat vlákno</button><button class=g data-a=tord title="Změnit řazení zpráv ve vlákně">Řazení: '+(S.tord=="nove"?"nejnovější nahoře":"nejstarší nahoře")+' ⇅</button><span id=mpz class=mp-z></span></div><div id=mpzb class=mp-z></div><div id=mpai aria-live=polite></div>'+S.thr.map(function(t,i){return '<div class=mp-m id=mm'+i+'>'+blk(t,i)+'</div>'}).join("");
   S.thr.forEach(function(t,i){frame(i)});
   fillZar();
 }
 /* 0.73.9: zařazení otevřeného vlákna pod případ přímo v hlavičce čtecího panelu (logika v pripady.js, window.POSTAZAR) */
+function threadInput(items){
+  var scanner=window.OCHRANA&&OCHRANA.scan;
+  return items.slice().sort(function(a,b){return new Date(dt(a.m))-new Date(dt(b.m))}).slice(-8)
+    .filter(function(t){return !t.blocked&&!(window.OCHRANA&&OCHRANA.isBlocked(addr(t.m.from)))})
+    .map(function(t){
+      var body=t.b&&t.b.body;
+      var raw=String(body&&body.content||t.m.bodyPreview||"");
+      var html=!!(body&&body.contentType==="html");
+      var subject=String(t.m.subject||"");
+      if(scanner&&(scanner(raw,html).level===2||scanner(subject,false).level===2))return null;
+      if(html){
+        var template=document.createElement("template");
+        template.innerHTML=raw;
+        template.content.querySelectorAll("script,style,template").forEach(function(el){el.remove()});
+        raw=template.content.textContent;
+      }
+      return {text:raw.replace(/\s+/g," ").trim().slice(0,2500), full:!!(body&&body.content), subject:subject};
+    }).filter(Boolean);
+}
+function analyzeThread(){
+  var box=document.getElementById("mpai"), parts=threadInput(S.thr);
+  if(!parts.length){box.textContent="Pro analýzu není k dispozici žádná zpráva, která prošla kontrolou vstupu.";return}
+  if(!window.ANALYZA){box.textContent="Analýzu se nepodařilo načíst. Obnovte stránku.";return}
+  var last=parts[parts.length-1], input=parts.map(function(p){return p.subject+" "+p.text}).join("\n");
+  var k=ANALYZA.klasifikuj(input), n=ANALYZA.navrh(input);
+  var type=k.druhy.length?n.postup.nazev:"Typ k ověření";
+  var tech=k.tech.map(function(t){return t.kod}).join(", ")||"Doplnit";
+  var next=k.druhy.length&&n.postup.kroky.length?n.postup.kroky[0].text:"Potvrdit účel zprávy a rozhodnout, zda patří k případu.";
+  var coverage=parts.filter(function(p){return p.full}).length;
+  box.innerHTML='<section class=mail-analysis aria-label="Výsledek analýzy"><h3>Výsledek analýzy</h3>'+
+    '<dl><dt>Typ</dt><dd>'+esc(type)+'</dd><dt>Technologie</dt><dd>'+esc(tech)+'</dd>'+
+    '<dt>Objekt / zakázka</dt><dd>'+esc([k.obj,k.pr].filter(Boolean).join(" / ")||"V textu nezjištěno")+'</dd>'+
+    '<dt>Další krok</dt><dd>'+esc(next)+'</dd></dl>'+
+    (last.text?'<p><strong>Poslední zpráva</strong> '+esc(last.text.slice(0,240))+(last.text.length>240?'…':'')+'</p>':'')+
+    '<p class=note>Podklad: '+parts.length+' zpráv, '+coverage+' plných textů. Přílohy nejsou součástí analýzy.</p>'+
+    '<button class=g data-a=aiv>Požádat Elzáčka o shrnutí</button><div class=agent-mail-result role=status></div></section>';
+}
+async function analyzeWithAgent(button){
+  var result=button.parentElement.querySelector(".agent-mail-result");
+  if(!window.AI||!window.KTX){result.textContent="Elzáček a náhled zadání teď nejsou k dispozici.";return}
+  var parts=threadInput(S.thr);
+  if(!parts.length){result.textContent="Vlákno nemá dostupný podklad pro shrnutí.";return}
+  button.disabled=true;result.textContent="Připravuji náhled pro zvolený nástroj…";
+  try{
+    var data=parts.map(function(p){return "Předmět: "+p.subject+"\n"+p.text}).join("\n---\n");
+    var text=await AI.ask("AG-POSTA",{task:"Shrň e-mailové vlákno ve třech větách. Uveď otevřené otázky a jeden další krok. Rozliš skutečnost a domněnku.",data:data,max:700,vzdyNahled:true});
+    result.textContent=text;
+  }catch(error){
+    result.textContent="Shrnutí není dostupné. "+error.message;
+  }finally{button.disabled=false}
+}
 function zx(){if(!S.thr||!S.thr.length)return null;return S.thr.map(function(t){return t.m}).sort(function(a,b){return (+new Date(dt(a))||0)-(+new Date(dt(b))||0)})[0]}  /* první zpráva vlákna (obvykle od zákazníka) */
 async function fillZar(){var a=document.getElementById("mpz"),b=document.getElementById("mpzb"),x=zx();if(!a||!b||!x||!window.POSTAZAR)return;var cid=x.conversationId;
   var z;try{z=await POSTAZAR.stav(x)}catch(e){a.textContent="";b.innerHTML='<span class=note>Zařazení nelze načíst: '+esc(e.message)+'</span>';return}
@@ -352,10 +403,8 @@ async function onClick(e){
   if(a=="sig"){var d=GR.modal('<h2>Podpis</h2><textarea id=sg style="min-height:120px">'+esc(sign())+'</textarea><p class=note>Podpis se vkládá do nových zpráv a odpovědí. Uložen jen v tomto prohlížeči.</p><div class=gm-r><button class=b id=ok>Uložit</button><button class=g id=x>Zavřít</button></div>');d.querySelector("#x").onclick=GR.closeModal;d.querySelector("#ok").onclick=function(){GR.ls("elzaPodpis",d.querySelector("#sg").value);GR.closeModal()};return}
   if(a=="tg"){var t=S.thr[i];t.open=!t.open;var m=document.getElementById("mm"+i);m.innerHTML=blk(t,i);frame(i);if(t.open&&!t.b)loadBody(i);return}
   if(a=="img"){S.thr[i].img=true;document.getElementById("mm"+i).innerHTML=blk(S.thr[i],i);frame(i);return}
-  if(a=="aiv"){var bx=document.getElementById("mpai");if(!window.AI){bx.textContent="AI modul není načten.";return}bx.textContent="AI pracuje…";
-    try{var parts=(S.tord=="nove"?S.thr.slice().reverse():S.thr).slice(-8).map(function(t){var f=t.m.from&&t.m.from.emailAddress||{},h=t.b&&t.b.body&&t.b.body.content||"";if(t.b&&t.b.body&&t.b.body.contentType=="html"){var d=new DOMParser().parseFromString(h,"text/html");d.querySelectorAll("style,script").forEach(function(e){e.remove()});h=d.body&&d.body.textContent||""}h=(h||t.m.bodyPreview||"").replace(/\s+/g," ").trim().slice(0,2500);return "Od: "+(f.name||f.address||"")+" ("+dfull(dt(t.m))+")\n"+h}).join("\n---\n");
-      var rr=await AI.ask("AG-POSTA",{task:"Shrň toto e-mailové vlákno ve 3 větách, napiš kdo čeká na čí odpověď a navrhni jeden konkrétní další krok. Nic neodesílej, jen navrhni.",data:"Předmět: "+(S.thr[0].m.subject||"")+"\n"+parts,max:700});
-      bx.style.whiteSpace="pre-wrap";bx.textContent=rr+"\n(Návrh AI, zkontrolujte. Nic se neodeslalo.)"}catch(er){bx.textContent="AI: "+er.message}return}
+  if(a=="anv")return analyzeThread();
+  if(a=="aiv")return analyzeWithAgent(el);
   if(a=="at")return download(i,el.dataset.id);
   if(a=="rp")return startCompose("reply",i);
   if(a=="ra")return startCompose("all",i);
