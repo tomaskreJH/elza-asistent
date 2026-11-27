@@ -9,6 +9,7 @@ window.PCASE=window.PCASE||{};
 var FP="lists/getbytitle('"+encodeURIComponent('Fronta práce')+"')/items";
 function sw(){return [SP+'/AllSites.Write']}
 async function tk(sc,pop){try{return (await m.acquireTokenSilent({scopes:sc,account:acc})).accessToken}catch(e){if(!pop)throw e;return (await m.acquireTokenPopup({scopes:sc,account:acc})).accessToken}}
+async function ggo(sc,path,hd){var t=await tk(sc,false),h={Authorization:'Bearer '+t};for(var k in (hd||{}))h[k]=hd[k];var r=await fetch(G+path,{headers:h});if(!r.ok)throw new Error('Graph HTTP '+r.status);return await r.json()}
 async function gg(sc,path,hd){var t=await tk(sc,false),h={Authorization:'Bearer '+t};for(var k in (hd||{}))h[k]=hd[k];var r=await fetch(G+path,{headers:h});if(!r.ok)throw new Error('Graph HTTP '+r.status);return (await r.json()).value}
 async function spw(path,body,method,pop){var t=await tk(sw(),!!pop),h={Authorization:'Bearer '+t,Accept:'application/json;odata=nometadata','Content-Type':'application/json;odata=nometadata'};if(method=='MERGE'){h['X-HTTP-Method']='MERGE';h['IF-MATCH']='*'}var r=await fetch(SP+SITE+'/_api/web/'+path,{method:'POST',headers:h,body:body?JSON.stringify(body):undefined});if(!r.ok)throw new Error('SharePoint HTTP '+r.status);return r.status==204?null:r.json()}
 function den(d){return new Date(d).toLocaleDateString('cs-CZ',{weekday:'long',day:'numeric',month:'numeric'})}
@@ -33,7 +34,7 @@ function dataProVazbu(c){
 async function autoLink(){
  if(!window.VLAKNO||Date.now()-LAST<3e5)return 0;
  LAST=Date.now();
- var zpravy=await gg(['Mail.Read'],'/me/messages?$top=80&$select=conversationId,subject,from,bodyPreview&$orderby=receivedDateTime desc');
+ var dociteno=0,zpravy=await gg(['Mail.Read'],'/me/messages?$top=80&$select=id,conversationId,subject,from,bodyPreview&$orderby=receivedDateTime desc');
  var pripady=CS.map(dataProVazbu),hotovo=new Set(),n=0;
  for(var x of zpravy){
   var c=x.conversationId;
@@ -42,6 +43,11 @@ async function autoLink(){
   var text=[x.subject,x.bodyPreview].join(' ');
   if(window.OCHRANA&&(OCHRANA.isBlocked(adr(x.from))||OCHRANA.scan(text,false).level===2))continue;
   var shoda=VLAKNO.vazbaPripadu({text:text},pripady,"");
+  /* 0.88.2: kód případu bývá hlouběji než v 255 znacích náhledu; u zpráv bez kódu v náhledu se dočte celé znění (nejvýš 12 zpráv za běh, jen čtení) */
+  if(shoda.stav!=='kod'&&dociteno<12){dociteno++;
+   try{var pl=await ggo(['Mail.Read'],'/me/messages/'+encodeURIComponent(x.id)+'?$select=body',{Prefer:'outlook.body-content-type="text"'});
+    var celek=String(pl&&pl.body&&pl.body.content||'').replace(/\s+/g,' ').trim().slice(0,6000);
+    if(celek){text=[x.subject,celek].join(' ');if(window.OCHRANA&&OCHRANA.scan(text,false).level===2)continue;shoda=VLAKNO.vazbaPripadu({text:text},pripady,"")}}catch(e){}}
   if(shoda.stav!=='kod')continue;
   await link(c,shoda.id,x.subject,'auto','jednoznačný kód případu nebo zakázky',false);
   window.PCASE[c]=shoda.id;

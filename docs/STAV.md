@@ -1,3 +1,5 @@
+0.88.2 – autoLink dočítá celé znění; ověřeno jen syntaxí a testy, ne na ostré poště.
+
 0.88.1 – Opravený instalátor a ověření mostu čekají na dodání do sdílené složky a na spuštění na stanicích (tom-tablet i další PC).
 
 0.88.0 – Plné čtení e-mailů, bodovaná shoda s případy, trvalé poznámky v ZnalostElza. Ověřeno testy a falešným SharePointem; na ostré poště a ostrých datech neověřeno (měřit úspěšnost shody na reálných vláknech).
