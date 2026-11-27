@@ -5,4 +5,9 @@ var k=Z.karta('MAKRO Cash & Carry',info,[{Title:'N1',Zakaznik:'MAKRO Cash & Carr
 a.equal(k.celkem,3);a.equal(k.skupiny.sleva.length,1);a.equal(k.skupiny.poznamka.length,1,'neznámý typ = poznámka');a.equal(k.skupiny.riziko.length,0,'vyřazené se nečte');a.equal(k.nabidky.length,1);a.ok(k.znamy);a.equal(k.chybi.length,0);
 var n=Z.karta('Nový s.r.o.',info,[]);a.ok(!n.znamy&&n.chybi.length==1);
 var r=Z.novy({Zakaznik:' MAKRO ',Typ:'sleva',Text:'8 %',Zdroj:'espo'});a.equal(r.Zdroj,'espo');a.equal(r.Zakaznik,'MAKRO');a.equal(Z.novy({Zakaznik:'A',Text:'t',Zdroj:'?'}).Zdroj,'rucne');a.throws(function(){Z.novy({Zakaznik:'A'})},/text/);
+var st=Z.stru(Z.karta('MAKRO Cash & Carry',info,[{Title:'N1',Zakaznik:'MAKRO Cash & Carry ČR a.s.',Stav:'odeslano'}]));
+a.ok(/Trvalá sleva 8 %/.test(st)&&/class=wait/.test(st)&&/kamarád majitele/.test(st)&&/N1/.test(st),'stručná karta: upozornění nahoře, osoba, nabídky');
+a.ok(!/staré/.test(st),'vyřazené se neukazuje');
+var xs=Z.stru(Z.karta('X',[{Zakaznik:'X',Typ:'riziko',Text:'<img src=x onerror=1>'}],[]));a.ok(!/<img/.test(xs)&&/&lt;img/.test(xs),'escapování');
+a.ok(/zatím nic zapsáno/.test(Z.stru(Z.karta('Nový s.r.o.',info,[]))));a.equal(Z.stru(Z.karta('',info,[])),'');
 console.log('zakaznik OK');

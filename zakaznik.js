@@ -12,7 +12,13 @@ function karta(jmeno,info,nabidky){var z=(info||[]).filter(function(x){return x.
  var nb=(nabidky||[]).filter(function(n){return shoda(n.Zakaznik,jmeno)}),spoluprace=z.length>0||nb.length>0;
  return{jmeno:jmeno,znamy:spoluprace,skupiny:g,celkem:z.length,nabidky:nb,upozorneni:g.riziko.concat(g.sleva).length,chybi:spoluprace?[]:["O zákazníkovi zatím nemáme nic zapsáno: doplňte ručně, nebo vyčtěte z Espa."]}}
 function novy(o){if(!String(o.Zakaznik||"").trim())throw new Error("Doplňte zákazníka.");if(!String(o.Text||"").trim())throw new Error("Doplňte text.");return{Title:(o.Zakaznik+": "+(TYP[o.Typ]||"Poznámka")).slice(0,200),Zakaznik:o.Zakaznik.trim(),Typ:TYP[o.Typ]?o.Typ:"poznamka",Text:String(o.Text).trim(),Zdroj:o.Zdroj=="espo"?"espo":"rucne",Kdo:o.Kdo||"",Kdy:o.Kdy||"",Stav:"platne",Zakazka:o.Zakazka||""}}
-W.ZAKAZNIK={TYP:TYP,ZDROJ:ZDROJ,shoda:shoda,karta:karta,novy:novy};
+function E(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+/* stručná karta pro detail případu (0.84.0): jen co se týká jednání; upozornění (riziko, sleva) nahoře; vše escapované */
+function stru(k){if(!k.jmeno)return"";var h='<h3>Kdo je zákazník</h3>';if(!k.znamy)return h+'<p class=note>'+E(k.jmeno)+': zatím nic zapsáno. Doplňte v Nabídky → Kdo je zákazník (před první odpovědí a nabídkou).</p>';
+ var up=k.skupiny.riziko.concat(k.skupiny.sleva);if(up.length)h+='<div class=wait>'+up.map(function(x){return '<b>'+E(TYP[x.Typ])+':</b> '+E(x.Text)}).join('<br>')+'</div>';
+ h+='<ul>'+["dohoda","historie","postup","osoba","poznamka"].reduce(function(a,t){return a.concat(k.skupiny[t])},[]).slice(0,6).map(function(x){return '<li>'+E(TYP[x.Typ])+': '+E(x.Text)+' <small>('+E(ZDROJ[x.Zdroj]||x.Zdroj||"")+')</small></li>'}).join("")+'</ul>';
+ if(k.nabidky.length)h+='<p class=note>Nabídky: '+k.nabidky.map(function(n){return E(n.Title)+' ('+E(n.Stav||"")+')'}).join(', ')+'</p>';return h}
+W.ZAKAZNIK={TYP:TYP,ZDROJ:ZDROJ,shoda:shoda,karta:karta,novy:novy,stru:stru};
 if(typeof module!="undefined")module.exports=W.ZAKAZNIK;
 if(typeof window=="undefined"||!window.document)return;
 function es(s){return typeof esc=="function"?esc(s):String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
@@ -34,5 +40,7 @@ function draw(){if(!EL)return;var h='<h1>Kdo je zákazník</h1><p class=note>Kro
   run(async function(){if(ST.miss)throw new Error("Nejdřív založte seznam.");await SDL.write(L,0,o);ST.q=o.Zakaznik},"Zapsáno.")}}
 function html(){return '<div id=zkx0></div>'}
 function mt(){EL=document.getElementById("zkx0");draw();load()}
+/* detail případu: karta bez zápisu; při chybě čtení neblokuje, jen to sdělí */
+W.ZAKAZNIK.box=async function(jmeno){try{if(!String(jmeno||"").trim())return"";var d,n;if(demo()){d=DB.length?DB:[{Zakaznik:"Ukázkový zákazník A",Typ:"sleva",Text:"Trvalá sleva 8 % dle dohody s jednatelem.",Zdroj:"rucne"}];n=NB}else{d=await SDL.read(L);n=(await SDL.read("NabidkaEvid"))||[];if(d==null)return'<h3>Kdo je zákazník</h3><p class=note>Seznam ZakaznikInfo ještě není založen.</p>'}return stru(karta(jmeno,d,n))}catch(e){return'<h3>Kdo je zákazník</h3><p class=note>Kartu se nepodařilo načíst: '+E(e.message)+'</p>'}};
 window.MODS=window.MODS||{};window.MODS.zakaznik=[html,mt];
 })();
