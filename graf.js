@@ -16,6 +16,24 @@ R.has=async function(sc){
   return perm[k];
 };
 R.forget=function(){perm={}};
+/* 0.88.7: Graph omezuje počet souběžných požadavků (HTTP 429 „Too Many Requests“). Kalendář načítal všechny sdílené
+   kalendáře najednou a u většiny dostal 429, takže události kolegů chyběly. Proto: nejvýš 4 požadavky současně
+   a opakování při 429 (vždy, Graph požadavek nezpracoval) a při 503/504 (jen čtení) podle Retry-After, nejvýš 4 pokusy. */
+var BEZI=0,FRONTA=[],MAXSOUB=4;
+function slot(){return new Promise(function(ok){if(BEZI<MAXSOUB){BEZI++;ok()}else FRONTA.push(ok)})}
+function uvolni(){var n=FRONTA.shift();if(n)n();else BEZI--}
+function cekej(ms){return new Promise(function(ok){setTimeout(ok,ms)})}
+async function gfetch(url,init,method){
+  for(var pokus=0;;pokus++){
+    await slot();var r;
+    try{r=await fetch(url,init)}finally{uvolni()}
+    var znovu=r.status==429||((r.status==503||r.status==504)&&method=="GET");
+    if(!znovu||pokus>=3)return r;
+    var ra=+r.headers.get("Retry-After");
+    await cekej(Math.min(20000,ra>0?ra*1000:1000*Math.pow(2,pokus))+Math.random()*300);
+  }
+}
+R.gfetch=gfetch;
 R.req=async function(method,path,o){
   o=o||{};
   if(DEMO)return window.GDEMO(method,path,o.body);
@@ -23,7 +41,7 @@ R.req=async function(method,path,o){
   var h={Authorization:"Bearer "+t};
   if(o.body)h["Content-Type"]="application/json";
   for(var k in (o.h||{}))h[k]=o.h[k];
-  var r=await fetch(path.indexOf("http")==0?path:G+path,{method:method,headers:h,body:o.body?JSON.stringify(o.body):undefined});
+  var r=await gfetch(path.indexOf("http")==0?path:G+path,{method:method,headers:h,body:o.body?JSON.stringify(o.body):undefined},method);
   if(r.status==204)return null;
   if(!r.ok){var e=new Error("Graph HTTP "+r.status);e.status=r.status;try{e.detail=(await r.json()).error.message}catch(x){}throw e}
   if(o.blob)return r.blob();

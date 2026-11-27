@@ -1,4 +1,4 @@
-Verze 0.88.6 (Kalendář: skupiny k účtu na všech zařízeních, seskupení podle týmů z Lidé, kapitola Návodu; před tím 0.88.5 Prioritní pošta → Pošta a oprava přihlášeného uživatele). Testy: node i 9 Python prochází. Na ostrých datech neověřeno (přihlášení Tomáše v panelu prohlížeče se nezdařilo bez hesla).
+Verze 0.88.7 (Kalendář: oprava 429 – omezení souběhu a opakování v graf.js; osobní nastavení včetně výběru a skupin kalendářů synchronizované k účtu přes NastaveniAplikace; před tím 0.88.6 Seskupit podle týmů z Lidé). Testy: node i 9 Python prochází. Na ostrých datech neověřeno.
 0.88.2 – autoLink dočítá celé znění; ověřeno jen syntaxí a testy, ne na ostré poště.
 
 0.88.1 – Opravený instalátor a ověření mostu čekají na dodání do sdílené složky a na spuštění na stanicích (tom-tablet i další PC).

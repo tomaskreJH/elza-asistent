@@ -18,27 +18,6 @@ function groupConfig(){
  try{var saved=JSON.parse(GR.ls(accountKey("elzaKalSkupiny"))||"{}");return saved&&typeof saved==="object"&&!Array.isArray(saved)?saved:{}}
  catch(e){return {}}
 }
-/* 0.88.6: skupiny sdílených kalendářů se ukládají k účtu do ZnalostElza (Druh kal_skupiny, Klic kal_skupiny:účet),
-   takže platí na všech zařízeních a prohlížečích; localStorage zůstává jen jako rychlá kopie. */
-var KS={id:0,loaded:false};
-function sdlOk(){return !GR.demo&&window.SDL&&window.SEZ&&SEZ.S&&SEZ.S.ZnalostElza}
-function ksKey(){return "kal_skupiny:"+GR.me()}
-async function ksFind(){SDL.def("ZnalostElza",SEZ.S.ZnalostElza,"ELZA asistent: Znalosti a profil firmy");var r=await SDL.read("ZnalostElza","Druh eq 'kal_skupiny'")||[];return r.filter(function(i){return i.Klic===ksKey()})[0]||null}
-async function loadSharedGroups(){
- if(!sdlOk())return false;
- try{var x=await ksFind();
-  if(x){KS.id=x.Id;var c=JSON.parse(x.Text||"{}");if(c&&typeof c==="object"&&!Array.isArray(c)){K.groups=c;GR.ls(accountKey("elzaKalSkupiny"),JSON.stringify(c));return true}}
-  else{var loc=groupConfig();if(Object.keys(loc).length)await saveSharedGroups(loc)} /* převod skupin z tohoto prohlížeče */
- }catch(e){K.groupErr=e.message}
- return false;
-}
-async function saveSharedGroups(c){
- if(!sdlOk())return false;
- SDL.def("ZnalostElza",SEZ.S.ZnalostElza,"ELZA asistent: Znalosti a profil firmy");
- await SDL.write("ZnalostElza",KS.id||0,{Title:"Skupiny kalendářů "+GR.me(),Druh:"kal_skupiny",Klic:ksKey(),Text:JSON.stringify(c),Stav:"aktivni",Kdo:GR.me(),Kdy:new Date().toISOString()});
- if(!KS.id){var x=await ksFind();if(x)KS.id=x.Id}
- return true;
-}
 /* týmy z modulu Lidé: vlastník sdíleného kalendáře se páruje s členem týmu podle e-mailu, jinak podle jména */
 async function teamsOf(){
  if(GR.demo)return {tym:[{Title:"EPS",Nazev:"Tým EPS"}],clen:[{Title:"Honza Procházka",Email:"",Tym:"EPS"}]};
@@ -67,7 +46,7 @@ async function loadCals(){
       if(previous&&K.cals.some(function(c){return Object.hasOwn(previous,c.id)}))sv=previous;
     }catch(e){}
   }
-  K.groups=groupConfig();if(!KS.loaded){KS.loaded=true;loadSharedGroups().then(function(ch){if(ch&&document.getElementById("ksd"))paint()})}K.sel=Object.create(null);K.cals.forEach(function(c){K.sel[c.id]=sv?!!sv[c.id]:(c.def||!c.shared)});
+  K.groups=groupConfig();K.sel=Object.create(null);K.cals.forEach(function(c){K.sel[c.id]=sv?!!sv[c.id]:(c.def||!c.shared)});
   if(!sv&&!K.cals.some(function(c){return K.sel[c.id]}))K.cals.forEach(function(c){K.sel[c.id]=true});
 }
 function range(){
@@ -148,7 +127,7 @@ function listv(){
 }
 function side(){
   var mine=K.cals.filter(function(c){return !c.shared}),sh=K.cals.filter(function(c){return c.shared});
-  function row(c){return '<label><input type=checkbox data-c="'+esc(c.id)+'"'+(K.sel[c.id]?" checked":"")+'><i style="background:'+c.col+'"></i><span>'+esc(c.name)+(c.owner&&c.shared?' <span class=note>('+esc(c.owner)+')</span>':'')+(K.err[c.id]?' <span class=r title="Kalendář se nepodařilo načíst">⚠ '+esc(K.err[c.id])+'</span>':'')+'</span></label>'}
+  function row(c){return '<label><input type=checkbox data-c="'+esc(c.id)+'"'+(K.sel[c.id]?" checked":"")+'><i style="background:'+c.col+'"></i><span>'+esc(c.name)+(c.owner&&c.shared?' <span class=note>('+esc(c.owner)+')</span>':'')+(K.err[c.id]?' <span class=r title="Kalendář se nepodařilo načíst (HTTP '+esc(K.err[c.id])+')">⚠ '+esc(({429:"přetíženo, zkuste Obnovit",403:"bez oprávnění",404:"nenalezen",401:"přihlaste se znovu"})[K.err[c.id]]||("chyba "+K.err[c.id]))+'</span>':'')+'</span></label>'}
   var groups=new Map();
   sh.forEach(function(c){var name=groupName(c);if(!groups.has(name))groups.set(name,[]);groups.get(name).push(c)});
   var shared=Array.from(groups).sort(function(a,b){return a[0].localeCompare(b[0],"cs")}).map(function(group){
@@ -258,8 +237,8 @@ function onClick(e){
       if(input.value.trim())config[input.dataset.cgroup]=input.value.trim();
     });
     K.groups=config;K.organize=true;GR.ls(accountKey("elzaKalSkupiny"),JSON.stringify(config));paint();
-    $("#k-group-status").textContent="Ukládám…";
-    saveSharedGroups(config).then(function(ok){var s=$("#k-group-status");if(s)s.textContent=ok?"Skupiny uloženy k účtu (všechna zařízení).":(GR.demo?"Ukázka: uloženo jen v tomto prohlížeči.":"Uloženo v tomto prohlížeči.")}).catch(function(e){var s=$("#k-group-status");if(s)s.textContent="Uloženo jen v tomto prohlížeči, k účtu se nepodařilo: "+e.message});
+    /* ukládá se přes synchronizaci osobního nastavení (nastaveni.js, NastaveniAplikace) */
+    $("#k-group-status").textContent=GR.demo?"Ukázka: uloženo jen v tomto prohlížeči.":"Skupiny uloženy, synchronizují se k účtu"+(window.NAST&&NAST.stav?" ("+NAST.stav+").":".");
     return;
   }
   if(a=="teamgroups"){
