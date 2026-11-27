@@ -1,21 +1,15 @@
 # STATUS (2026-11-27)
 
 ## Co se udělalo
-- Repozitář aktualizován na origin/main (`git fetch` + `git pull --ff-only`), verze 0.88.2.
-- Přečteny docs/POSTUP-VYVOJ.md, STAV.md, DALSI-KROKY.md, NOVE-VLAKNO-PROMPT.md.
-- Základní kontrola: všechny `node test/*.test.js` prochází, `node tools/audit.js` bez nálezů.
-- Žádný kód nezměněn. Nic nebylo nasazeno.
-
-## Proč se nic dalšího nedělá
-- Ověření funkcí na živých datech (shoda, poznámky, karta zákazníka, první odpověď, skica) vyžaduje přihlášení Tomáše. Bez něj to v tomto vlákně nejde.
-- Ladění vah shody a pilot jedné poptávky potřebují reálná vlákna pošty.
-- Vložení skicy do konceptu odpovědi (a do konceptu v Outlooku) není jen text: skica je obrázek vytvořený v prohlížeči, do konceptu by se musela připojit jako příloha přes Graph (zápis do Mail.ReadWrite). Nebylo rozhodnuto, zda se fotka zákazníka smí dávat do konceptu. Čeká na rozhodnutí Tomáše.
+- Nasazeno 0.88.3 (verze v app.js, ?v=168 v index.html a boot.js, stable/ synchronizováno, integrity.json přegenerován).
+- Skica budovy odložena na jindy; zadání: vložit do nabídky podle vzoru konkurence, vzor zatím není v repozitáři.
+- node test/*.test.js prochází, audit bez nálezů, e2e-demo a pruvodce procházejí. vzhled.py padá od 0.73.3 kvůli SRI msal (nezměněno).
 
 ## Změněné soubory
-- STATUS.md (nový)
+- app.js, boot.js, index.html, integrity.json, stable/app.js, stable/boot.js, docs/CHANGELOG.md, docs/STAV.md, docs/DALSI-KROKY.md, STATUS.md
 
 ## Další krok pro další AI
-1. Po přihlášení Tomáše ověřit na ostrých datech: Pošta → vlákno → Návrh vazby se skóre; porovnat s tím, co Tomáš zařadil; podle výsledku ladit váhy v `vazbaSkore` (pripady.js / posta.js).
-2. Rozhodnout s Tomášem, jestli skica jde do konceptu jako příloha (Graph draft s přílohou). Až pak implementovat a přidat test.
-3. Pilot jedné poptávky (MAKRO) od návrhu odpovědi po koncept v Outlooku.
-4. Most (`tools/`, elza-most) neupravovat bez výslovného „uprav most“. Čekat na overeni.txt ze stanic.
+1. Opravit SRI msal (index.html nebo msal-browser.min.js), až Tomáš rozhodne, která verze je správná.
+2. Po přihlášení Tomáše ověřit shodu, poznámky, kartu zákazníka a první odpověď na živých datech; ladit váhy vazbaSkore.
+3. Skica: až Tomáš upřesní vzor nabídky, napojit do nabídky (ne do e-mailu).
+4. Most a tools/ neupravovat bez pokynu „uprav most“.

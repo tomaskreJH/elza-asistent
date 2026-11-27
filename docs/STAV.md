@@ -1,3 +1,4 @@
+Verze 0.88.3 (nasazení 0.88.2, skica odložena). Testy: node test/*.test.js prochází; node tools/audit.js bez nálezů; e2e-demo a pruvodce procházejí. vzhled.py padá už od 0.73.3 kvůli SRI msal (viz DALSI-KROKY). Na ostrých datech neověřeno.
 0.88.2 – autoLink dočítá celé znění; ověřeno jen syntaxí a testy, ne na ostré poště.
 
 0.88.1 – Opravený instalátor a ověření mostu čekají na dodání do sdílené složky a na spuštění na stanicích (tom-tablet i další PC).
