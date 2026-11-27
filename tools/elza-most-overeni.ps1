@@ -14,11 +14,19 @@ Krok 'BOM' ($b -like '239,187,191,*' -and $b -notlike '239,187,191,239,187,191*'
 # 2) autostart: jediný Run klíč, žádné VBS ve Startup
 $run = (Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -ErrorAction SilentlyContinue).ElzaMost
 Krok 'Run klic' ([bool]$run) $run
-$st = @(Get-ChildItem ([Environment]::GetFolderPath('Startup')) -Filter 'ElzaMost*' -ErrorAction SilentlyContinue)
+$st = @(Get-ChildItem ([Environment]::GetFolderPath('Startup')) -ErrorAction SilentlyContinue | Where-Object { $_.Name -match '(?i)elza-?most|spustit-most' })
 Krok 'Startup bez ElzaMost' ($st.Count -eq 0) ($st.Name -join ', ')
-# 3) proces
+# 3) proces: právě jeden, skrytý (bez viditelného okna), žádný jiný autostart
 $pr = @(Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" | Where-Object { $_.CommandLine -like '*ElzaMost\elza-most.ps1*' })
 Krok 'proces mostu' ($pr.Count -eq 1) ("pocet " + $pr.Count)
+$jiny = @(Get-CimInstance Win32_Process -Filter "Name='powershell.exe' OR Name='cmd.exe'" | Where-Object { $_.CommandLine -and ($_.CommandLine -match '(?i)elza-most\.ps1|spustit-most') -and $_.CommandLine -notlike '*ElzaMost\elza-most.ps1*' })
+Krok 'zadny jiny most (jina cesta)' ($jiny.Count -eq 0) ('pocet ' + $jiny.Count)
+$vid = @($pr | Where-Object { $p = Get-Process -Id $_.ProcessId -ErrorAction SilentlyContinue; $p -and $p.MainWindowHandle -ne 0 })
+Krok 'bez viditelneho okna' ($vid.Count -eq 0) ('viditelnych oken: ' + $vid.Count)
+$jineRun = @((Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run','HKCU:\Software\Microsoft\Windows\CurrentVersion\RunOnce' -ErrorAction SilentlyContinue).PSObject.Properties | Where-Object { $_.Name -notlike 'PS*' -and $_.Name -ne 'ElzaMost' -and ([string]$_.Value) -match '(?i)elza-?most|spustit-most' })
+Krok 'zadny dalsi Run autostart' ($jineRun.Count -eq 0) (($jineRun | ForEach-Object { $_.Name }) -join ', ')
+$ul = @(try { Get-ScheduledTask -ErrorAction Stop | Where-Object { $_.TaskName -match '(?i)elza-?most' } } catch { @() })
+Krok 'zadna naplanovana uloha mostu' ($ul.Count -eq 0) (($ul | ForEach-Object { $_.TaskName }) -join ', ')
 # 4) HTTP: bez tokenu 401, s tokenem 200, limity
 $tok = (Get-Content (Join-Path $D 'token') -Raw).Trim()
 $r = Kod @{c='/stav'; h=$O}; Krok 'bez tokenu = 401' ($r[0] -eq 401) $r[0]
