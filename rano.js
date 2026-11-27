@@ -31,7 +31,7 @@ var UC={};function ucLoad(){try{UC=JSON.parse(localStorage.getItem("elzaUceni")|
 function ucZapis(adresa,v,w,p){var a=String(adresa||"").toLowerCase();if(!a)return;ucLoad();var o=UC[a],pp=p||(o&&o.p)||"";if(o&&o.v==v&&(o.w||"")==(w||""))o.n=(o.n||1)+1;else o={v:v,w:w||"",n:1};if(pp)o.p=pp;ucUloz(a,o)}
 function ucPopis(adresa,p){var a=String(adresa||"").toLowerCase();p=String(p||"").trim().slice(0,1500);if(!a||!p)return;ucLoad();var o=UC[a]||{v:"",w:"",n:0};o.p=p;ucUloz(a,o)}
 function ucUloz(a,o){o.kdy=new Date().toISOString();UC[a]=o;try{localStorage.setItem("elzaUceni",JSON.stringify(UC))}catch(x){}
- try{if(typeof window!="undefined"&&W.SDL&&!SDL.demo()&&W.SEZ&&SEZ.S&&SEZ.S.ZnalostElza){SDL.def("ZnalostElza",SEZ.S.ZnalostElza,"ELZA asistent: Znalosti a profil firmy");Promise.resolve(SDL.write("ZnalostElza",0,{Title:a.slice(0,200),Druh:"trideni",Klic:a,Text:JSON.stringify({v:o.v,w:o.w,n:o.n,p:o.p||""}),Stav:"aktivni",Kdo:String(window.acc&&acc.username||""),Kdy:o.kdy})).catch(function(){})}}catch(x){}}
+ try{if(typeof window!="undefined"&&W.SDL&&!SDL.demo()&&W.SEZ&&SEZ.S&&SEZ.S.ZnalostElza){SDL.def("ZnalostElza",SEZ.S.ZnalostElza,"ELZA asistent: Znalosti a profil firmy");Promise.resolve(SDL.write("ZnalostElza",0,{Title:a.slice(0,200),Druh:"trideni",Klic:a,Text:JSON.stringify({v:o.v,w:o.w,n:o.n,p:o.p||""}),Stav:"aktivni",Kdo:String((typeof acc!="undefined"&&acc)&&acc.username||""),Kdy:o.kdy})).catch(function(){})}}catch(x){}}
 async function ucNacti(){ucLoad();try{if(W.SDL&&!SDL.demo()&&W.SEZ&&SEZ.S&&SEZ.S.ZnalostElza){SDL.def("ZnalostElza",SEZ.S.ZnalostElza,"ELZA asistent: Znalosti a profil firmy");var r=await SDL.read("ZnalostElza");(r||[]).forEach(function(x){if(x.Druh!="trideni"||x.Stav=="vyrazeno"||!x.Klic)return;var j;try{j=JSON.parse(x.Text)}catch(e){return}var a=String(x.Klic).toLowerCase(),o=UC[a];if(!o||String(x.Kdy||"")>String(o.kdy||""))UC[a]={v:j.v,w:j.w||"",n:j.n==null?1:j.n,p:j.p||"",kdy:x.Kdy||""}})}}catch(x){}return UC}
 /* 0.73.1: nastavení ranní analýzy nezávislé na modelu. Výchozí „auto“ (pravidla, Claude, lokální); aplikace si pamatuje, jak dlouho který model trvá, a spočítá nejpozdější start, aby bylo hotovo včas. */
 var RN0={model:"auto",hotovo:"07:30",doba:{pravidla:5,claude:240,lokalni:900}};
@@ -92,7 +92,7 @@ function nastHtml(){var o=rnLoad(),m=rnModel(o,{pravidla:1}),r=rnStart(o,o.model
 function box(){return '<details class=day-detail id=rano-box><summary>Nastavení ranní kontroly</summary>'+nastHtml()+'</details>'}
 function sp(path,body){var sc=[SP+"/AllSites.Write"];return(async function(){var t;try{t=(await m.acquireTokenSilent({scopes:sc,account:acc})).accessToken}catch(x){t=(await m.acquireTokenPopup({scopes:sc,account:acc})).accessToken}var r=await fetch(SP+SITE+"/_api/web/"+path,{method:"POST",headers:{Authorization:"Bearer "+t,Accept:"application/json;odata=nometadata","Content-Type":"application/json;odata=nometadata"},body:JSON.stringify(body)});if(!r.ok)throw new Error("SharePoint HTTP "+r.status)})()}
 function draw(){var bx=document.getElementById("rano-box");if(bx)bx.outerHTML=box()}
-async function klik(ev){var t=ev.target.closest("[data-ro]");if(!t)return;try{
+async function klik(ev){var po=ev.target.closest&&ev.target.closest("[data-rpo]");if(po){ev.preventDefault();try{sessionStorage.setItem("elzaPostaOtevri",po.dataset.rpo)}catch(x){}if(typeof go=="function")go("posta");return}var t=ev.target.closest("[data-ro]");if(!t)return;try{
  if(t.dataset.ro=="load"){ST.k=null;draw();await nacti();draw();return}
  var ci=t.dataset.i!=null?ST.k[+t.dataset.i]:null,ro=t.dataset.ro;
  function hotovo(m){ST.k=ST.k.filter(function(x){return x!==ci});ST.msg=m;draw()}
@@ -121,7 +121,7 @@ async function priorityData(){
     if(seen.has(id))continue;
     seen.add(id);
     var duvod=duvodPriority(m.subject||"",m.bodyPreview||"",m.importance);
-    if(duvod)data.push({subject:m.subject||"Bez předmětu",duvod:duvod,link:m.webLink});
+    if(duvod)data.push({subject:m.subject||"Bez předmětu",duvod:duvod,link:m.webLink,cid:m.conversationId||"",mid:m.id||""});
    }
    var result={items:data,kdy:new Date(),dalsi:!!rows["@odata.nextLink"]};priorityCache={user:user,kdy:Date.now(),data:result};
    return result;
@@ -140,7 +140,7 @@ async function vykresliPriority(){
   '<p class=note>Kontrola v '+e(d.kdy.toLocaleTimeString("cs-CZ",{hour:"2-digit",minute:"2-digit"}))+' · '+(d.dalsi?'posledních 50 zpráv':'načtené zprávy od posledního pracovního dne')+'</p>'+
   (d.items.length?'<ul>'+d.items.slice(0,8).map(function(x){
    var link;try{var u=new URL(x.link);if(u.protocol==="https:"&&["outlook.office.com","outlook.office365.com","outlook.cloud.microsoft"].includes(u.hostname))link=u.href}catch(err){}
-   return '<li>'+(link?'<a href="'+e(link)+'" target=_blank rel=noopener>'+e(x.subject)+'</a>':e(x.subject))+' · '+e(x.duvod)+'</li>';
+   var cil=x.cid||x.mid;return '<li>'+(cil?'<a href="#" data-rpo="'+e(cil)+'">'+e(x.subject)+'</a>':e(x.subject))+' · '+e(x.duvod)+(link?' <a class=note href="'+e(link)+'" target=_blank rel=noopener title="Otevřít v Outlooku">Outlook ↗</a>':"")+'</li>';
   }).join("")+'</ul>':'<p class=note>V této dávce nebyly nalezené známky naléhavosti.</p>')+
   (d.items.length>8?'<p class=note>Další výsledky: '+(d.items.length-8)+'. Otevřete Poštu.</p>':'');
 }

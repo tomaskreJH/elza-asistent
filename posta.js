@@ -382,7 +382,7 @@ async function fillZar(){var a=document.getElementById("mpz"),b=document.getElem
    b.innerHTML='<div data-vazba-popis></div>'+polePoznamkyVlakna(POSTAZAR.ctiPoznamku(x),POSTAZAR.jeStara&&POSTAZAR.jeStara(x));
   }
   var detail=b.querySelector('[data-vazba-popis]');
-  var z;try{z=await POSTAZAR.stav(x)}catch(e){if(!a.isConnected)return;delete a.dataset.work;a.textContent="";detail.innerHTML='<span class=note>Zařazení nelze načíst: '+esc(e.message)+'</span>';return}
+  var z;try{z=await POSTAZAR.stav(x)}catch(e){if(!a.isConnected)return;delete a.dataset.work;a.textContent="";var bezUctu=/[?&]demo=1/.test(location.search)||!(typeof acc!="undefined"&&acc);detail.innerHTML='<span class=note>'+(bezUctu?'Zařazení k případům se ukáže po přihlášení firemním účtem.':'Zařazení nelze načíst: '+esc(e.message))+'</span>';return}
   if(!a.isConnected||!zx()||zx().conversationId!=cid)return;
   delete a.dataset.work;
   if(z.w){if(z.id)a.dataset.work=z.w;a.innerHTML=(z.id?'<button class=g data-a=zopen data-id="'+esc(z.id)+'">Otevřít případ '+esc(z.w)+'</button>':'<span class=mp-cat>Případ '+esc(z.w)+'</span>')+' <button class=g data-a=zod title="Vlákno odpojit od případu">Odpojit</button>';detail.textContent="";return}
@@ -635,6 +635,9 @@ function mailM(){
   rf();rl();
   mp.addEventListener("click",onClick);mp.addEventListener("change",onChange);mp.addEventListener("keydown",onKey);
   S.thr=[];S.sel=null;
+  /* 0.88.5: otevření konkrétního vlákna z Můj den (Prioritní pošta) přímo ve čtecím panelu */
+  var pk="";try{pk=sessionStorage.getItem("elzaPostaOtevri")||"";sessionStorage.removeItem("elzaPostaOtevri")}catch(e){}
+  if(pk){var pg=groups().filter(function(g){return g.k==pk||(g.m||[]).some(function(m){return m.conversationId==pk||m.id==pk})})[0];if(pg){mp.dataset.mv="r";openThread(pg.k)}}
 }
 window.MODS=window.MODS||{};window.MODS.posta=[mail,mailM];
 })();

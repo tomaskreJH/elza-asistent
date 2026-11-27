@@ -1,4 +1,4 @@
-Verze 0.88.4 (kontrola 2026-11-27: opraven integrity.json po CRLF, .gitattributes, stable/vzhled.js; všechny node i Python testy procházejí; zpráva docs/KONTROLA-2026-11-27.md). Funkce 0.88.x na ostrých datech neověřeny; skica odložena.
+Verze 0.88.5 (Prioritní pošta otevírá vlákno v Poště; oprava window.acc/window.m v 9 modulech: zápis Kdo/Schválil, moje nabídky, kalendáře v Procesu; srozumitelná hláška bez přihlášení). Testy: node i 9 Python prochází. Funkce 0.88.x na ostrých datech neověřeny; skica odložena.
 0.88.2 – autoLink dočítá celé znění; ověřeno jen syntaxí a testy, ne na ostré poště.
 
 0.88.1 – Opravený instalátor a ověření mostu čekají na dodání do sdílené složky a na spuštění na stanicích (tom-tablet i další PC).

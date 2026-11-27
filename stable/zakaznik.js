@@ -24,7 +24,7 @@ if(typeof window=="undefined"||!window.document)return;
 function es(s){return typeof esc=="function"?esc(s):String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 var L="ZakaznikInfo",DB=[],NB=[],ST={q:"",msg:"",miss:false,busy:false},EL=null,demo=function(){return SDL.demo()};
 SDL.def(L,SEZ.S.ZakaznikInfo,"ELZA asistent: interní informace o zákazníkovi");SDL.def("NabidkaEvid",SEZ.S.NabidkaEvid,"ELZA asistent: evidence odeslaných nabídek");
-function me(){return String((window.acc&&(acc.username||acc.name))||"")}
+function me(){return String(((typeof acc!="undefined"&&acc)&&(acc.username||acc.name))||"")}
 async function load(){if(demo()){DB=[{Id:1,Zakaznik:"Ukázkový zákazník A",Typ:"sleva",Text:"Trvalá sleva 8 % dle dohody s jednatelem.",Zdroj:"rucne",Kdo:"tkrejci@elzy.cz",Kdy:"2026-11-20"}];NB=[];draw();return}try{var r=await SDL.read(L);if(r==null){ST.miss=true;DB=[]}else{ST.miss=false;DB=r}NB=(await SDL.read("NabidkaEvid"))||[]}catch(e){ST.msg="Čtení selhalo: "+e.message}draw()}
 async function run(fn,ok){if(ST.busy)return;ST.busy=true;try{await fn();ST.msg=ok}catch(e){ST.msg="Chyba: "+e.message}ST.busy=false;if(!demo())await load();else draw()}
 function draw(){if(!EL)return;var h='<h1>Kdo je zákazník</h1><p class=note>Krok 0 před první nabídkou, dotazy i odpovědí. Interní informace (slevy, dohody, historie, poznámky) se vedou tady, zapisují se hned. Účetnictví se nečte, nic se neodesílá.</p>';

@@ -4,7 +4,7 @@
 (function(){
 var L='NocniFronta',EL=null,PUMPA=0,ST=null;
 function E(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-function me(){return String(window.acc&&acc.username||'').toLowerCase()}
+function me(){return String((typeof acc!="undefined"&&acc)&&acc.username||'').toLowerCase()}
 function LS(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}return null}
 function ok(){return !!(window.SDL&&!SDL.demo()&&window.SEZ&&SEZ.S&&SEZ.S[L])}
 async function most(c,b){var f=await fetch('http://127.0.0.1:47321'+c,{method:b?'POST':'GET',headers:{'x-elza-kod':LS('elzaMostKod')||'','content-type':'application/json'},body:b?JSON.stringify(b):undefined,signal:AbortSignal.timeout(10000)});var j=await f.json();if(!f.ok)throw new Error(j.chyba||('HTTP '+f.status));return j}
