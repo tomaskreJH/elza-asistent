@@ -1,4 +1,5 @@
-**0.88.8 (2026-11-27):** Po přihlášení vedení: Lidé → Typy školení → Aktualizovat katalog podle předpisů; u lidí s OZO/RT zkontrolovat datum platnosti (prázdné = bez omezení) a záznamy EL-50 převést na EL-194. Do týmů v Lidé doplnit všechny vlastníky sdílených kalendářů s e-mailem (jinak jsou v Kalendáři Nezařazené). Ověřit v e-Sbírce platnost osvědčení OZO PO a revizního technika (veřejné zdroje nejednoznačné). Ověřit Kalendář bez ⚠ 429.
+**0.88.9 (2026-11-27):** Ověřit po přihlášení: Lidé otevře vedení → katalog se převede sám (EL-50 zmizí, OZO/RT bez omezení); výběr Člověk nabízí zaměstnance; analýza přiřazeného vlákna se objeví v časové ose případu. Další vazby podle Tomáše (2026-11-27): kroky mají navazovat a postup být vidět na jednom místě – navrhnout přehled postupu případu (e-mail → analýza → případ → nabídka → zakázka) v detailu případu a odkazy mezi moduly; ověřit platnost OZO/RT v e-Sbírce.
+
 
 
 

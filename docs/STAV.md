@@ -1,4 +1,4 @@
-Verze 0.88.8 (Lidé: katalog podle platných předpisů, neomezená osvědčení, úpravy jen vedení; Kalendář: firemní skupiny z týmů v Lidé; předtím 0.88.7 oprava 429 a synchronizace nastavení). Testy: node i 9 Python prochází. Na ostrých datech neověřeno.
+Verze 0.88.9 (vazby: automatický převod katalogu školení, Lidé ze seznamu zaměstnanců, analýza e-mailu do časové osy případu; předtím 0.88.8 katalog podle předpisů a firemní skupiny kalendáře). Testy: node i 9 Python prochází. Na ostrých datech neověřeno.
 0.88.2 – autoLink dočítá celé znění; ověřeno jen syntaxí a testy, ne na ostré poště.
 
 0.88.1 – Opravený instalátor a ověření mostu čekají na dodání do sdílené složky a na spuštění na stanicích (tom-tablet i další PC).

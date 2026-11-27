@@ -272,6 +272,24 @@ function doporuceniProPostu(v,work){
   /nabídk/i.test(v.typ)?"AG-NABIDKA":"",
   /poptáv/i.test(v.typ)?"AG-POPTAVKY":"",work?"AG-PRIPADY":"","AG-POSTA"].filter(Boolean);
 }
+/* 0.88.9: výsledek analýzy se uloží do časové osy přiřazeného případu (seznam Aktivity, typ Analýza),
+   aby postup navazoval a výsledek nezmizel s panelem. Bez případu se nic neukládá a aplikace řekne, co udělat. */
+var ULOZENO=new Set();
+function ulozAnalyzu(box,work,v,type,tech,next){
+  var sec=box.querySelector(".mail-analysis"),dl=sec&&sec.querySelector("dl");if(!sec||!dl)return;
+  var st=document.createElement("p");st.className="note";st.setAttribute("role","status");dl.after(st);
+  if(!work){st.textContent="Vlákno není přiřazené k případu, výsledek se proto nikam neukládá. Přiřaďte vlákno k případu nebo založte případ a analýzu spusťte znovu: uloží se do časové osy případu.";return}
+  var zb=document.querySelector("#mpz [data-a=zopen]"),zid=zb&&zb.dataset.id;
+  var otevri=zid?' <button class=g data-a=zopen data-id="'+esc(zid)+'">Otevřít případ</button>':'';
+  var subj=(S.thr[0]&&S.thr[0].m&&S.thr[0].m.subject)||"";
+  var popis="Analýza vlákna „"+subj.slice(0,120)+"“: typ "+type+"; technologie "+tech+"; objekt/zakázka "+(v.kody.join(" / ")||"nezjištěno")+"; další krok: "+next+".";
+  var key=work+"|"+S.sel+"|"+popis;
+  if(ULOZENO.has(key)){st.innerHTML="✓ Už uloženo v časové ose případu "+esc(work)+"."+otevri;return}
+  if(GR.demo||!window.pripadyAkt){st.textContent="Ukázka: v ostrém provozu se výsledek uloží do časové osy případu "+work+".";return}
+  st.textContent="Ukládám do časové osy případu "+work+"…";
+  window.pripadyAkt(work,"Analýza",0,popis,"Pošta – analýza").then(function(){ULOZENO.add(key);st.innerHTML="✓ Uloženo do časové osy případu "+esc(work)+"."+otevri})
+   .catch(function(e){st.textContent="Do případu se nepodařilo uložit: "+e.message});
+}
 function analyzeThread(){
   var box=document.getElementById("mpai"), parts=threadInput(S.thr);
   if(!parts.length){box.textContent="Pro analýzu není k dispozici žádná zpráva, která prošla kontrolou vstupu.";return}
@@ -291,6 +309,7 @@ function analyzeThread(){
     (questions.length?'<details><summary>Nalezené otázky ('+questions.length+')</summary><ul>'+questions.map(function(q){return '<li>'+esc(q.q)+'</li>'}).join("")+'</ul><button class=g data-a=zquestions>Přidat otázky k případu</button><div class=question-result role=status></div></details>':(work?'<p class=note>V načtených zprávách zákazníka nebyly nalezeny otázky. Otevřete jeho zprávy a spusťte rozbor znovu.</p>':''))+
     '<label>Elzáček <select class=mail-agent><option value=AG-POSTA>Analýza pošty a dokumentů</option></select></label> <button class=g data-a=aiv>Požádat o rozbor</button> <button class=g data-a=aidraft>Připravit návrh odpovědi</button><div class=agent-mail-result role=status></div></section>';
   nabidniElzacky(box.querySelector(".mail-agent"),doporuceniProPostu(v,work));
+  ulozAnalyzu(box,work,v,type,tech,next);
   if(questions.length)questionPreviews.set(box.querySelector("[data-a=zquestions]"),{work:work,questions:questions});
 }
 function otazkyVlakna(){
