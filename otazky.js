@@ -25,10 +25,21 @@ function pripomenoutHovor(arr,work){return (arr||[]).some(function(p){return p.w
 /* písemné shrnutí pro zákazníka: jen zodpovězené položky z hovoru (co se ptal, co jsme odpověděli); nic se neodesílá, je to koncept pro Tomáše */
 function shrnuti(arr,work,oslovení){var z=(arr||[]).filter(function(p){return p.work==work&&!otevrena(p)&&!p.odeslano});if(!z.length)return "";
  return (oslovení||"Dobrý den")+",\n\nděkuji za dnešní hovor. Pro jistotu shrnuji, co jsme si řekli:\n\n"+z.map(function(p,i){return (i+1)+". "+p.q+"\n   "+p.odp}).join("\n\n")+"\n\nPokud je něco jinak, dejte mi prosím vědět."}
+/* první odpověď zákazníkovi (0.85.0): krátká, na všechny dotazy, bez ceny (tu určuje obchod). Chybějící odpověď = viditelný znak k doplnění, nikdy se nedomýšlí.
+   Doplňková zařízení podle TP a HŘ HZS ELZA neurčuje: označí se jako dotaz k upřesnění. Strojově čitelný blok říká, že jde o vícekrokový proces. Nic se neodesílá; obchod dostane jen kopii na vědomí. */
+var KROKY_PROCESU=["prvni-nabidka","upresneni-po-vyberu","obhlidka","dokumentace-pbr","zadost-uradu","dzp","konecna-nabidka","montaz","pripojeni-na-pco"];
+function prvniOdpoved(o){o=o||{};var q=o.otazky||[],chybi=0,dopl=false,ozn="[DOPLNIT ODPOVĚĎ]";
+ var radky=q.map(function(p,i){var t=String(p.odp||"").trim(),dz=/doplnkov|HR HZS|HŘ HZS|\bTP\b|technick\w+ podm/i.test(p.q||"");
+  if(dz&&!t){dopl=true;return (i+1)+". "+p.q+"\n   Upřesníme po prověření technických podmínek a hasičského řádu; zatím to neurčujeme."}
+  if(!t){chybi++;return (i+1)+". "+p.q+"\n   "+ozn}return (i+1)+". "+p.q+"\n   "+t});
+ var tx=(o.osloveni||"Dobrý den")+",\n\nděkuji za Váš dotaz"+(o.zakaznik?" ("+o.zakaznik+")":"")+". Odpovídám stručně na všechny body:\n\n"+(radky.length?radky.join("\n\n"):"(zatím nejsou zapsány žádné dotazy)")+
+  (o.pozadavky&&o.pozadavky.length?"\n\nPožadované nabídky: "+o.pozadavky.join("; ")+". Zašleme je v samostatném kroku.":"")+
+  "\n\nJde o postup o více krocích (nabídka, upřesnění, obhlídka, dokumentace a PBŘ, žádost úřadu, DZP, montáž, připojení). Další kroky předem upřesníme a o každém Vás budeme informovat; nemusíte nic hlídat.\n\nS pozdravem\nTomáš Krejčí\nELZY, spol. s r.o.\n\n--\nELZA-PROCES: vicekrokovy=ano; zakazka="+(o.work||"")+"; kroky="+KROKY_PROCESU.join(",")+"; nabizi=EPS,PCO,DZP,PBR,OZO-PO";
+ return{text:tx,chybi:chybi,doplnkova:dopl,kompletni:chybi===0&&!!q.length,kopie:"obchod (na vědomí)"}}
 /* zapisuje se do ZnalostElza: Klic otazka:WORK:id, Text JSON; čtení zpět */
 function naZaznam(p){return{Title:("Otázka "+p.work+": "+p.q).slice(0,200),Druh:"otazka",Klic:"otazka:"+p.work+":"+p.id,Stav:p.Stav,Text:JSON.stringify({q:p.q,od:p.od,kanal:p.kanal,odp:p.odp||"",odpKdo:p.odpKdo||"",odpKdy:p.odpKdy||"",odpKanal:p.odpKanal||"",odeslano:!!p.odeslano})}}
 function zZaznamu(r){if(!r||r.Druh!="otazka")return null;var m=/^otazka:([^:]+):(.+)$/.exec(r.Klic||"");if(!m)return null;var t={};try{t=JSON.parse(r.Text||"{}")}catch(e){}return Object.assign({Id:r.Id,id:m[2],work:m[1],Stav:r.Stav=="zodpovezena"?"zodpovezena":"otevrena"},t)}
-W.OTAZKY={PRAH_DNU:PRAH_DNU,extrahuj:extrahuj,pracDny:pracDny,otevrena:otevrena,nove:nove,polozka:polozka,zodpovez:zodpovez,zpozdene:zpozdene,pripomenoutHovor:pripomenoutHovor,shrnuti:shrnuti,naZaznam:naZaznam,zZaznamu:zZaznamu};
+W.OTAZKY={PRAH_DNU:PRAH_DNU,extrahuj:extrahuj,pracDny:pracDny,otevrena:otevrena,nove:nove,polozka:polozka,zodpovez:zodpovez,zpozdene:zpozdene,pripomenoutHovor:pripomenoutHovor,shrnuti:shrnuti,prvniOdpoved:prvniOdpoved,naZaznam:naZaznam,zZaznamu:zZaznamu};
 if(typeof module!="undefined")module.exports=W.OTAZKY;
 if(typeof window=="undefined"||!window.document)return;
 function es(s){return typeof esc=="function"?esc(s):String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
@@ -56,7 +67,8 @@ async function boxPripadu(work){
  catch(e){return '<p class=note>'+es(msg)+'</p>'}
  var polozky=DB.filter(function(p){return p.work===work});
  return '<details><summary>Otázky zákazníka ('+polozky.length+')</summary>'+
-  (polozky.length?polozky.map(function(p){return radek(p,true)}).join(""):'<p class=note>Otázky můžete přidat z přiřazeného vlákna v Poště.</p>')+'</details>';
+  (polozky.length?polozky.map(function(p){return radek(p,true)}).join(""):'<p class=note>Otázky můžete přidat z přiřazeného vlákna v Poště.</p>')+
+  (polozky.length?'<p><button class=g data-pvo="'+es(work)+'">Koncept první odpovědi zákazníkovi</button></p><div data-pvobox></div>':'')+'</details>';
 }
 async function ulozOdpoved(p,odp,kanal,kdo){
  if(!ok()||!p.Id)throw new Error("Úprava vyžaduje existující položku v seznamu ZnalostElza.");
@@ -67,6 +79,9 @@ async function ulozOdpoved(p,odp,kanal,kdo){
  return n;
 }
 async function klik(e){
+ var pv=e.target.closest&&e.target.closest("[data-pvo]");
+ if(pv){var w=pv.dataset.pvo,r=prvniOdpoved({work:w,otazky:DB.filter(function(p){return p.work===w})}),bx=pv.closest("details").querySelector("[data-pvobox]");
+  bx.innerHTML='<p class=note>'+(r.kompletni?'Všechny dotazy mají odpověď.':'Chybí odpovědi ('+r.chybi+'), jsou označeny v textu.')+(r.doplnkova?' Doplňková zařízení podle TP a HŘ HZS ELZA neurčuje, je to označeno jako dotaz.':'')+' Nic se neodesílá; obchod dostane jen kopii na vědomí.</p><textarea rows=14 style="width:100%" readonly>'+es(r.text)+'</textarea>';return}
  var b=e.target.closest&&e.target.closest("[data-oz]");
  if(!b||b.disabled)return;
  var it=b.closest(".it"),status=it.querySelector("[data-oqstatus]");

@@ -1,3 +1,5 @@
+0.85.0 – Koncept první odpovědi zákazníkovi v detailu případu (bod 6). Ověřeno jen testy a syntaxí, v ostrém UI neověřeno.
+
 0.84.0 – Detail případu ukazuje kartu Kdo je zákazník (jen čtení, upozornění nahoře). Změna zatím jen lokálně ověřena testy; na ostrém webu neověřeno.
 
 0.83.0 – Můj den má pracovní karty a hlavní navigaci podle potvrzené role a povolených modulů. Přehled případů je osobní, týmové souhrny patří vedoucím. Výpadek profilu a deaktivované účty mají omezenou pracovní plochu, profil lze načíst znovu. Správa kontroluje duplicity, explicitní volbu role a aktivní stav. Sdílené kalendáře lze seskupit a zapínat nebo vypínat po skupinách. Přejímka je v docs/PREVZETI-FIRMA.md. Přepnutí skupin ignoruje opožděné načtení událostí. Po odhlášení se obnoví stránka a vyčistí stav otevřené relace.

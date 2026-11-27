@@ -1,3 +1,5 @@
+0.85.0 – V detailu případu je tlačítko Koncept první odpovědi zákazníkovi (blok Otázky zákazníka): krátký text na všechny dotazy, neodpovězené označené [DOPLNIT ODPOVĚĎ], doplňková zařízení podle TP a HŘ HZS označena jako dotaz, bez ceny, se strojově čitelným blokem ELZA-PROCES. Nic se neodesílá, obchod jen kopie na vědomí. Test v test/otazky.test.js.
+
 0.84.0 – Detail případu ukazuje kartu Kdo je zákazník: upozornění (riziko, sleva) nahoře, dohody, historie, postupy, osoby a nabídky ze ZakaznikInfo a NabidkaEvid; jen čtení, při chybě čtení nic neblokuje. Test pokrývá escapování a vyřazené záznamy. Karta zatím není v konceptu nabídky.
 
 0.83.0 – Můj den má pracovní karty a hlavní navigaci podle potvrzené role a povolených modulů. Přehled případů je osobní, týmové souhrny patří vedoucím. Výpadek profilu a deaktivované účty mají omezenou pracovní plochu, profil lze načíst znovu. Správa kontroluje duplicity, explicitní volbu role a aktivní stav. Sdílené kalendáře lze seskupit a zapínat nebo vypínat po skupinách. Přejímka je v docs/PREVZETI-FIRMA.md. Přepnutí skupin ignoruje opožděné načtení událostí. Po odhlášení se obnoví stránka a vyčistí stav otevřené relace.

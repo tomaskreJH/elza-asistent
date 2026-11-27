@@ -43,3 +43,10 @@ var r=O.naZaznam(h);a.equal(r.Druh,'otazka');a.ok(/^otazka:W1:/.test(r.Klic));va
  await a.rejects(otazky.ulozOdpoved({},'test','telefon','tester'),/ZnalostElza/);
  console.log('otazky OK');
 })().catch(function(error){console.error(error);process.exitCode=1});
+
+(function(){var a=require('assert'),O=require('../otazky.js');
+var r=O.prvniOdpoved({work:'WORK-X',zakaznik:'MAKRO',otazky:[{q:'Kdy můžete přijet?',odp:'Do 14 dnů.'},{q:'Jaká doplňková zařízení požaduje HŘ HZS?'},{q:'Kolik to bude stát?'}],pozadavky:['EPS na PCO']});
+a.ok(!r.kompletni&&r.chybi===1&&r.doplnkova,'jedna chybí, doplňková označena');a.ok(/Do 14 dnů/.test(r.text)&&/\[DOPLNIT ODPOVĚĎ\]/.test(r.text)&&/Upřesníme po prověření/.test(r.text));
+a.ok(/ELZA-PROCES: vicekrokovy=ano; zakazka=WORK-X/.test(r.text)&&!/Kč/.test(r.text),'strojový blok a žádná cena');a.ok(/obchod/.test(r.kopie));
+a.ok(O.prvniOdpoved({otazky:[{q:'Otázka číslo jedna?',odp:'ano'}]}).kompletni);a.ok(!O.prvniOdpoved({otazky:[]}).kompletni);
+console.log('prvniOdpoved OK')})();

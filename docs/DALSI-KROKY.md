@@ -1,3 +1,5 @@
+0.85.0 – Hotov bod 6 (koncept první odpovědi bez obrázku budovy z portálu; ten doplnit). Zbývá: karta zákazníka v konceptu nabídky, obrázek budovy, ostré ověření obou karet v detailu případu.
+
 0.84.0 – Karta Kdo je zákazník je v detailu případu (bod 3 hotov z poloviny). Zbývá koncept nabídky a první odpovědi zákazníkovi. Nasazení na GitHub nebylo možné: v tomto vlákně nešlo připojit repozitář s právem zápisu, změny jsou jen v pracovní kopii a čekají na commit.
 
 0.83.0 – Můj den má pracovní karty a hlavní navigaci podle potvrzené role a povolených modulů. Přehled případů je osobní, týmové souhrny patří vedoucím. Výpadek profilu a deaktivované účty mají omezenou pracovní plochu, profil lze načíst znovu. Správa kontroluje duplicity, explicitní volbu role a aktivní stav. Sdílené kalendáře lze seskupit a zapínat nebo vypínat po skupinách. Přejímka je v docs/PREVZETI-FIRMA.md. Přepnutí skupin ignoruje opožděné načtení událostí. Po odhlášení se obnoví stránka a vyčistí stav otevřené relace.
