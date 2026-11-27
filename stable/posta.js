@@ -395,7 +395,7 @@ function blk(t,i){
     if(window.OCHRANA)h+=OCHRANA.banner(t);
     if(t.hasImg&&!t.img)h+='<div class=gbanner>Vzdálené obrázky jsou z bezpečnostních důvodů blokované. <button class=g data-a=img data-i='+i+'>Načíst obrázky</button></div>';
     h+='<iframe id=fr'+i+' sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox" title="Text zprávy"></iframe>';
-    if(t.attErr)h+='<p class=note>Přílohy se nepodařilo načíst: '+esc(t.attErr)+'</p>';if(t.att&&t.att.length){h+='<div class=mp-a>'+t.att.filter(function(a){return !a.isInline||!t.cidDone[a.id]}).map(function(a){return '<button class=g data-a=at data-i='+i+' data-id="'+esc(a.id)+'">📎 '+esc(a.name)+' ('+Math.max(1,Math.round((a.size||0)/1024))+' kB)</button>'}).join("")+'</div>'}
+    if(t.attErr)h+='<p class=note>Přílohy se nepodařilo načíst: '+esc(t.attErr)+'</p>';if(t.att&&t.att.length){h+='<div class=mp-a>'+t.att.filter(function(a){return !a.isInline||!t.cidDone[a.id]}).map(function(a){return '<button class=g data-a=at data-i='+i+' data-id="'+esc(a.id)+'">📎 '+esc(a.name)+' ('+Math.max(1,Math.round((a.size||0)/1024))+' kB)</button>'+(window.SKICA&&SKICA.jeFotka(a)?'<button class=g data-a=sk data-i='+i+' data-id="'+esc(a.id)+'" title="Z fotky se v prohlížeči vytvoří kresba budovy pro osobní odpověď; nic se nikam neposílá">✏ Skica budovy</button>':'')}).join("")+'</div><div class=mp-sk id=mpsk'+i+'></div>'}
   }else h+='<p class=note>Načítám…</p>';
   return h+'</div>';
 }
@@ -582,6 +582,10 @@ async function onClick(e){
   if(a=="zquestions")return saveThreadQuestions(el);
   if(a=="aiv"||a=="aidraft")return analyzeWithAgent(el,a=="aidraft");
   if(a=="at")return download(i,el.dataset.id);
+  if(a=="sk"){var bx=document.getElementById("mpsk"+i),tt=S.thr[i];if(!bx||!window.SKICA)return;bx.innerHTML='<p class=note>Kreslím skicu…</p>';
+   try{var bl2=await GR.req("GET","/me/messages/"+enc(tt.m.id)+"/attachments/"+enc(el.dataset.id)+"/$value",{sc:sc(),blob:true}),du=await SKICA.vykresli(bl2),nm=((tt.att.filter(function(x){return x.id==el.dataset.id})[0]||{}).name||"budova").replace(/\.[^.]+$/,"")+"-skica.png";
+    bx.innerHTML='<p class=note>Skica budovy z fotky zákazníka (jen v tomto okně, nic se neukládá ani neposílá). Použijte ji v osobní odpovědi.</p><img alt="Skica budovy" style="max-width:100%;border:1px solid #cdd5df;border-radius:6px" src="'+du+'"><p><a class=g download="'+esc(nm)+'" href="'+du+'">Stáhnout skicu (PNG)</a></p>'}
+   catch(e){bx.innerHTML='<p class=note>Skicu se nepodařilo vytvořit: '+esc(e.message)+'</p>'}return}
   if(a=="rp")return startCompose("reply",i);
   if(a=="ra")return startCompose("all",i);
   if(a=="fw")return startCompose("fwd",i);

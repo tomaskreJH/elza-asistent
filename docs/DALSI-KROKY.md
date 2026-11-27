@@ -1,3 +1,5 @@
+0.86.0 – Skica budovy z fotky zákazníka (příloha v Poště). ZBÝVÁ: 1) vložit skicu přímo do konceptu první odpovědi a do konceptu v Outlooku (draft s přílohou už posta.js umí; ověřit a napojit); 2) fotka ze stránek zákazníka: prohlížeč cizí web nenačte (CORS), proto potřebuje stahování mimo prohlížeč. POTŘEBUJE ÚPRAVU MOSTU: stažení obrázku z veřejné adresy a vrácení do aplikace (nebo úloha pro Elzáčka s přístupem na web); bez pokynu „uprav most“ nedělat; 3) skica jen když zákazník fotku dodal nebo je veřejně na jeho webu; u nové poptávky bez fotky se vynechá.
+
 0.85.0 – Hotov bod 6 (koncept první odpovědi). Obrázek budovy z portálu jen u už evidovaného objektu (OBJ); u nové poptávky se vynechává, nic se nevymýšlí. Zbývá: karta zákazníka v konceptu nabídky, obrázek budovy, ostré ověření obou karet v detailu případu.
 
 0.84.0 – Karta Kdo je zákazník je v detailu případu (bod 3 hotov z poloviny). Zbývá koncept nabídky a první odpovědi zákazníkovi. Nasazení na GitHub nebylo možné: v tomto vlákně nešlo připojit repozitář s právem zápisu, změny jsou jen v pracovní kopii a čekají na commit.

@@ -1,3 +1,5 @@
+0.86.0 – Skica budovy z přílohy v Poště. Ověřeno testy a v prohlížeči na syntetickém obrázku; na skutečné příloze v ostré Poště neověřeno.
+
 0.85.1 – Koncept první odpovědi hlídá neznámého zákazníka. Ověřeno testy a syntaxí, v ostrém UI neověřeno.
 
 0.85.0 – Koncept první odpovědi zákazníkovi v detailu případu (bod 6). Ověřeno jen testy a syntaxí, v ostrém UI neověřeno.

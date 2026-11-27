@@ -1,3 +1,5 @@
+0.86.0 – Skica budovy z fotky zákazníka (skica.js): u obrázkové přílohy v Poště tlačítko Skica budovy; kresba z hran fotky se vytvoří v prohlížeči (bez AI a bez nákladů, nic se neukládá ani neposílá) a jde stáhnout jako PNG. Testy: test/skica.test.js, test/skica.py. Fotka ze stránek zákazníka zatím nejde (viz DALSI-KROKY).
+
 0.85.1 – Koncept první odpovědi upozorní, že zákazník zatím není v evidenci, a odkáže na Krok 0 (Kdo je zákazník). Obrázek budovy z portálu se u nové poptávky nepoužívá (objekt ještě neexistuje); jen u evidovaného objektu.
 
 0.85.0 – V detailu případu je tlačítko Koncept první odpovědi zákazníkovi (blok Otázky zákazníka): krátký text na všechny dotazy, neodpovězené označené [DOPLNIT ODPOVĚĎ], doplňková zařízení podle TP a HŘ HZS označena jako dotaz, bez ceny, se strojově čitelným blokem ELZA-PROCES. Nic se neodesílá, obchod jen kopie na vědomí. Test v test/otazky.test.js.
