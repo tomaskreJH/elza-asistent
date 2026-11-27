@@ -1,3 +1,5 @@
+**0.88.6 (2026-11-27):** Kalendář – skupiny k účtu, Seskupit podle týmů z Lidé. Po přihlášení ověřit: otevřít Kalendář (skupiny z dřívějška se převedou z prohlížeče, kde byly uložené – otevřít nejdřív tam), Seskupit podle týmů z Lidé (vlastníci kalendářů musí být v Clen s e-mailem). Tomáš hlásí „kalendář špatně funguje“ – konkrétní závadu ověřit po přihlášení. Opačný směr (skupina kalendáře → tým v Lidé) nezaveden záměrně: týmy se spravují jen v Lidé.
+
 **0.88.5 (2026-11-27):** hotovo propojení Prioritní pošty s Poštou (bod z 0.82.0) a oprava přihlášeného uživatele v modulech. Po přihlášení Tomáše ověřit: Můj den → Prioritní pošta → klepnout na zprávu; v Procesu obsazenost kalendářů; v Nabídkách „vaše nabídky nahoře“.
 
 **0.88.4 (2026-11-27):** kontrola hotova, opraveny otisky (CRLF) a stable/vzhled.js. Zbývá: ověření 0.88.x na živých datech po přihlášení Tomáše, ladění vah vazbaSkore, pilot jedné poptávky; skica odložena; most jen na „uprav most“.

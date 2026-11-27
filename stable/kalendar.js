@@ -18,6 +18,36 @@ function groupConfig(){
  try{var saved=JSON.parse(GR.ls(accountKey("elzaKalSkupiny"))||"{}");return saved&&typeof saved==="object"&&!Array.isArray(saved)?saved:{}}
  catch(e){return {}}
 }
+/* 0.88.6: skupiny sdílených kalendářů se ukládají k účtu do ZnalostElza (Druh kal_skupiny, Klic kal_skupiny:účet),
+   takže platí na všech zařízeních a prohlížečích; localStorage zůstává jen jako rychlá kopie. */
+var KS={id:0,loaded:false};
+function sdlOk(){return !GR.demo&&window.SDL&&window.SEZ&&SEZ.S&&SEZ.S.ZnalostElza}
+function ksKey(){return "kal_skupiny:"+GR.me()}
+async function ksFind(){SDL.def("ZnalostElza",SEZ.S.ZnalostElza,"ELZA asistent: Znalosti a profil firmy");var r=await SDL.read("ZnalostElza","Druh eq 'kal_skupiny'")||[];return r.filter(function(i){return i.Klic===ksKey()})[0]||null}
+async function loadSharedGroups(){
+ if(!sdlOk())return false;
+ try{var x=await ksFind();
+  if(x){KS.id=x.Id;var c=JSON.parse(x.Text||"{}");if(c&&typeof c==="object"&&!Array.isArray(c)){K.groups=c;GR.ls(accountKey("elzaKalSkupiny"),JSON.stringify(c));return true}}
+  else{var loc=groupConfig();if(Object.keys(loc).length)await saveSharedGroups(loc)} /* převod skupin z tohoto prohlížeče */
+ }catch(e){K.groupErr=e.message}
+ return false;
+}
+async function saveSharedGroups(c){
+ if(!sdlOk())return false;
+ SDL.def("ZnalostElza",SEZ.S.ZnalostElza,"ELZA asistent: Znalosti a profil firmy");
+ await SDL.write("ZnalostElza",KS.id||0,{Title:"Skupiny kalendářů "+GR.me(),Druh:"kal_skupiny",Klic:ksKey(),Text:JSON.stringify(c),Stav:"aktivni",Kdo:GR.me(),Kdy:new Date().toISOString()});
+ if(!KS.id){var x=await ksFind();if(x)KS.id=x.Id}
+ return true;
+}
+/* týmy z modulu Lidé: vlastník sdíleného kalendáře se páruje s členem týmu podle e-mailu, jinak podle jména */
+async function teamsOf(){
+ if(GR.demo)return {tym:[{Title:"EPS",Nazev:"Tým EPS"}],clen:[{Title:"Honza Procházka",Email:"",Tym:"EPS"}]};
+ if(!window.SDL||!window.SEZ||!SEZ.S.Tym||!SEZ.S.Clen)throw new Error("Seznamy Lidé nejsou dostupné.");
+ SDL.def("Tym",SEZ.S.Tym,"Lidé a školení, týmy");SDL.def("Clen",SEZ.S.Clen,"Lidé a školení, členové");
+ var a=await Promise.all([SDL.read("Tym"),SDL.read("Clen")]);
+ if(a[0]==null||a[1]==null)throw new Error("Seznam Tym nebo Clen neexistuje (Správa → Seznamy).");
+ return {tym:a[0].filter(function(x){return x.Stav!=="neaktivni"}),clen:a[1].filter(function(x){return x.Stav!=="neaktivni"})};
+}
 function groupName(c){return Object.hasOwn(K.groups,c.id)?String(K.groups[c.id]).trim():""}
 function ccol(id){var c=K.cals.filter(function(x){return x.id==id})[0];return c?c.col:"#888"}
 
@@ -29,7 +59,7 @@ function nopeM(){var b=$("#gt");if(!b)return;b.onclick=async function(){try{awai
 async function loadCals(){
   var r=await GR.all("/me/calendars?$top=50&$select=id,name,hexColor,color,canEdit,isDefaultCalendar,owner",{sc:CR});
   var me=GR.me();
-  K.cals=r.map(function(c,i){var o=(c.owner&&c.owner.address||"").toLowerCase();return {id:c.id,name:c.name,col:/^#[0-9a-f]{6}$/i.test(c.hexColor||"")?c.hexColor:PAL[i%PAL.length],edit:!!c.canEdit,def:!!c.isDefaultCalendar,shared:!!o&&o!=me,owner:c.owner&&c.owner.name||""}});
+  K.cals=r.map(function(c,i){var o=(c.owner&&c.owner.address||"").toLowerCase();return {id:c.id,name:c.name,col:/^#[0-9a-f]{6}$/i.test(c.hexColor||"")?c.hexColor:PAL[i%PAL.length],edit:!!c.canEdit,def:!!c.isDefaultCalendar,shared:!!o&&o!=me,owner:c.owner&&c.owner.name||"",mail:o}});
   var sv=null;try{sv=JSON.parse(GR.ls(accountKey("elzaKalVyber"))||"null")}catch(e){}
   if(!sv){
     try{
@@ -37,7 +67,7 @@ async function loadCals(){
       if(previous&&K.cals.some(function(c){return Object.hasOwn(previous,c.id)}))sv=previous;
     }catch(e){}
   }
-  K.groups=groupConfig();K.sel=Object.create(null);K.cals.forEach(function(c){K.sel[c.id]=sv?!!sv[c.id]:(c.def||!c.shared)});
+  K.groups=groupConfig();if(!KS.loaded){KS.loaded=true;loadSharedGroups().then(function(ch){if(ch&&document.getElementById("ksd"))paint()})}K.sel=Object.create(null);K.cals.forEach(function(c){K.sel[c.id]=sv?!!sv[c.id]:(c.def||!c.shared)});
   if(!sv&&!K.cals.some(function(c){return K.sel[c.id]}))K.cals.forEach(function(c){K.sel[c.id]=true});
 }
 function range(){
@@ -126,7 +156,7 @@ function side(){
    return '<section class=k-team><div class=k-team-title><b>'+esc(name||"Nezařazené")+'</b>'+
     '<button class=g data-a=group data-name="'+esc(name)+'" aria-label="'+esc((all?"Skrýt: ":"Zobrazit: ")+(name||"Nezařazené"))+'">'+(all?"Skrýt vše":"Zobrazit vše")+'</button></div>'+members.map(row).join("")+'</section>';
   }).join("");
-  var organize=sh.length?'<details class=k-organize'+(K.organize?" open":"")+'><summary>Upravit skupiny</summary><p class=note>Stejný název spojí kalendáře do jedné skupiny. Skupiny jsou uložené v tomto prohlížeči.</p>'+
+  var organize=sh.length?'<details class=k-organize'+(K.organize?" open":"")+'><summary>Upravit skupiny</summary><p class=note>Stejný název spojí kalendáře do jedné skupiny. Skupiny se ukládají k vašemu účtu a platí na všech zařízeních.</p><p><button class=g data-a=teamgroups>Seskupit podle týmů z Lidé</button></p>'+
    sh.map(function(c){return '<label>'+esc(c.owner?c.name+" · "+c.owner:c.name)+'<input data-cgroup="'+esc(c.id)+'" maxlength=48 placeholder="Např. Servis" value="'+esc(groupName(c))+'"></label>'}).join("")+
    '<button class=g data-a=savegroups>Uložit skupiny</button><span id=k-group-status class=note role=status></span></details>':"";
   return '<h4>Moje kalendáře</h4>'+mine.map(row).join("")+'<h4>Sdílené se mnou</h4>'+
@@ -228,7 +258,24 @@ function onClick(e){
       if(input.value.trim())config[input.dataset.cgroup]=input.value.trim();
     });
     K.groups=config;K.organize=true;GR.ls(accountKey("elzaKalSkupiny"),JSON.stringify(config));paint();
-    $("#k-group-status").textContent="Skupiny uloženy.";return;
+    $("#k-group-status").textContent="Ukládám…";
+    saveSharedGroups(config).then(function(ok){var s=$("#k-group-status");if(s)s.textContent=ok?"Skupiny uloženy k účtu (všechna zařízení).":(GR.demo?"Ukázka: uloženo jen v tomto prohlížeči.":"Uloženo v tomto prohlížeči.")}).catch(function(e){var s=$("#k-group-status");if(s)s.textContent="Uloženo jen v tomto prohlížeči, k účtu se nepodařilo: "+e.message});
+    return;
+  }
+  if(a=="teamgroups"){
+    var st=$("#k-group-status");if(st)st.textContent="Načítám týmy z Lidé…";
+    teamsOf().then(function(T){
+     var nm={};T.tym.forEach(function(x){nm[x.Title]=x.Nazev||x.Title});
+     var n=0,vic=0;
+     document.querySelectorAll("#ksd [data-cgroup]").forEach(function(input){
+      var c=K.cals.filter(function(x){return x.id===input.dataset.cgroup})[0];if(!c)return;
+      var cl=T.clen.filter(function(m){return (c.mail&&String(m.Email||"").toLowerCase()===c.mail)||(!c.mail||!m.Email)&&m.Title&&m.Title===c.owner});
+      var ty=Array.from(new Set(cl.map(function(m){return m.Tym}).filter(Boolean)));
+      if(ty.length){input.value=nm[ty[0]]||ty[0];n++;if(ty.length>1)vic++}
+     });
+     if(st)st.textContent=n?("Doplněno z Lidé (počet kalendářů: "+n+")"+(vic?" ("+vic+"× člověk ve více týmech, použit první)":"")+". Zkontrolujte a klepněte Uložit skupiny."):"Žádný vlastník sdíleného kalendáře není členem týmu v Lidé.";
+    }).catch(function(e){if(st)st.textContent="Týmy se nepodařilo načíst: "+e.message});
+    return;
   }
   if(a=="group"){
     var members=K.cals.filter(function(c){return c.shared&&groupName(c)===el.dataset.name});
