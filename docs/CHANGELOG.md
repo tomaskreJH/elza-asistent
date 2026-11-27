@@ -1,3 +1,5 @@
+0.88.4 – Kontrola a oprava (2026-11-27): integrity.json v 0.73.4 a 0.88.3 byl vygenerován z kopie s převedenými konci řádků (CRLF na Windows), otisky nesouhlasily se soubory na GitHubu (97 ze 102) a Strážce by hlásil změnu kódu. Přidán .gitattributes (* -text, bajtově přesné soubory), integrity.json přegenerován z LF. stable/vzhled.js sjednocen s kořenem. Pád vzhled.py („msal is not defined“) byl jen místní artefakt CRLF, SRI msal je správně (shoduje se s oficiálním 2.38.2).
+
 0.88.3 – Verze bez změny funkcí (2026-11-27): nasazení stavu 0.88.2. Skica budovy se zatím nevkládá do e-mailu ani do nabídky; zadání Tomáše: skica patří do vytvořené nabídky podle vzoru konkurence (odloženo, dokud se neupřesní).
 
 0.88.2 – Automatické přiřazení pošty podle kódu případu čte u zpráv bez kódu v náhledu celé znění (nejvýš 12 zpráv za běh, jen čtení, ochranná kontrola platí i pro celý text).

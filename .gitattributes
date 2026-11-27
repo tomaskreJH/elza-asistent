@@ -1,0 +1,3 @@
+# Soubory se ukládají a stahují bajtově přesně (bez převodu konců řádků).
+# Otisky v integrity.json (Strážce kódu) a SRI msal musí sedět i na Windows.
+* -text

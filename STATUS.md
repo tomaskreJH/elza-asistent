@@ -1,15 +1,18 @@
-# STATUS (2026-11-27)
+# STATUS (2026-11-27, verze 0.88.4)
 
 ## Co se udělalo
-- Nasazeno 0.88.3 (verze v app.js, ?v=168 v index.html a boot.js, stable/ synchronizováno, integrity.json přegenerován).
-- Skica budovy odložena na jindy; zadání: vložit do nabídky podle vzoru konkurence, vzor zatím není v repozitáři.
-- node test/*.test.js prochází, audit bez nálezů, e2e-demo a pruvodce procházejí. vzhled.py padá od 0.73.3 kvůli SRI msal (nezměněno).
+- Celková kontrola aplikace (zpráva docs/KONTROLA-2026-11-27.md).
+- Opraveno kritické: integrity.json byl generován z CRLF kopie a nesouhlasil se soubory na GitHubu. Přidán .gitattributes (`* -text`), otisky přegenerovány.
+- stable/vzhled.js sjednocen s kořenem. Opraveno chybné tvrzení o SRI msal v docs.
+- Verze 0.88.4 (?v=169). Všechny node i Python testy procházejí, audit bez nálezů.
 
 ## Změněné soubory
-- app.js, boot.js, index.html, integrity.json, stable/app.js, stable/boot.js, docs/CHANGELOG.md, docs/STAV.md, docs/DALSI-KROKY.md, STATUS.md
+- .gitattributes (nový), app.js, boot.js, index.html, integrity.json, stable/app.js, stable/boot.js, stable/vzhled.js
+- docs/CHANGELOG.md, docs/STAV.md, docs/DALSI-KROKY.md, docs/NOVE-VLAKNO-PROMPT.md, docs/KONTROLA-2026-11-27.md, STATUS.md
 
 ## Další krok pro další AI
-1. Opravit SRI msal (index.html nebo msal-browser.min.js), až Tomáš rozhodne, která verze je správná.
-2. Po přihlášení Tomáše ověřit shodu, poznámky, kartu zákazníka a první odpověď na živých datech; ladit váhy vazbaSkore.
-3. Skica: až Tomáš upřesní vzor nabídky, napojit do nabídky (ne do e-mailu).
-4. Most a tools/ neupravovat bez pokynu „uprav most“.
+1. Po přihlášení Tomáše ověřit 0.88.x na živých datech (shoda, poznámky, karta zákazníka, první odpověď); ladit váhy vazbaSkore.
+2. Pilot jedné poptávky (MAKRO).
+3. Skica do nabídky: odloženo, dokud Tomáš neupřesní vzor nabídky.
+4. Most a tools/ jen na „uprav most“; čekat na overeni.txt ze stanic.
+5. Na Windows vždy generovat integrity.json z bajtově přesných souborů (.gitattributes to zajišťuje).
