@@ -1,18 +1,18 @@
-# STATUS (2026-11-27, verze 0.88.7)
+# STATUS (2026-11-27, verze 0.88.8)
 
 ## Co se udělalo
-- Kalendář: příčina chybějících událostí kolegů byla HTTP 429 (Microsoft omezil souběžné požadavky). graf.js: max 4 požadavky současně, opakování při 429/503/504 podle Retry-After. Srozumitelné důvody u chyb kalendáře.
-- Synchronizace osobního nastavení (NastaveniAplikace) rozumí klíčům s účtem (výběr a skupiny kalendářů, vypnuté role, období dávek pošty) a nově synchronizuje ranní analýzu, základ složek, moje Elzáčky, automatiku a náhled. Stará data z prohlížeče se nahrají k účtu.
-- Zrušeno souběžné ukládání skupin do ZnalostElza z 0.88.6 (jedno řešení).
-- Návod: synchronizace a kalendář aktualizovány.
-- Testy: node, audit, 9 Python, Playwright ověření 429 a synchronizace.
+- Lidé: výchozí katalog školení podle platných předpisů (NV 194/2022 Sb. místo zrušené vyhl. 50/1978 Sb.; OZO PO a RT jako osvědčení, autorizace ČKAIT). Tlačítko „Aktualizovat katalog podle předpisů“ převede uložená data.
+- Doklad bez data platnosti = bez omezení (dříve chybně „nesplňuje kvalifikaci“).
+- Týmy, členy a katalog mění jen vedení (vlastnik, spravce, reditel, jednatel, vedouci).
+- Kalendář: skupiny sdílených kalendářů jsou firemní, odvozené z týmů v Lidé; osobní ruční skupiny zrušeny.
+- Návod (Kalendář, Lidé) aktualizován. Testy: node, audit, 9 Python, Playwright ověření.
 
 ## Změněné soubory
-- graf.js, nastaveni.js, kalendar.js, centrum.js, app.js, boot.js, index.html, integrity.json, stable/ (stejné)
+- lidi.js, kalendar.js, nastaveni.js, centrum.js, app.js, boot.js, index.html, integrity.json, stable/ (stejné)
 - docs/CHANGELOG.md, docs/STAV.md, docs/DALSI-KROKY.md, docs/NOVE-VLAKNO-PROMPT.md, STATUS.md
 
 ## Další krok pro další AI
-1. Po přihlášení Tomáše ověřit kalendář (bez 429) a synchronizaci na druhém zařízení.
-2. Zvážit převod místních verzí postupů v Analýze (elzaPostupVerze/Zaznamy) do ZnalostElza.
-3. Ostatní moduly volající Graph přímo (pripady.js gg, rano) zatím nejdou přes omezovač souběhu; převést na GR.req, pokud se objeví 429 i jinde.
+1. Ověřit v e-Sbírce délku platnosti osvědčení OZO PO (§ 11 zák. 133/1985) a revizního technika (zák. 250/2021); upravit katalog, pokud se liší.
+2. Po přihlášení vedení spustit Aktualizovat katalog podle předpisů a doplnit vlastníky sdílených kalendářů do týmů.
+3. Ověřit Kalendář bez 429 a 0.88.x na ostrých datech.
 4. Skica odložena. Most a tools/ jen na „uprav most“.

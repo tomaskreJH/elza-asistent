@@ -14,10 +14,6 @@ function same(a,b){return a.toDateString()==b.toDateString()}
 function dlong(d){return d.toLocaleDateString("cs-CZ",{weekday:"long",day:"numeric",month:"long"})}
 function cname(id){var c=K.cals.filter(function(x){return x.id==id})[0];return c?c.name:""}
 function accountKey(name){return name+":"+encodeURIComponent(GR.demo?"demo":GR.me())}
-function groupConfig(){
- try{var saved=JSON.parse(GR.ls(accountKey("elzaKalSkupiny"))||"{}");return saved&&typeof saved==="object"&&!Array.isArray(saved)?saved:{}}
- catch(e){return {}}
-}
 /* týmy z modulu Lidé: vlastník sdíleného kalendáře se páruje s členem týmu podle e-mailu, jinak podle jména */
 async function teamsOf(){
  if(GR.demo)return {tym:[{Title:"EPS",Nazev:"Tým EPS"}],clen:[{Title:"Honza Procházka",Email:"",Tym:"EPS"}]};
@@ -27,7 +23,13 @@ async function teamsOf(){
  if(a[0]==null||a[1]==null)throw new Error("Seznam Tym nebo Clen neexistuje (Správa → Seznamy).");
  return {tym:a[0].filter(function(x){return x.Stav!=="neaktivni"}),clen:a[1].filter(function(x){return x.Stav!=="neaktivni"})};
 }
-function groupName(c){return Object.hasOwn(K.groups,c.id)?String(K.groups[c.id]).trim():""}
+/* 0.88.8: skupiny jsou firemní – tým vlastníka kalendáře v modulu Lidé (Clen podle e-mailu, jinak jména). Týmy mění jen vedení v Lidé. */
+var VEDENI=["vlastnik","spravce","reditel","jednatel","vedouci"];
+function vedeni(){return !!(window.PRO&&VEDENI.indexOf(window.PRO.role)>=0)}
+function nactiTymy(){if(K.tymy)return;K.tymy={mail:{},jmeno:{}};teamsOf().then(function(T){var nm={};T.tym.forEach(function(x){nm[x.Title]=x.Nazev||x.Title});
+ T.clen.forEach(function(m){var n=nm[m.Tym]||m.Tym;if(!n)return;var e=String(m.Email||"").toLowerCase();if(e&&!K.tymy.mail[e])K.tymy.mail[e]=n;if(m.Title&&!K.tymy.jmeno[m.Title])K.tymy.jmeno[m.Title]=n});
+ if(document.getElementById("ksd"))paint()}).catch(function(e){K.tymyErr=e.message;if(document.getElementById("ksd"))paint()})}
+function groupName(c){var t=K.tymy||{};return (c.mail&&t.mail&&t.mail[c.mail])||(t.jmeno&&t.jmeno[c.owner])||""}
 function ccol(id){var c=K.cals.filter(function(x){return x.id==id})[0];return c?c.col:"#888"}
 
 GR.css("kcss",".kt{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}.kt h2{margin:0 8px;font-size:18px;min-width:210px}.kw{display:grid;grid-template-columns:210px 1fr;gap:12px}.ks{border:1px solid var(--l);border-radius:12px;padding:10px;background:var(--p);align-self:start}.ks h4{margin:8px 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--m)}.ks label{display:flex;gap:6px;align-items:center;padding:2px 0;cursor:pointer}.ks input{min-width:0;width:auto}.ks i{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none}.kg{border:1px solid var(--l);border-radius:12px;overflow:hidden;background:var(--bg)}.kgh,.kga{display:grid;border-bottom:1px solid var(--l)}.kgh>div{padding:6px;text-align:center;font-weight:600;border-left:1px solid var(--l)}.kgh>div.t{color:var(--a)}.kga>div{border-left:1px solid var(--l);padding:2px;min-height:24px}.kgb{overflow:auto;max-height:calc(100vh - 290px)}.kgbody{display:grid;position:relative}.kgu{position:relative}.kgu span{position:absolute;right:6px;font-size:11px;color:var(--m);transform:translateY(-7px)}.kgc{position:relative;border-left:1px solid var(--l);background-image:linear-gradient(var(--l) 1px,transparent 1px);background-size:100% "+H+"px}.kgc.t{background-color:rgba(217,38,28,.04)}.ke{position:absolute;border-radius:6px;padding:2px 5px;font-size:12px;color:#fff;overflow:hidden;cursor:pointer;border:1px solid rgba(255,255,255,.5);line-height:1.25}.ke.tn{opacity:.75;background-image:repeating-linear-gradient(45deg,transparent 0 6px,rgba(255,255,255,.25) 6px 12px)}.ke.cx{text-decoration:line-through;opacity:.6}.kch{display:block;border-radius:5px;padding:1px 5px;font-size:12px;color:#fff;cursor:pointer;margin:1px 0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.know{position:absolute;left:0;right:0;height:2px;background:var(--a);z-index:1;pointer-events:none}.km{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}.km>div{min-height:104px;border-left:1px solid var(--l);border-top:1px solid var(--l);padding:3px;overflow:hidden}.km>div.o{background:rgba(127,127,127,.07)}.km .n{font-size:12px;color:var(--m);cursor:pointer}.km .n.t{color:#fff;background:var(--a);border-radius:99px;padding:0 6px}.kl h3{margin:14px 0 4px;font-size:14px}.kl .r1{display:flex;gap:10px;padding:5px 8px;border-bottom:1px solid var(--l);cursor:pointer}.kl .r1:hover{background:rgba(127,127,127,.08)}.kl .r1 .tm{width:110px;flex:none;color:var(--m)}.kw>*{min-width:0}@media(max-width:900px){.kw{grid-template-columns:minmax(0,1fr)}}");
@@ -46,7 +48,7 @@ async function loadCals(){
       if(previous&&K.cals.some(function(c){return Object.hasOwn(previous,c.id)}))sv=previous;
     }catch(e){}
   }
-  K.groups=groupConfig();K.sel=Object.create(null);K.cals.forEach(function(c){K.sel[c.id]=sv?!!sv[c.id]:(c.def||!c.shared)});
+  nactiTymy();K.sel=Object.create(null);K.cals.forEach(function(c){K.sel[c.id]=sv?!!sv[c.id]:(c.def||!c.shared)});
   if(!sv&&!K.cals.some(function(c){return K.sel[c.id]}))K.cals.forEach(function(c){K.sel[c.id]=true});
 }
 function range(){
@@ -135,9 +137,7 @@ function side(){
    return '<section class=k-team><div class=k-team-title><b>'+esc(name||"Nezařazené")+'</b>'+
     '<button class=g data-a=group data-name="'+esc(name)+'" aria-label="'+esc((all?"Skrýt: ":"Zobrazit: ")+(name||"Nezařazené"))+'">'+(all?"Skrýt vše":"Zobrazit vše")+'</button></div>'+members.map(row).join("")+'</section>';
   }).join("");
-  var organize=sh.length?'<details class=k-organize'+(K.organize?" open":"")+'><summary>Upravit skupiny</summary><p class=note>Stejný název spojí kalendáře do jedné skupiny. Skupiny se ukládají k vašemu účtu a platí na všech zařízeních.</p><p><button class=g data-a=teamgroups>Seskupit podle týmů z Lidé</button></p>'+
-   sh.map(function(c){return '<label>'+esc(c.owner?c.name+" · "+c.owner:c.name)+'<input data-cgroup="'+esc(c.id)+'" maxlength=48 placeholder="Např. Servis" value="'+esc(groupName(c))+'"></label>'}).join("")+
-   '<button class=g data-a=savegroups>Uložit skupiny</button><span id=k-group-status class=note role=status></span></details>':"";
+  var organize=sh.length?'<p class=note>Skupiny jsou společné pro celou firmu: podle týmů v Lidé.'+(K.tymyErr?' <span class=r>Týmy se nenačetly: '+esc(K.tymyErr)+'</span>':'')+(vedeni()?' <button class=g data-a=golidi>Upravit týmy v Lidé</button>':' Mění je vedení.')+'</p>':"";
   return '<h4>Moje kalendáře</h4>'+mine.map(row).join("")+'<h4>Sdílené se mnou</h4>'+
    (shared||'<p class=note>Žádný sdílený kalendář nebyl nalezen.</p>')+organize+
    '<p style="margin:8px 0 0"><button class=g data-a=all>Zobrazit všechny</button> <button class=g data-a=none>Skrýt všechny</button></p>';
@@ -231,31 +231,7 @@ function onClick(e){
     return form(null,{s:d,e:new Date(+d+36e5)});
   }
   if(a=="new"){var d2=new Date(K.d);d2.setHours(9,0,0,0);return form(null,{s:d2,e:new Date(+d2+36e5)})}
-  if(a=="savegroups"){
-    var config=Object.create(null);
-    document.querySelectorAll("#ksd [data-cgroup]").forEach(function(input){
-      if(input.value.trim())config[input.dataset.cgroup]=input.value.trim();
-    });
-    K.groups=config;K.organize=true;GR.ls(accountKey("elzaKalSkupiny"),JSON.stringify(config));paint();
-    /* ukládá se přes synchronizaci osobního nastavení (nastaveni.js, NastaveniAplikace) */
-    $("#k-group-status").textContent=GR.demo?"Ukázka: uloženo jen v tomto prohlížeči.":"Skupiny uloženy, synchronizují se k účtu"+(window.NAST&&NAST.stav?" ("+NAST.stav+").":".");
-    return;
-  }
-  if(a=="teamgroups"){
-    var st=$("#k-group-status");if(st)st.textContent="Načítám týmy z Lidé…";
-    teamsOf().then(function(T){
-     var nm={};T.tym.forEach(function(x){nm[x.Title]=x.Nazev||x.Title});
-     var n=0,vic=0;
-     document.querySelectorAll("#ksd [data-cgroup]").forEach(function(input){
-      var c=K.cals.filter(function(x){return x.id===input.dataset.cgroup})[0];if(!c)return;
-      var cl=T.clen.filter(function(m){return (c.mail&&String(m.Email||"").toLowerCase()===c.mail)||(!c.mail||!m.Email)&&m.Title&&m.Title===c.owner});
-      var ty=Array.from(new Set(cl.map(function(m){return m.Tym}).filter(Boolean)));
-      if(ty.length){input.value=nm[ty[0]]||ty[0];n++;if(ty.length>1)vic++}
-     });
-     if(st)st.textContent=n?("Doplněno z Lidé (počet kalendářů: "+n+")"+(vic?" ("+vic+"× člověk ve více týmech, použit první)":"")+". Zkontrolujte a klepněte Uložit skupiny."):"Žádný vlastník sdíleného kalendáře není členem týmu v Lidé.";
-    }).catch(function(e){if(st)st.textContent="Týmy se nepodařilo načíst: "+e.message});
-    return;
-  }
+  if(a=="golidi"){return go("lidi")}
   if(a=="group"){
     var members=K.cals.filter(function(c){return c.shared&&groupName(c)===el.dataset.name});
     var show=!members.every(function(c){return K.sel[c.id]});
@@ -278,7 +254,7 @@ async function kal(){
 function kalM(){
   var b=$("#gt");if(b)return nopeM();
   var root=$("#kroot");if(!root)return;
-  root.addEventListener("toggle",function(e){if(e.target.classList.contains("k-organize")&&e.target.isConnected)K.organize=e.target.open},true);
+  
   root.addEventListener("click",onClick);root.addEventListener("change",onChange);
   paint();
 }

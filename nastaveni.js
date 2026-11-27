@@ -4,7 +4,7 @@
 var KEYS=['elzaTema','elzaMenu','elzaMenuOff','elzaKalPohled','elzaKalVyber','elzaPodpis','elzaVlaknoRazeni','elzaSeznamRazeni','elzaLimitUSD','elzaPin','elzaPrvniHotovo','elzaNastRezim','elzaAutoElzy',
  'elzaRanoNast','elzaSlozkyZaklad','elzaMojiElzacci','elzaAuto','elzaNahled','elzaNahledSkip'],TSK='elzaSyncTs';
 /* 0.88.7: klíče vázané na účet (název:účet) se synchronizují podle předpony; dříve se porovnával jen přesný název, takže výběr a skupiny kalendářů zůstávaly v jednom prohlížeči */
-var PREF=['elzaKalVyber:','elzaKalSkupiny:','elzaVypnuteRole:','elzaPilotDo:'];
+var PREF=['elzaKalVyber:','elzaVypnuteRole:','elzaPilotDo:'];
 function sk(k){return KEYS.indexOf(k)>=0||PREF.some(function(p){return String(k).indexOf(p)===0})}
 var st=Storage.prototype,gi=st.getItem,si=st.setItem,ri=st.removeItem,N={stav:'čeká na přihlášení',poslední:0,jeSync:false};window.NAST=N;
 function ts(){try{return JSON.parse(gi.call(localStorage,TSK)||'{}')}catch(e){return{}}}

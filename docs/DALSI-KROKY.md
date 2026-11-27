@@ -1,4 +1,5 @@
-**0.88.7 (2026-11-27):** Po přihlášení ověřit: Kalendář bez ⚠ 429 u sdílených kalendářů; výběr a skupiny se objeví na druhém zařízení (nejdřív otevřít aplikaci v prohlížeči, kde byly skupiny uložené). Seskupit podle týmů z Lidé (vlastníci v Clen s e-mailem). Jen v prohlížeči záměrně zůstává: API klíče, tokeny, párování mostu, kanál, cache (ProfilFirmy/Znalosti/PostupRetez mají zdroj v SharePointu); místní verze postupů v Analýze (elzaPostupVerze/Zaznamy) zvážit převést do ZnalostElza.
+**0.88.8 (2026-11-27):** Po přihlášení vedení: Lidé → Typy školení → Aktualizovat katalog podle předpisů; u lidí s OZO/RT zkontrolovat datum platnosti (prázdné = bez omezení) a záznamy EL-50 převést na EL-194. Do týmů v Lidé doplnit všechny vlastníky sdílených kalendářů s e-mailem (jinak jsou v Kalendáři Nezařazené). Ověřit v e-Sbírce platnost osvědčení OZO PO a revizního technika (veřejné zdroje nejednoznačné). Ověřit Kalendář bez ⚠ 429.
+
 
 
 **0.88.5 (2026-11-27):** hotovo propojení Prioritní pošty s Poštou (bod z 0.82.0) a oprava přihlášeného uživatele v modulech. Po přihlášení Tomáše ověřit: Můj den → Prioritní pošta → klepnout na zprávu; v Procesu obsazenost kalendářů; v Nabídkách „vaše nabídky nahoře“.
