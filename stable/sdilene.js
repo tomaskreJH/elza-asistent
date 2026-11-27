@@ -34,7 +34,10 @@ async function upload(base,rel,name,blob){if(demo())throw new Error("V ukázkov�
  var dir=await folder(base,rel),H=jh(await tkn("AllSites.Write"));H["Content-Type"]="application/octet-stream";
  var r=await fetch(SP+ZS+"/_api/web/GetFolderByServerRelativeUrl('"+q(dir)+"')/Files/add(url='"+q(name)+"',overwrite=false)",{method:"POST",headers:H,body:blob});
  if(!r.ok)throw new Error(r.status==409||r.status==400?"soubor už existuje nebo nejde nahrát (HTTP "+r.status+")":"nahrání selhalo, HTTP "+r.status);return dir+"/"+name}
+/* obsah jednoho souboru jen čtením (např. fotka zákazníka pro skicu); cesta serverově relativní, max 12 MB */
+async function blob(src){okAbs(src);if(demo()){var c=document.createElement("canvas");c.width=800;c.height=500;var x=c.getContext("2d");x.fillStyle="#ddd";x.fillRect(0,0,800,500);x.fillStyle="#333";x.fillRect(200,150,400,250);x.fillStyle="#ddd";for(var i=0;i<4;i++)x.fillRect(230+i*90,200,50,60);return new Promise(function(r){c.toBlob(r,"image/png")})}
+ await token(false);var web=src.split("/").slice(0,3).join("/"),r=await fetch(SP+web+"/_api/web/GetFileByServerRelativePath(decodedurl='"+q(src)+"')/$value",{headers:{Authorization:"Bearer "+tok}});if(!r.ok)throw new Error("Čtení souboru selhalo, HTTP "+r.status);var b=await r.blob();if(b.size>12582912)throw new Error("Fotka je větší než 12 MB.");return b}
 /* ověří, že cílová knihovna a složka existuje (jen čtení) */
 async function exists(base){okCesta(base);if(demo())return true;await token(false);var r=await fetch(SP+ZS+"/_api/web/GetFolderByServerRelativeUrl('"+q(ZS+"/"+base.replace(/^\/+|\/+$/g,""))+"')?$select=Exists",{headers:{Authorization:"Bearer "+tok,Accept:"application/json;odata=nometadata"}});if(r.status==404)return false;if(!r.ok)throw new Error("Ověření knihovny selhalo, HTTP "+r.status);return !!(await r.json()).Exists}
-W.SDL={files:files,copy:copy,upload:upload,exists:exists,def:def,read:read,write:write,create:create,folder:folder,demo:demo,ZS:ZS};
+W.SDL={blob:blob,files:files,copy:copy,upload:upload,exists:exists,def:def,read:read,write:write,create:create,folder:folder,demo:demo,ZS:ZS};
 })();

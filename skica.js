@@ -15,4 +15,22 @@ async function vykresli(src,max){max=max||900;var im=await obrazek(src),r=Math.m
 function jeFotka(a){return !!a&&!a.isInline&&/^image\/(jpeg|png|webp)$/i.test(a.contentType||"")&&(a.size||0)>20000&&(a.size||0)<12000000}
 W.SKICA={hrany:hrany,vykresli:vykresli,jeFotka:jeFotka};
 if(typeof module!="undefined")module.exports=W.SKICA;
+if(typeof window=="undefined"||!window.document)return;
+/* detail případu (0.87.0): fotky zákazníka se berou ze složky objektu na webu Zakázky ELZA (Podklady objektu / Fotky a podklady od zákazníka), ne z portálu;
+   na portál se nahrávají až odtud. Co v podkladech není, vloží člověk ručně (vlastní fotka). Jen čtení, nic se neukládá. */
+function es(s){return typeof esc=="function"?esc(s):String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function obj(x){var t=[x&&x.Klice,x&&x.PoznamkaPripadu,x&&x.Title,x&&x.Predmet].join(" "),m=/OBJ\d{5}/i.exec(t);return m?m[0].toUpperCase():""}
+function zaklad(){try{return localStorage.getItem("elzaSlozkyZaklad")||"Shared Documents/Zakazky"}catch(e){return"Shared Documents/Zakazky"}}
+function cesta(o){return SDL.ZS+"/"+zaklad().replace(/^\/+|\/+$/g,"")+"/"+STRUKTURA.slozka({obj:o,typ:"foto_zakaznik"})}
+W.SKICA.cesta=cesta;W.SKICA.obj=obj;
+W.SKICA.boxPripadu=function(x){return '<details id=skbox><summary>Skica budovy z fotky zákazníka</summary><p class=note>Fotka se hledá ve složce objektu na webu Zakázky ELZA (Fotky a podklady od zákazníka). Co tam není, vložte ručně. Nic se neukládá ani neposílá.</p><div class=in><label>Objekt <input data-skobj value="'+es(obj(x))+'" placeholder="OBJ02666" style="width:120px"></label> <button class=g data-skh>Najít fotky v podkladech</button> <label>nebo vlastní fotka <input type=file accept="image/jpeg,image/png,image/webp" data-skf></label></div><div data-skl></div><div data-sko></div></details>'};
+function ukaz(bx,du,nm){bx.innerHTML='<img alt="Skica budovy" style="max-width:100%;border:1px solid #cdd5df;border-radius:6px" src="'+du+'"><p><a class=g download="'+es(nm)+'" href="'+du+'">Stáhnout skicu (PNG)</a></p>'}
+document.addEventListener("click",async function(e){var h=e.target.closest&&e.target.closest("[data-skh],[data-skp]");if(!h)return;var d=h.closest("#skbox");if(!d)return;var lst=d.querySelector("[data-skl]"),out=d.querySelector("[data-sko]");
+ try{if(h.hasAttribute("data-skh")){var o=d.querySelector("[data-skobj]").value.trim().toUpperCase();if(!/^OBJ\d{5}$/.test(o)){lst.innerHTML='<p class=note>Doplňte kód objektu (OBJ + 5 číslic).</p>';return}
+   lst.innerHTML='<p class=note>Hledám…</p>';var f=await SDL.files(cesta(o));if(f===null){lst.innerHTML='<p class=note>Složka s fotkami zákazníka u objektu '+es(o)+' zatím neexistuje. Vložte fotku ručně.</p>';return}
+   f=f.filter(function(y){return /\.(jpe?g|png|webp)$/i.test(y.name)});lst.innerHTML=f.length?f.map(function(y){return '<button class=g data-skp="'+es(y.src)+'">✏ '+es(y.name)+'</button>'}).join(" "):'<p class=note>Ve složce nejsou žádné obrázky. Vložte fotku ručně.</p>'}
+  else{out.innerHTML='<p class=note>Kreslím skicu…</p>';var bl=await SDL.blob(h.getAttribute("data-skp"));ukaz(out,await vykresli(bl),h.textContent.replace(/^✏ /,"").replace(/\.[^.]+$/,"")+"-skica.png")}}
+ catch(er){(out||lst).innerHTML='<p class=note>Nepodařilo se: '+es(er.message)+'</p>'}});
+document.addEventListener("change",async function(e){var i=e.target;if(!i.matches||!i.matches("[data-skf]")||!i.files||!i.files[0])return;var out=i.closest("#skbox").querySelector("[data-sko]");out.innerHTML='<p class=note>Kreslím skicu…</p>';
+ try{ukaz(out,await vykresli(i.files[0]),i.files[0].name.replace(/\.[^.]+$/,"")+"-skica.png")}catch(er){out.innerHTML='<p class=note>Nepodařilo se: '+es(er.message)+'</p>'}});
 })();

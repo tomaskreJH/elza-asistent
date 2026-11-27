@@ -18,9 +18,16 @@ with sync_playwright() as p:
       const im=new Image();im.src=u;await im.decode();const k=document.createElement('canvas');k.width=im.width;k.height=im.height;const y=k.getContext('2d');y.drawImage(im,0,0);
       const d=y.getImageData(0,0,im.width,im.height).data;let tm=0,bi=0;for(let i=0;i<d.length;i+=4){if(d[i]<150)tm++;else if(d[i]>240)bi++}
       return{w:im.width,h:im.height,tm,bi,png:u.startsWith('data:image/png')}}""")
+    r2 = pg.evaluate("""async()=>{const h=document.createElement('div');h.innerHTML=SKICA.boxPripadu({Title:'Poptávka',Klice:'makro; OBJ02666'});document.body.appendChild(h);
+      const inp=h.querySelector('[data-skobj]');const pre=inp.value;h.querySelector('[data-skh]').click();await new Promise(r=>setTimeout(r,800));
+      const bt=h.querySelectorAll('[data-skp]');const nm=[...bt].map(b=>b.textContent);if(!bt.length)return{pre,nm,err:'bez fotek'};bt[0].click();await new Promise(r=>setTimeout(r,1500));
+      const im=h.querySelector('[data-sko] img');return{pre,nm,img:!!(im&&im.src.startsWith('data:image/png')),cesta:SKICA.cesta('OBJ02666')}}""")
     b.close()
 assert not r.get("err"), r
 assert r["png"] and r["w"] == 900 and r["h"] == 563, r
 assert r["tm"] > 200 and r["bi"] > (r["w"] * r["h"]) * 0.8, r
 assert not errs, errs
 print("skica.py OK", r)
+assert r2.get("pre") == "OBJ02666" and r2.get("img") and len(r2["nm"]) == 1, r2
+assert r2["cesta"].endswith("/OBJ02666/Podklady objektu/Fotky-a-podklady-od-zakaznika"), r2
+print("skica složka OK", r2)

@@ -1,3 +1,5 @@
+0.87.0 – Detail případu: blok Skica budovy z fotky zákazníka. Fotky se hledají ve složce objektu na webu Zakázky ELZA (Podklady objektu / Fotky a podklady od zákazníka), ne z portálu; co tam není, vloží člověk ručně. Kód OBJ se předvyplní z údajů případu. Nové SDL.blob (jen čtení souboru). Test test/skica.py.
+
 0.86.0 – Skica budovy z fotky zákazníka (skica.js): u obrázkové přílohy v Poště tlačítko Skica budovy; kresba z hran fotky se vytvoří v prohlížeči (bez AI a bez nákladů, nic se neukládá ani neposílá) a jde stáhnout jako PNG. Testy: test/skica.test.js, test/skica.py. Fotka ze stránek zákazníka zatím nejde (viz DALSI-KROKY).
 
 0.85.1 – Koncept první odpovědi upozorní, že zákazník zatím není v evidenci, a odkáže na Krok 0 (Kdo je zákazník). Obrázek budovy z portálu se u nové poptávky nepoužívá (objekt ještě neexistuje); jen u evidovaného objektu.

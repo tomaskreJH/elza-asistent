@@ -1,3 +1,5 @@
+0.87.0 – Skica budovy ze složky objektu nebo z ruční fotky v detailu případu. Ověřeno v ukázkovém režimu; na ostré složce a ostrém případu neověřeno.
+
 0.86.0 – Skica budovy z přílohy v Poště. Ověřeno testy a v prohlížeči na syntetickém obrázku; na skutečné příloze v ostré Poště neověřeno.
 
 0.85.1 – Koncept první odpovědi hlídá neznámého zákazníka. Ověřeno testy a syntaxí, v ostrém UI neověřeno.
