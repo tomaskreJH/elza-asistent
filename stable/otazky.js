@@ -81,7 +81,7 @@ async function ulozOdpoved(p,odp,kanal,kdo){
 async function klik(e){
  var pv=e.target.closest&&e.target.closest("[data-pvo]");
  if(pv){var w=pv.dataset.pvo,r=prvniOdpoved({work:w,otazky:DB.filter(function(p){return p.work===w})}),bx=pv.closest("details").querySelector("[data-pvobox]");
-  bx.innerHTML='<p class=note>'+(r.kompletni?'Všechny dotazy mají odpověď.':'Chybí odpovědi ('+r.chybi+'), jsou označeny v textu.')+(r.doplnkova?' Doplňková zařízení podle TP a HŘ HZS ELZA neurčuje, je to označeno jako dotaz.':'')+' Nic se neodesílá; obchod dostane jen kopii na vědomí.</p><textarea rows=14 style="width:100%" readonly>'+es(r.text)+'</textarea>';return}
+  bx.innerHTML='<p class=note>'+(r.kompletni?'Všechny dotazy mají odpověď.':'Chybí odpovědi ('+r.chybi+'), jsou označeny v textu.')+(window.ZAKAZNIK&&ZAKAZNIK.posl&&!ZAKAZNIK.posl.znamy?' Zákazník zatím není v evidenci: před odesláním projděte Krok 0 (Nabídky → Kdo je zákazník), jinak se mohou minout slevy nebo dřívější dohody.':'')+(r.doplnkova?' Doplňková zařízení podle TP a HŘ HZS ELZA neurčuje, je to označeno jako dotaz.':'')+' Nic se neodesílá; obchod dostane jen kopii na vědomí.</p><textarea rows=14 style="width:100%" readonly>'+es(r.text)+'</textarea>';return}
  var b=e.target.closest&&e.target.closest("[data-oz]");
  if(!b||b.disabled)return;
  var it=b.closest(".it"),status=it.querySelector("[data-oqstatus]");

@@ -1,4 +1,4 @@
-0.85.0 – Hotov bod 6 (koncept první odpovědi bez obrázku budovy z portálu; ten doplnit). Zbývá: karta zákazníka v konceptu nabídky, obrázek budovy, ostré ověření obou karet v detailu případu.
+0.85.0 – Hotov bod 6 (koncept první odpovědi). Obrázek budovy z portálu jen u už evidovaného objektu (OBJ); u nové poptávky se vynechává, nic se nevymýšlí. Zbývá: karta zákazníka v konceptu nabídky, obrázek budovy, ostré ověření obou karet v detailu případu.
 
 0.84.0 – Karta Kdo je zákazník je v detailu případu (bod 3 hotov z poloviny). Zbývá koncept nabídky a první odpovědi zákazníkovi. Nasazení na GitHub nebylo možné: v tomto vlákně nešlo připojit repozitář s právem zápisu, změny jsou jen v pracovní kopii a čekají na commit.
 

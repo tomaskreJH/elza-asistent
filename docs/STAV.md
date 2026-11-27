@@ -1,3 +1,5 @@
+0.85.1 – Koncept první odpovědi hlídá neznámého zákazníka. Ověřeno testy a syntaxí, v ostrém UI neověřeno.
+
 0.85.0 – Koncept první odpovědi zákazníkovi v detailu případu (bod 6). Ověřeno jen testy a syntaxí, v ostrém UI neověřeno.
 
 0.84.0 – Detail případu ukazuje kartu Kdo je zákazník (jen čtení, upozornění nahoře). Změna zatím jen lokálně ověřena testy; na ostrém webu neověřeno.

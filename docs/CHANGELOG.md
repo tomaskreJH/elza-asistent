@@ -1,3 +1,5 @@
+0.85.1 – Koncept první odpovědi upozorní, že zákazník zatím není v evidenci, a odkáže na Krok 0 (Kdo je zákazník). Obrázek budovy z portálu se u nové poptávky nepoužívá (objekt ještě neexistuje); jen u evidovaného objektu.
+
 0.85.0 – V detailu případu je tlačítko Koncept první odpovědi zákazníkovi (blok Otázky zákazníka): krátký text na všechny dotazy, neodpovězené označené [DOPLNIT ODPOVĚĎ], doplňková zařízení podle TP a HŘ HZS označena jako dotaz, bez ceny, se strojově čitelným blokem ELZA-PROCES. Nic se neodesílá, obchod jen kopie na vědomí. Test v test/otazky.test.js.
 
 0.84.0 – Detail případu ukazuje kartu Kdo je zákazník: upozornění (riziko, sleva) nahoře, dohody, historie, postupy, osoby a nabídky ze ZakaznikInfo a NabidkaEvid; jen čtení, při chybě čtení nic neblokuje. Test pokrývá escapování a vyřazené záznamy. Karta zatím není v konceptu nabídky.

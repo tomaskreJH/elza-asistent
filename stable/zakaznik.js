@@ -41,6 +41,6 @@ function draw(){if(!EL)return;var h='<h1>Kdo je zákazník</h1><p class=note>Kro
 function html(){return '<div id=zkx0></div>'}
 function mt(){EL=document.getElementById("zkx0");draw();load()}
 /* detail případu: karta bez zápisu; při chybě čtení neblokuje, jen to sdělí */
-W.ZAKAZNIK.box=async function(jmeno){try{if(!String(jmeno||"").trim())return"";var d,n;if(demo()){d=DB.length?DB:[{Zakaznik:"Ukázkový zákazník A",Typ:"sleva",Text:"Trvalá sleva 8 % dle dohody s jednatelem.",Zdroj:"rucne"}];n=NB}else{d=await SDL.read(L);n=(await SDL.read("NabidkaEvid"))||[];if(d==null)return'<h3>Kdo je zákazník</h3><p class=note>Seznam ZakaznikInfo ještě není založen.</p>'}return stru(karta(jmeno,d,n))}catch(e){return'<h3>Kdo je zákazník</h3><p class=note>Kartu se nepodařilo načíst: '+E(e.message)+'</p>'}};
+W.ZAKAZNIK.box=async function(jmeno){try{W.ZAKAZNIK.posl=null;if(!String(jmeno||"").trim())return"";var d,n;if(demo()){d=DB.length?DB:[{Zakaznik:"Ukázkový zákazník A",Typ:"sleva",Text:"Trvalá sleva 8 % dle dohody s jednatelem.",Zdroj:"rucne"}];n=NB}else{d=await SDL.read(L);n=(await SDL.read("NabidkaEvid"))||[];if(d==null)return'<h3>Kdo je zákazník</h3><p class=note>Seznam ZakaznikInfo ještě není založen.</p>'}var kk=karta(jmeno,d,n);W.ZAKAZNIK.posl={jmeno:jmeno,znamy:kk.znamy};return stru(kk)}catch(e){return'<h3>Kdo je zákazník</h3><p class=note>Kartu se nepodařilo načíst: '+E(e.message)+'</p>'}};
 window.MODS=window.MODS||{};window.MODS.zakaznik=[html,mt];
 })();
