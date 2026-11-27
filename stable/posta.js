@@ -356,12 +356,12 @@ async function analyzeWithAgent(button,draft){
   }finally{actions.forEach(function(b){b.disabled=false})}
 }
 function zx(){if(!S.thr||!S.thr.length)return null;return S.thr.map(function(t){return t.m}).sort(function(a,b){return (+new Date(dt(a))||0)-(+new Date(dt(b))||0)})[0]}  /* první zpráva vlákna (obvykle od zákazníka) */
-function polePoznamkyVlakna(popis){
- return '<div class=row><label for=zpop>Poznámka k vláknu</label><input id=zpop maxlength=1500 value="'+esc(popis)+'" style="flex:1;min-width:180px"><button class=g data-a=zpu>Uložit poznámku</button></div><div class=note id=zpopStatus role=status>Ukládá se v tomto prohlížeči. Prázdným uložením ji smažete.</div>';
+function polePoznamkyVlakna(popis,stara){
+ return '<div class=row><label for=zpop>Poznámka k vláknu</label><input id=zpop maxlength=1500 value="'+esc(popis)+'" style="flex:1;min-width:180px"><button class=g data-a=zpu>Uložit poznámku</button></div><div class=note id=zpopStatus role=status>'+(stara?'Starší poznámka uložená u odesílatele (před 0.82.2); uložením ji přiřadíte k tomuto vláknu. ':'')+'Ukládá se v tomto prohlížeči. Prázdným uložením ji smažete.</div>';
 }
 async function fillZar(){var a=document.getElementById("mpz"),b=document.getElementById("mpzb"),x=zx();if(!a||!b||!x||!window.POSTAZAR)return;var cid=x.conversationId;
   if(!b.querySelector('#zpop')){
-   b.innerHTML='<div data-vazba-popis></div>'+polePoznamkyVlakna(POSTAZAR.ctiPoznamku(x));
+   b.innerHTML='<div data-vazba-popis></div>'+polePoznamkyVlakna(POSTAZAR.ctiPoznamku(x),POSTAZAR.jeStara&&POSTAZAR.jeStara(x));
   }
   var detail=b.querySelector('[data-vazba-popis]');
   var z;try{z=await POSTAZAR.stav(x)}catch(e){if(!a.isConnected)return;delete a.dataset.work;a.textContent="";detail.innerHTML='<span class=note>Zařazení nelze načíst: '+esc(e.message)+'</span>';return}

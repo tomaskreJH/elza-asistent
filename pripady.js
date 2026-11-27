@@ -99,11 +99,16 @@ function klicPoznamkyVlakna(x){
  if(!id||!ucet)throw new Error('Poznámku nelze bezpečně přiřadit.');
  return 'elzaPoznamkaVlakna:'+JSON.stringify([ucet.toLowerCase(),x.conversationId?'vlakno':'zprava',id]);
 }
+/* 0.87.1: poznámky z doby před 0.82.2 jsou uložené u adresy odesílatele (elzaUceni, ZnalostElza Druh trideni); po změně ukládání se v poště přestaly ukazovat, ač existují. Nová poznámka k vláknu má přednost, jinak se nabídne stará. */
+function zOd(x){return String((x.from&&x.from.emailAddress||{}).address||'').toLowerCase()}
+function starouPoznamku(x){try{var u=JSON.parse(localStorage.getItem('elzaUceni')||'{}'),o=u[zOd(x)];return o&&o.p?String(o.p):''}catch(e){return ''}}
 function ctiPoznamkuVlakna(x){
- return x.conversationId||x.id ? localStorage.getItem(klicPoznamkyVlakna(x))||'' : '';
+ var n=x.conversationId||x.id ? localStorage.getItem(klicPoznamkyVlakna(x))||'' : '';
+ return n||starouPoznamku(x);
 }
+function jeStaraPoznamka(x){return !(x.conversationId||x.id?localStorage.getItem(klicPoznamkyVlakna(x)):'')&&!!starouPoznamku(x)}
 window.POSTAZAR={
- ctiPoznamku:ctiPoznamkuVlakna,
+ ctiPoznamku:ctiPoznamkuVlakna,jeStara:jeStaraPoznamka,
  stav:async function(x){
   var kontext=await window.kontextPripaduProPostu(),w=kontext.vazby[x.conversationId];
   var linked=kontext.pripady.find(function(c){return c.id===w});

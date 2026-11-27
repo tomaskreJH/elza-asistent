@@ -31,6 +31,14 @@ async function run(path) {
   acc.username = 'technik@example.test';
   editor.popis(a, '');
   assert.equal((await editor.stav(a)).popis, '');
+  /* 0.87.1: stará poznámka u odesílatele se nabídne, dokud vlákno nemá vlastní; vlastní má přednost */
+  localStorage.setItem('elzaUceni', JSON.stringify({ 'stary@example.test': { p: 'Hodnocení: nechtěná poptávka', v: 'ne' } }));
+  const s = { id: '9', conversationId: 'S', from: { emailAddress: { address: 'Stary@Example.test' } } };
+  assert.equal(editor.ctiPoznamku(s), 'Hodnocení: nechtěná poptávka');
+  assert.equal(editor.jeStara(s), true);
+  editor.popis(s, 'Nová k vláknu');
+  assert.equal(editor.ctiPoznamku(s), 'Nová k vláknu');
+  assert.equal(editor.jeStara(s), false);
 }
 
 Promise.all(['pripady.js', 'stable/pripady.js'].map(run)).catch(error => {

@@ -1,3 +1,5 @@
+0.87.1 – Oprava: poznámky k poště z doby před 0.82.2 (uložené u adresy odesílatele v elzaUceni a ve ZnalostElza) se po změně ukládání v 0.82.2 (26. 11. 23:06) v Poště přestaly ukazovat, ač nikam nezmizely. Pole Poznámka k vláknu je nyní nabídne, dokud vlákno nemá vlastní poznámku; uložením se přiřadí k vláknu. Test v test/poznamka-vlakna.test.js.
+
 0.87.0 – Detail případu: blok Skica budovy z fotky zákazníka. Fotky se hledají ve složce objektu na webu Zakázky ELZA (Podklady objektu / Fotky a podklady od zákazníka), ne z portálu; co tam není, vloží člověk ručně. Kód OBJ se předvyplní z údajů případu. Nové SDL.blob (jen čtení souboru). Test test/skica.py.
 
 0.86.0 – Skica budovy z fotky zákazníka (skica.js): u obrázkové přílohy v Poště tlačítko Skica budovy; kresba z hran fotky se vytvoří v prohlížeči (bez AI a bez nákladů, nic se neukládá ani neposílá) a jde stáhnout jako PNG. Testy: test/skica.test.js, test/skica.py. Fotka ze stránek zákazníka zatím nejde (viz DALSI-KROKY).

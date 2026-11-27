@@ -1,3 +1,5 @@
+0.87.1 – Starší poznámky u odesílatele se v Poště znovu nabízejí. Poznámky k vláknu se ukládají jen v prohlížeči (neposílají se mezi zařízeními); sdílené ukládání je otevřené.
+
 0.87.0 – Skica budovy ze složky objektu nebo z ruční fotky v detailu případu. Ověřeno v ukázkovém režimu; na ostré složce a ostrém případu neověřeno.
 
 0.86.0 – Skica budovy z přílohy v Poště. Ověřeno testy a v prohlížeči na syntetickém obrázku; na skutečné příloze v ostré Poště neověřeno.
