@@ -39,19 +39,38 @@ function vazbaPripadu(input,cases,linked){
   if(matches.length>1)return {stav:"vice",duvod:"Název z oznámení odpovídá více případům.",moznosti:matches.map(function(c){return c.id})};
   return {stav:"espo",duvod:"Oznámení z Espa o existujícím případu. Vazbu v ELZE je potřeba dohledat."};
  }
- var address=String(input.adresa||"").trim().toLowerCase(),domain=address.split("@")[1];
- var broad=/^(?:gmail|seznam|email|centrum|outlook|post|volny|icloud|hotmail|atlas|tiscali)\./i;
- var weak=cases.filter(function(c){
-  if(c.uzavreny)return false;
-  return String(c.klice||"").toLowerCase().split(/[;,\s]+/).some(function(k){
-   return (address&&(k===address||(domain&&!broad.test(domain)&&k==="@"+domain)))||
-    (/^obj\d{5}$/.test(k)&&codes.has(k.toUpperCase()));
-  });
- });
- if(weak.length===1)return {stav:"mozna",id:weak[0].id,duvod:"Podobnost kontaktu nebo objektu stačí k návrhu vazby. Ověřte, že jde o stejnou věc."};
- if(weak.length>1)return {stav:"vice",duvod:"Kontaktu nebo objektu odpovídá více otevřených případů.",moznosti:weak.map(function(c){return c.id})};
- return {stav:"bez",duvod:"V načtených podkladech se nenašla vazba. Může jít o novou věc."};
-}
-W.VLAKNO={nazevEspo:nazevEspo,vazbaPripadu:vazbaPripadu,ROLE:ROLE,role:role,prvniExterniOdesilatel:prvniExterniOdesilatel,radek:radek,prehled:prehled,souhrn:souhrn};
+ var sk=vazbaSkore(input,cases,codes);
+ if(!sk.length)return {stav:"bez",duvod:"V načtených podkladech se nenašla vazba. Může jít o novou věc."};
+ var t=sk[0],n=sk[1],text0=function(c){return c.id+" ("+c.skore+" b.: "+c.duvody.slice(0,3).join(", ")+")"};
+ if(!n||t.skore-n.skore>=20)return {stav:"mozna",id:t.id,skore:t.skore,kandidati:sk.slice(0,3),duvod:"Nejlepší shoda "+text0(t)+(n?"; druhý je o "+(t.skore-n.skore)+" b. níž":"")+". Ověřte, že jde o stejnou věc."};
+ var blizko=sk.filter(function(c){return t.skore-c.skore<20}).slice(0,5);
+ return {stav:"vice",duvod:"Více případů má podobnou shodu: "+blizko.slice(0,3).map(text0).join("; ")+".",moznosti:blizko.map(function(c){return c.id}),kandidati:blizko}}
+/* 0.88.0: bodovaná shoda místo „adresa musí být v klíčových slovech“. Důkazy: kód v textu, adresa odesílatele i dalších účastníků vlákna, doména firmy, slova z názvu případu a jeho klíčová slova
+   v CELÉM textu (ne v náhledu), dříve potvrzená rozhodnutí o odesílateli a poznámky člověka. Uzavřený případ je kandidát jen s postihem. Nic se nedomýšlí: bez důkazu žádný návrh. */
+var STOP={dobry:1,prosim:1,dekuji:1,dekujeme:1,zprava:1,zpravy:1,nabidka:1,nabidku:1,poptavka:1,poptavku:1,pozdrav:1,pozdravem:1,email:1,tento:1,takze:1,ohledne:1,vase:1,vasi:1,zakazka:1,zakazku:1,objekt:1,objektu:1,systemu:1,system:1,firma:1,firmy:1,mobil:1,telefon:1,odeslano:1,predmet:1,prijemce:1,kopie:1,datum:1,pozn:1,cesky:1,cesko:1};
+function nrm(t){return String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase()}
+function tokeny(t){var o={};nrm(t).split(/[^a-z0-9]+/).forEach(function(w){if(w.length>=5&&!STOP[w]&&!/^\d+$/.test(w))o[w]=1});return o}
+var BROAD=/^(?:gmail|seznam|email|centrum|outlook|post|volny|icloud|hotmail|atlas|tiscali)\./i;
+/* externí adresy všech zpráv vlákna (od, komu, kopie), bez kolegů ELZY; první je odesílatel první externí zprávy */
+function ucastnici(messages){var out=[],seen={};(messages||[]).forEach(function(m){[m.from].concat(m.toRecipients||[],m.ccRecipients||[]).forEach(function(p){var a=adr(p);if(a&&!seen[a]&&role(a)==="zákazník / externí"){seen[a]=1;out.push(a)}})});return out}
+function vazbaSkore(input,cases,codes){codes=codes||new Set();
+ var text=String(input.text||""),tk=tokeny((input.predmet||"")+" "+text),sub=tokeny(input.predmet||""),pozn=tokeny((input.poznamka||"")+" "+[String(input.adresa||"")].concat(input.adresy||[]).map(function(a){return ((input.uceni||{})[String(a).toLowerCase()]||{}).p||""}).join(" ")),
+  odes=String(input.adresa||"").trim().toLowerCase(),ostatni=(input.adresy||[]).map(function(a){return String(a).toLowerCase()}).filter(function(a){return a&&a!==odes}),
+  vsechny=(odes?[odes]:[]).concat(ostatni),uc=input.uceni||{},out=[];
+ (cases||[]).forEach(function(c){var s=0,d=[],klice=String(c.klice||"").toLowerCase().split(/[;,\s]+/).filter(Boolean),adrK=klice.filter(function(k){return k.indexOf("@")>=0}),slovaK=klice.filter(function(k){return k.indexOf("@")<0&&!/^obj\d{5}$/.test(k)&&k.length>=4});
+  if(odes&&adrK.indexOf(odes)>=0){s+=40;d.push("odesílatel je v klíčových slovech")}
+  else if(ostatni.some(function(a){return adrK.indexOf(a)>=0})){s+=30;d.push("účastník vlákna je v klíčových slovech")}
+  var dom=vsechny.map(function(a){return a.split("@")[1]}).filter(function(x){return x&&!BROAD.test(x)}).some(function(x){return adrK.indexOf("@"+x)>=0});
+  if(dom&&!d.length){s+=15;d.push("shodná firemní doména")}
+  if(klice.some(function(k){return /^obj\d{5}$/.test(k)&&codes.has(k.toUpperCase())})){s+=60;d.push("kód objektu v textu")}
+  var nz={};[c.nazev].concat(c.aliasy||[]).forEach(function(n){var t=tokeny(n);Object.keys(t).forEach(function(w){nz[w]=1})});var ws=Object.keys(nz),hit=ws.filter(function(w){return tk[w]}),hs=ws.filter(function(w){return sub[w]});
+  if(hit.length){s+=Math.min(30,12*hit.length);d.push("slova z názvu případu: "+hit.slice(0,3).join(", "))}if(hs.length){s+=10;d.push("v předmětu")}
+  var kh=slovaK.filter(function(k){return tk[nrm(k)]||nrm(text).indexOf(nrm(k))>=0});if(kh.length){s+=Math.min(24,8*kh.length);d.push("klíčová slova v textu: "+kh.slice(0,3).join(", "))}
+  vsechny.forEach(function(a){var u=uc[a];if(u&&u.w===c.id&&u.v!=="ne"&&u.n>0&&d.indexOf("dříve potvrzeno")<0){s+=40+Math.min(10,(u.n-1)*3);d.push("dříve potvrzeno")}});
+  if(ws.some(function(w){return pozn[w]})){s+=12;d.push("shoda s vaší poznámkou")}
+  if(c.uzavreny)s-=25;
+  if(s>=10)out.push({id:c.id,skore:s,duvody:d})});
+ return out.sort(function(a,b){return b.skore-a.skore})}
+W.VLAKNO={ucastnici:ucastnici,vazbaSkore:vazbaSkore,tokeny:tokeny,nazevEspo:nazevEspo,vazbaPripadu:vazbaPripadu,ROLE:ROLE,role:role,prvniExterniOdesilatel:prvniExterniOdesilatel,radek:radek,prehled:prehled,souhrn:souhrn};
 if(typeof module!="undefined")module.exports=W.VLAKNO;
 })();

@@ -71,10 +71,13 @@ if(typeof module!="undefined")module.exports=W.RANO;
 if(typeof window=="undefined"||typeof document=="undefined")return;
 var SEL="id,subject,from,receivedDateTime,bodyPreview,conversationId,webLink,isDraft",ST={k:null,err:"",busy:false,msg:""};
 function e(s){return typeof esc=="function"?esc(s):String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+/* 0.88.0: ranní analýza čte CELÉ e-maily (prostý text, nejvýš 6000 znaků), ne jen náhled 255 znaků; technologie, kód objektu a požadavky bývají až dál v textu. Bez AI, jen čtení; selhání jedné zprávy ji nevyřadí. */
+async function plneTexty(msgs){var bl=W.OCHRANA&&W.OCHRANA.isBlocked?W.OCHRANA.isBlocked:null,c=(msgs||[]).filter(function(m){return m&&m.id&&!m.isDraft&&!(bl&&bl((((m.from||{}).emailAddress||{}).address||"")))}).slice(0,80);
+ for(var i=0;i<c.length;i+=4){await Promise.all(c.slice(i,i+4).map(function(m){return GR.req("GET","/me/messages/"+encodeURIComponent(m.id)+"?$select=body",{sc:["Mail.Read"],h:{Prefer:'outlook.body-content-type="text"'}}).then(function(r){if(r&&r.body&&r.body.content)m.bodyPreview=String(r.body.content).replace(/\s+/g," ").trim().slice(0,6000)}).catch(function(){})}))}}
 async function nacti(){ST.err="";ST.busy=true;try{
  var od=predPD(new Date()).toISOString();
  var msgs=await GR.all("/me/mailFolders/inbox/messages?$filter="+encodeURIComponent("receivedDateTime ge "+od)+"&$orderby="+encodeURIComponent("receivedDateTime desc")+"&$top=100&$select="+SEL,{sc:["Mail.Read"]},3);
- ST.k=zpracuj(msgs,W.ANALYZA,W.OCHRANA&&W.OCHRANA.isBlocked?W.OCHRANA.isBlocked:null)}catch(x){ST.err="Pošta: "+x.message;ST.k=[]}
+ await plneTexty(msgs);ST.k=zpracuj(msgs,W.ANALYZA,W.OCHRANA&&W.OCHRANA.isBlocked?W.OCHRANA.isBlocked:null)}catch(x){ST.err="Pošta: "+x.message;ST.k=[]}
  if(CTI_SDILENOU)try{var sm=await GR.all("/users/"+encodeURIComponent(SCHRANKA)+"/mailFolders/inbox/messages?$filter="+encodeURIComponent("receivedDateTime ge "+predPD(new Date()).toISOString())+"&$orderby="+encodeURIComponent("receivedDateTime desc")+"&$top=100&$select="+SEL,{sc:["Mail.Read.Shared"]},3);
   var sk=zpracuj(sm,W.ANALYZA,W.OCHRANA&&W.OCHRANA.isBlocked?W.OCHRANA.isBlocked:null),mam={};ST.k.forEach(function(k){mam[k.cid||k.id]=1});sk.forEach(function(k){k.schranka=SCHRANKA;if(!mam[k.cid||k.id])ST.k.push(k)});ST.sdil=sk.length}
  catch(x){ST.err=(ST.err?ST.err+" | ":"")+"Společná schránka "+SCHRANKA+": "+x.message+" (potřebuje právo Mail.Read.Shared a přístup ke schránce)"}

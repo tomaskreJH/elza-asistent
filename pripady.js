@@ -102,6 +102,34 @@ function klicPoznamkyVlakna(x){
 /* 0.87.1: poznámky z doby před 0.82.2 jsou uložené u adresy odesílatele (elzaUceni, ZnalostElza Druh trideni); po změně ukládání se v poště přestaly ukazovat, ač existují. Nová poznámka k vláknu má přednost, jinak se nabídne stará. */
 function zOd(x){return String((x.from&&x.from.emailAddress||{}).address||'').toLowerCase()}
 function starouPoznamku(x){try{var u=JSON.parse(localStorage.getItem('elzaUceni')||'{}'),o=u[zOd(x)];return o&&o.p?String(o.p):''}catch(e){return ''}}
+/* 0.88.0: poznámky k vláknu se ukládají TRVALE do ZnalostElza (Druh poznamka_posty) a tím jsou na všech zařízeních; místní kopie v prohlížeči zůstává jako rychlá cache.
+   Z poznámky se ELZA učí: text se uloží i k odesílateli (UCENI.popis), a shoda s případem k němu přihlíží (vlakno.js vazbaSkore, poznámky i dřívější rozhodnutí). Nic se nemaže (prázdná poznámka = Stav vyrazeno). */
+var NP={ids:{},p:null};
+function hs(v){var h=5381;v=String(v||'');for(var i=0;i<v.length;i++)h=((h*33)^v.charCodeAt(i))>>>0;return h.toString(36)}
+function serverKlic(x){var id=x.conversationId||x.id,u=acc&&acc.username;return id&&u?'pozn:'+u.toLowerCase()+':'+hs(id):''}
+function zlz(){return window.SDL&&!window.SDL.demo()&&window.SEZ&&window.SEZ.S&&window.SEZ.S.ZnalostElza}
+function nactiPoznamky(){
+ if(!zlz())return Promise.resolve(0);
+ if(NP.p)return NP.p;
+ NP.p=(async function(){
+  window.SDL.def('ZnalostElza',window.SEZ.S.ZnalostElza,'ELZA asistent: Znalosti a profil firmy');
+  var r=await window.SDL.read('ZnalostElza',"Druh eq 'poznamka_posty'")||[],n=0,u=(acc&&acc.username||'').toLowerCase();
+  r.forEach(function(z){if(!z.Klic)return;NP.ids[z.Klic]=z.Id;if(String(z.Kdo||'').toLowerCase()!==u||z.Stav==='vyrazeno')return;
+   var j;try{j=JSON.parse(z.Text||'{}')}catch(e){return}if(!j.k||!j.p)return;
+   try{if(!localStorage.getItem(j.k)){localStorage.setItem(j.k,String(j.p).slice(0,1500));n++}}catch(e){}
+   if(window.UCENI&&j.od)window.UCENI.popis(j.od,j.p)});
+  return n})().catch(function(e){NP.p=null;return 0});
+ return NP.p;
+}
+function ulozPoznamkuTrvale(x,pop){var f=function(){return ulozPoznamkuTrvale1(x,pop)};NP.q=(NP.q||Promise.resolve()).then(f,f);return NP.q}
+async function ulozPoznamkuTrvale1(x,pop){
+ if(!zlz())return;var kl=serverKlic(x);if(!kl)return;
+ await nactiPoznamky();
+ var od=String((x.from&&x.from.emailAddress||{}).address||'').toLowerCase(),text=JSON.stringify({k:klicPoznamkyVlakna(x),p:String(pop||'').slice(0,1500),od:od,subj:String(x.subject||'').slice(0,200),w:'',conv:x.conversationId||''});
+ var b={Title:('Poznámka: '+(x.subject||'')).slice(0,200),Druh:'poznamka_posty',Klic:kl,Text:text,Stav:pop?'aktivni':'vyrazeno',Kdo:String(acc&&acc.username||''),Kdy:new Date().toISOString()};
+ var novy=!NP.ids[kl];await window.SDL.write('ZnalostElza',NP.ids[kl]||0,b);
+ if(novy){NP.p=null;await nactiPoznamky()} /* zápis nevrací Id: po vytvoření se načte znovu, aby další úprava přepsala tentýž záznam */
+}
 function ctiPoznamkuVlakna(x){
  var n=x.conversationId||x.id ? localStorage.getItem(klicPoznamkyVlakna(x))||'' : '';
  return n||starouPoznamku(x);
@@ -110,7 +138,7 @@ function jeStaraPoznamka(x){return !(x.conversationId||x.id?localStorage.getItem
 window.POSTAZAR={
  ctiPoznamku:ctiPoznamkuVlakna,jeStara:jeStaraPoznamka,
  stav:async function(x){
-  var kontext=await window.kontextPripaduProPostu(),w=kontext.vazby[x.conversationId];
+  await nactiPoznamky();var kontext=await window.kontextPripaduProPostu(),w=kontext.vazby[x.conversationId];
   var linked=kontext.pripady.find(function(c){return c.id===w});
   return {w:w||'',id:linked&&linked.cislo,kontext:kontext,popis:ctiPoznamkuVlakna(x),
    opt:kontext.pripady.filter(function(c){return !c.uzavreny}).map(function(c){return {id:c.id,t:(c.id+' '+c.nazev).slice(0,90)}})};
@@ -118,7 +146,8 @@ window.POSTAZAR={
  prirad:async function(x,w,pop){if(!w)throw new Error('Nejdřív vyberte případ.');await link(x.conversationId,w,x.subject,'ručně','ruční výběr',true);if(pop)this.popis(x,pop);await loadPP(true);KOM={};return w},
  novy:async function(x,pop){var id=await newCase(x,false);if(pop)this.popis(x,pop);await loadPP(true);KOM={};return id},
  zbytecna:async function(x,pop){var id=await newCase(x,true);if(pop)this.popis(x,pop);await loadPP(true);return id},
- popis:function(x,pop){var key=klicPoznamkyVlakna(x);if(pop)localStorage.setItem(key,pop.slice(0,1500));else localStorage.removeItem(key)},
+ popis:function(x,pop){var key=klicPoznamkyVlakna(x);if(pop)localStorage.setItem(key,pop.slice(0,1500));else localStorage.removeItem(key);if(pop&&window.UCENI)window.UCENI.popis(zOd(x),pop);ulozPoznamkuTrvale(x,pop).catch(function(e){window.POSTAZAR_CHYBA='Poznámka je uložená jen v tomto prohlížeči: '+e.message})},
+ nactiPoznamky:nactiPoznamky,
  odpoj:async function(x){var c=x.conversationId;for(var p of PP.filter(function(q){return q.ConversationId==c}))await spw("lists/getbytitle('PostaPripady')/items("+p.Id+")/recycle()",null,null,true);LAST=Date.now();await loadPP(true);KOM={}}
 };
 function mine(x){var u=me(),n=norm(acc&&acc.name),r=norm(pr(x.ResponsiblePerson));return !!(u&&(norm(x.Ucastnici).split(/[;,\s]+/).includes(u)||r===u)||n&&r===n)}
